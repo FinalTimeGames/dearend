@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DearEnd Studio | Finaltime Studios</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Montserrat:wght@900&family=VT323&display=swap');
 
@@ -16,7 +17,7 @@
             --accent: #e4e4e7;
             --accent-hover: #ffffff;
             --border: #3f3f46;
-            --brand: #dc2626; /* A dark red brand color for DearEnd */
+            --brand: #991b1b; /* Sangue escuro elegante */
             
             --font-ui: 'Inter', sans-serif;
             --font-display: 'Montserrat', sans-serif;
@@ -30,51 +31,65 @@
             min-height: 100vh; overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* Nav */
+        /* --- UI COMPONENTS --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 24px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            z-index: 100;
+            padding: 16px 32px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
+            z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
-        .brand { font-family: var(--font-display); font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; color: #fff; cursor: pointer; text-transform: uppercase;}
-        .brand span { color: var(--brand); }
-        .nav-controls { display: flex; gap: 12px; }
+        .brand { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #fff; cursor: pointer; text-transform: uppercase;}
+        .brand span { color: var(--brand); font-weight: 400; }
+        .nav-controls { display: flex; gap: 12px; align-items: center; }
 
-        button, select {
+        button, select, input[type="text"] {
             background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);
             padding: 8px 16px; border-radius: 4px; font-family: var(--font-ui); font-size: 0.85rem;
-            font-weight: 600; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+            font-weight: 600; transition: all 0.2s; outline: none;
         }
+        button { cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
         button:hover { background: #3f3f46; border-color: var(--text-muted); }
         .btn-primary { background: var(--text-main); color: var(--bg-base); border-color: var(--text-main); }
-        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
         .btn-brand { background: transparent; border-color: var(--brand); color: var(--brand); }
         .btn-brand:hover { background: var(--brand); color: white; }
+        .btn-danger { background: transparent; color: #ef4444; border-color: #ef4444; }
+        .btn-danger:hover { background: #ef4444; color: white; }
 
-        /* Views */
-        .view { display: none; height: calc(100vh - 55px); width: 100%; }
-        .view.active { display: flex; }
+        .watermark { position: absolute; bottom: 12px; right: 16px; font-family: var(--font-display); font-size: 0.8rem; color: rgba(255, 255, 255, 0.15); letter-spacing: 2px; font-weight: 900; z-index: 50; pointer-events: none; text-transform: uppercase; }
 
-        /* --- HOME VIEW --- */
-        #view-home { flex-direction: column; align-items: center; justify-content: center; gap: 24px; background: radial-gradient(circle at center, #18181b 0%, #09090b 100%); }
-        .home-title { font-family: var(--font-display); font-size: 4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; text-shadow: 0 10px 30px rgba(220, 38, 38, 0.2); }
-        .home-actions { display: flex; gap: 16px; }
-        input[type="file"] { display: none; }
+        /* Views Setup */
+        .view { display: none; height: calc(100vh - 65px); width: 100%; position: relative; }
+        .view.active { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- HOME (DASHBOARD) --- */
+        #view-home { flex-direction: column; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top, #18181b 0%, #09090b 100%); }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; max-width: 1200px; margin-inline: auto; width: 100%; }
+        .home-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; text-transform: uppercase; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; max-width: 1200px; margin-inline: auto; width: 100%; }
+        
+        .project-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 6px; padding: 24px; transition: all 0.2s; position: relative; overflow: hidden; }
+        .project-card:hover { border-color: var(--brand); box-shadow: 0 10px 30px rgba(153, 27, 27, 0.1); transform: translateY(-3px); }
+        .card-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; color: #fff; }
+        .card-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+        .card-actions { display: flex; gap: 8px; }
 
         /* --- EDITOR VIEW --- */
-        .sidebar { width: 300px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-        .sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .scene-list { flex-grow: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .scene-item { padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; justify-content: space-between; }
-        .scene-item:hover { border-color: var(--text-muted); }
-        .scene-item.active { border-color: var(--brand); border-left: 4px solid var(--brand); }
-        .del-scene { background: transparent; border: none; color: var(--text-muted); padding: 0; }
-        .del-scene:hover { color: var(--brand); background: transparent; }
-
-        .editor-main { flex-grow: 1; display: flex; flex-direction: column; position: relative; background: #000; overflow: hidden; }
+        .sidebar { width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
+        .project-name-input { width: 100%; background: var(--bg-base); font-size: 1.1rem; font-weight: 800; border-color: transparent; padding: 8px; color: var(--brand); border-bottom: 1px solid var(--border); border-radius: 0; }
+        .project-name-input:focus { border-color: var(--brand); }
         
-        /* The Canvas (Preview & Player) */
-        .story-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 40px; background-size: cover; background-position: center; transition: filter 0.3s; }
+        .scene-list { flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+        .scene-item { padding: 12px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+        .scene-item:hover { border-color: var(--text-muted); }
+        .scene-item.active { border-color: var(--brand); background: rgba(153, 27, 27, 0.1); border-left: 4px solid var(--brand); }
+        .del-scene { background: transparent; border: none; color: var(--text-muted); padding: 4px; font-size: 0.7rem; }
+        .del-scene:hover { color: #ef4444; }
+
+        .editor-main { flex-grow: 1; display: flex; flex-direction: column; position: relative; background: #000; }
+        
+        .story-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 60px; background-size: cover; background-position: center; transition: filter 0.3s; }
         
         /* Filters */
         .filter-none { filter: none; }
@@ -82,45 +97,42 @@
         .filter-noir { filter: grayscale(100%) contrast(200%) brightness(0.7); }
         .filter-sepia { filter: sepia(80%) contrast(120%); }
 
-        /* Text Box */
-        .textbox-container { width: 90%; max-width: 900px; background: rgba(0, 0, 0, 0.85); border: 1px solid #333; padding: 24px; border-radius: 4px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
-        .story-text-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-family: var(--font-story); font-size: 1.2rem; resize: none; outline: none; line-height: 1.5; text-align: center; }
+        /* Story Textbox */
+        .textbox-container { width: 90%; max-width: 1000px; background: rgba(0, 0, 0, 0.75); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 30px; z-index: 10; backdrop-filter: blur(8px); }
+        .story-text-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-family: var(--font-story); font-size: 1.3rem; resize: none; outline: none; line-height: 1.6; text-align: center; }
+
+        /* Tools Panel */
+        .editor-tools { position: absolute; top: 20px; right: 20px; background: rgba(24, 24, 27, 0.95); border: 1px solid var(--border); padding: 20px; border-radius: 6px; z-index: 20; display: flex; flex-direction: column; gap: 16px; width: 320px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .tool-group { display: flex; flex-direction: column; gap: 6px; }
+        .tool-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
         
-        /* Choices Preview */
-        .choices-preview { display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 900px; margin-bottom: 20px; z-index: 10; }
-        .choice-btn-preview { background: rgba(20, 20, 20, 0.9); border: 1px solid #555; color: #fff; padding: 12px; font-family: var(--font-ui); font-size: 1rem; cursor: default; text-align: center; transition: all 0.2s; }
-        
-        /* Editor Tools Panel (Bottom overlay) */
-        .editor-tools { position: absolute; top: 16px; right: 16px; background: rgba(24, 24, 27, 0.9); border: 1px solid var(--border); padding: 16px; border-radius: 4px; z-index: 20; display: flex; flex-direction: column; gap: 12px; width: 300px; backdrop-filter: blur(10px); }
-        .tool-group { display: flex; flex-direction: column; gap: 4px; }
-        .tool-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        
-        .choice-editor-row { display: flex; gap: 8px; align-items: center; background: #000; padding: 8px; border: 1px solid #333; }
-        .choice-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; outline: none; }
-        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 4px; }
-        
+        .choice-editor-row { display: flex; gap: 8px; align-items: center; background: #000; padding: 8px; border: 1px solid #333; border-radius: 4px;}
+        .choice-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 4px; }
+        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 6px; }
+
         /* --- PLAYER VIEW --- */
-        #view-player { position: relative; background: #000; justify-content: center; align-items: flex-end; padding-bottom: 40px; }
+        #view-player { background: #000; justify-content: center; align-items: flex-end; padding-bottom: 60px; }
         #player-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; transition: background 0.5s ease; }
-        .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8) 100%); z-index: 2; pointer-events: none; }
+        .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 2; pointer-events: none; }
         
-        #player-content { width: 90%; max-width: 900px; z-index: 10; display: flex; flex-direction: column; gap: 24px; }
-        .player-text-box { background: rgba(0, 0, 0, 0.7); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 32px; text-align: center; }
-        #player-text { font-family: var(--font-story); font-size: 1.4rem; line-height: 1.6; color: #fff; }
+        #player-content { width: 90%; max-width: 1000px; z-index: 10; display: flex; flex-direction: column; gap: 30px; }
+        .player-text-box { background: rgba(0, 0, 0, 0.6); border-top: 1px solid #444; border-bottom: 1px solid #444; padding: 40px; text-align: center; backdrop-filter: blur(4px); }
+        #player-text { font-family: var(--font-story); font-size: 1.5rem; line-height: 1.6; color: #fff; text-shadow: 1px 1px 2px #000;}
         
-        #player-choices { display: flex; flex-direction: column; gap: 12px; }
-        .player-choice-btn { background: rgba(0,0,0,0.8); border: 1px solid #444; color: #ccc; padding: 16px; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        #player-choices { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .player-choice-btn { width: 100%; max-width: 600px; background: rgba(0,0,0,0.8); border: 1px solid #555; color: #e4e4e7; padding: 16px; font-family: var(--font-ui); font-size: 1.1rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; }
         .player-choice-btn:hover { background: var(--text-main); color: #000; border-color: var(--text-main); transform: scale(1.02); }
         
         .player-controls { position: absolute; top: 20px; right: 20px; z-index: 50; }
 
         /* --- BOOKLET VIEW --- */
         #view-booklet { flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; background: #111; }
-        .booklet-container { width: 100%; max-width: 700px; background: #1e1e1e; border: 1px solid #333; padding: 40px; }
-        .booklet-title { font-family: var(--font-display); font-size: 2rem; margin-bottom: 24px; text-align: center; text-transform: uppercase; border-bottom: 2px solid var(--brand); padding-bottom: 12px; }
-        .log-entry { margin-bottom: 24px; padding-left: 16px; border-left: 2px solid #444; }
-        .log-text { font-family: var(--font-story); font-size: 1rem; color: #ccc; line-height: 1.5; margin-bottom: 8px; }
-        .log-choice { font-family: var(--font-ui); font-size: 0.85rem; color: var(--brand); font-weight: bold; text-transform: uppercase; }
+        #bookletContent { width: 100%; max-width: 800px; background: #18181b; border: 1px solid #333; padding: 60px; position: relative; }
+        .booklet-title { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 40px; text-align: center; text-transform: uppercase; color: #fff; border-bottom: 2px solid var(--brand); padding-bottom: 16px; }
+        .log-entry { margin-bottom: 30px; padding-left: 20px; border-left: 3px solid #444; position: relative; }
+        .log-entry::before { content: ''; position: absolute; left: -7px; top: 0; width: 11px; height: 11px; background: var(--brand); border-radius: 50%; }
+        .log-text { font-family: var(--font-story); font-size: 1.1rem; color: #ccc; line-height: 1.6; margin-bottom: 12px; }
+        .log-choice { font-family: var(--font-ui); font-size: 0.9rem; color: var(--brand); font-weight: bold; text-transform: uppercase; background: rgba(153,27,27,0.1); display: inline-block; padding: 4px 8px; border-radius: 4px;}
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-base); }
@@ -133,64 +145,75 @@
         <div class="brand" onclick="app.goHome()">DEAREND <span>STUDIO</span></div>
         <div class="nav-controls">
             <select id="langSelect" onchange="app.changeLanguage(this.value)">
-                <option value="en">EN</option>
-                <option value="pt">PT-BR</option>
+                <option value="en">English</option>
+                <option value="pt">Português</option>
             </select>
-            <button id="navPlayBtn" class="btn-primary" style="display:none;" onclick="app.playProject()">PLAY</button>
-            <button id="navExportBtn" style="display:none;" onclick="app.exportProject()">EXPORT PROJECT</button>
+            <button id="navPlayBtn" class="btn-primary" style="display:none;" onclick="app.playProject()">▶ PLAY</button>
+            <button id="navExportBtn" style="display:none;" onclick="app.exportProject()">⬇ EXPORT .DEAREND</button>
         </div>
     </nav>
 
     <main id="view-home" class="view active">
-        <div class="home-title">DEAREND</div>
-        <div class="home-actions">
-            <button class="btn-primary" onclick="app.createNewProject()" id="t-create">CREATE NEW STORY</button>
-            <label for="importFile" class="btn-brand" style="display:inline-block; margin:0;" id="t-import">IMPORT .DEAREND</label>
-            <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
+        <div class="dashboard-header">
+            <h2 class="home-title" id="t-myStories">My Stories</h2>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn-primary" onclick="app.createNewProject()" id="t-create">+ NEW STORY</button>
+                <label for="importFile" class="btn-brand" style="margin:0; padding:8px 16px; border-radius:4px; font-weight:600; cursor:pointer; font-size:0.85rem;" id="t-import">IMPORT</label>
+                <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
+            </div>
         </div>
+        <div class="project-grid" id="projectGrid">
+            </div>
+        <div class="watermark">FINALTIME STUDIOS</div>
     </main>
 
     <main id="view-editor" class="view">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <span style="font-weight: 800; font-size: 0.9rem;" id="t-scenes">SCENES</span>
-                <button onclick="app.addScene()" style="padding: 4px 8px;">+</button>
+                <input type="text" id="projectName" class="project-name-input" value="Untitled Story" onblur="app.updateProjectTitle()">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <span style="font-weight: 800; font-size: 0.8rem; color: var(--text-muted);" id="t-scenes">TIMELINE</span>
+                    <button onclick="app.addScene()" style="padding: 4px 12px; font-size: 1.2rem;">+</button>
+                </div>
             </div>
             <div class="scene-list" id="sceneList"></div>
         </aside>
         
         <section class="editor-main">
             <div class="story-canvas" id="editorCanvas">
-                
-                <div class="choices-preview" id="editorChoicesPreview"></div>
-
                 <div class="textbox-container">
-                    <textarea class="story-text-input" id="editorText" rows="4" placeholder="Scene text goes here..." oninput="app.updateCurrentScene()"></textarea>
+                    <textarea class="story-text-input" id="editorText" rows="5" placeholder="Scene text goes here..." oninput="app.updateCurrentScene()"></textarea>
                 </div>
             </div>
 
             <div class="editor-tools">
                 <div class="tool-group">
+                    <label id="t-sceneName">Scene Name</label>
+                    <input type="text" id="sceneNameInput" style="width: 100%; background: #000;" oninput="app.updateCurrentScene()">
+                </div>
+                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
+                <div class="tool-group">
                     <label id="t-bgImage">Background Image</label>
-                    <label for="bgUpload" style="background:#333; padding:6px; text-align:center; cursor:pointer; font-size:0.8rem; border-radius:4px;">UPLOAD JPG/PNG</label>
+                    <label for="bgUpload" style="background:#222; padding:8px; text-align:center; cursor:pointer; border-radius:4px; font-weight: 600; color: #fff;">UPLOAD JPG/PNG</label>
                     <input type="file" id="bgUpload" accept="image/*" onchange="app.uploadBackground(event)">
                 </div>
-                <div class="tool-group">
-                    <label id="t-filter">Scene Filter</label>
-                    <select id="editorFilter" onchange="app.updateCurrentScene()">
+                <div class="tool-group" style="margin-top: 8px;">
+                    <label id="t-filter">Cinematic Filter</label>
+                    <select id="editorFilter" onchange="app.updateCurrentScene()" style="width: 100%;">
                         <option value="filter-none">None</option>
                         <option value="filter-grime">Grime / Retro</option>
                         <option value="filter-noir">Noir / Dark</option>
                         <option value="filter-sepia">Corroded Sepia</option>
                     </select>
                 </div>
-                <hr style="border:none; border-top:1px solid #333; margin: 8px 0;">
+                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
                 <div class="tool-group">
-                    <label id="t-choices">Choices / Branching</label>
-                    <div id="editorChoicesList" style="display: flex; flex-direction: column; gap: 4px;"></div>
-                    <button onclick="app.addChoice()" style="margin-top: 4px; padding: 4px;">+ ADD CHOICE</button>
+                    <label id="t-choices">Branching Choices</label>
+                    <div id="editorChoicesList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                    <button onclick="app.addChoice()" style="margin-top: 8px;">+ ADD CHOICE</button>
                 </div>
             </div>
+            <div class="watermark">FINALTIME STUDIOS</div>
         </section>
     </main>
 
@@ -207,47 +230,72 @@
             </div>
             <div id="player-choices"></div>
         </div>
+        <div class="watermark">FINALTIME STUDIOS</div>
     </main>
 
     <main id="view-booklet" class="view">
-        <div class="player-controls">
+        <div class="player-controls" style="display: flex; gap: 12px; position: fixed;">
             <button onclick="app.exitPlayer()">BACK TO EDITOR</button>
+            <button class="btn-brand" onclick="app.downloadBooklet()" id="t-downloadBooklet">DOWNLOAD IMAGE</button>
         </div>
         <div class="booklet-container" id="bookletContent">
             <h1 class="booklet-title">THE PATH TAKEN</h1>
             <div id="bookletLogs"></div>
+            <div class="watermark" style="bottom: -30px;">FINALTIME STUDIOS</div>
         </div>
     </main>
 
     <script>
         const dict = {
             en: {
-                create: "CREATE NEW STORY", import: "IMPORT .DEAREND", scenes: "SCENES",
-                bgImage: "Background Image", filter: "Scene Filter", choices: "Choices / Branching",
-                exit: "EXIT READ MODE", placeholder: "Scene text goes here...", newScene: "New Scene",
-                endReached: "END OF STORY REACHED.", viewBooklet: "VIEW CONSEQUENCES REPORT"
+                myStories: "My Stories", create: "NEW STORY", import: "IMPORT", scenes: "TIMELINE",
+                bgImage: "Background Image", filter: "Cinematic Filter", choices: "Branching Choices",
+                exit: "EXIT READ MODE", placeholder: "Scene text goes here...", newScene: "Scene",
+                endReached: "END OF STORY REACHED.", viewBooklet: "VIEW CONSEQUENCES REPORT",
+                sceneName: "Scene Name", downloadBooklet: "DOWNLOAD IMAGE", confirmDel: "Delete this story permanently?"
             },
             pt: {
-                create: "CRIAR NOVA HISTÓRIA", import: "IMPORTAR .DEAREND", scenes: "CENAS",
-                bgImage: "Imagem de Fundo", filter: "Filtro da Cena", choices: "Escolhas / Caminhos",
-                exit: "SAIR DA LEITURA", placeholder: "O texto da cena vai aqui...", newScene: "Nova Cena",
-                endReached: "FIM DA HISTÓRIA ALCANÇADO.", viewBooklet: "VER RELATÓRIO DE CONSEQUÊNCIAS"
+                myStories: "Minhas Histórias", create: "NOVA HISTÓRIA", import: "IMPORTAR", scenes: "LINHA DO TEMPO",
+                bgImage: "Imagem de Fundo", filter: "Filtro Cinematográfico", choices: "Escolhas e Caminhos",
+                exit: "SAIR DA LEITURA", placeholder: "O texto da cena vai aqui...", newScene: "Cena",
+                endReached: "FIM DA HISTÓRIA ALCANÇADO.", viewBooklet: "VER RELATÓRIO DE CONSEQUÊNCIAS",
+                sceneName: "Nome da Cena", downloadBooklet: "BAIXAR IMAGEM", confirmDel: "Deletar esta história para sempre?"
             }
         };
 
         const app = {
             lang: 'en',
-            project: null,
+            data: {}, // O Banco de Dados Mestre!
+            currentId: null,
             currentSceneId: null,
-            
-            // Player Engine State
             playState: { current: null, history: [] },
 
             init() {
-                this.changeLanguage(this.lang);
+                // Carrega os dados salvos do LocalStorage
+                const savedData = localStorage.getItem('dearend_v2');
+                if (savedData) this.data = JSON.parse(savedData);
+                
+                const savedLang = localStorage.getItem('dearend_lang');
+                if(savedLang) {
+                    this.lang = savedLang;
+                    document.getElementById('langSelect').value = savedLang;
+                }
+                
+                this.updateLangUI();
+                this.goHome();
             },
 
-            // --- NAVIGATION ---
+            saveDb() {
+                try {
+                    localStorage.setItem('dearend_v2', JSON.stringify(this.data));
+                } catch(e) {
+                    alert("Storage limit reached! Please delete some old stories or use lighter background images.");
+                }
+            },
+
+            generateId() { return Math.random().toString(36).substr(2, 9); },
+
+            // --- NAVEGAÇÃO E DASHBOARD ---
             showView(id) {
                 document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
                 document.getElementById(id).classList.add('active');
@@ -256,39 +304,95 @@
                 document.getElementById('navPlayBtn').style.display = isEditor ? 'block' : 'none';
                 document.getElementById('navExportBtn').style.display = isEditor ? 'block' : 'none';
             },
+
             goHome() {
-                this.project = null;
+                this.currentId = null;
+                this.currentSceneId = null;
                 this.showView('view-home');
+                this.renderHome();
             },
 
-            // --- PROJECT MANAGEMENT ---
+            renderHome() {
+                const grid = document.getElementById('projectGrid');
+                grid.innerHTML = '';
+                const ids = Object.keys(this.data);
+                
+                if(ids.length === 0) {
+                    grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1; text-align: center; margin-top: 50px;">No stories found. Create your first masterpiece.</p>`;
+                    return;
+                }
+
+                // Ordena do mais recente para o mais antigo
+                ids.sort((a,b) => this.data[b].updated - this.data[a].updated).forEach(id => {
+                    const proj = this.data[id];
+                    const card = document.createElement('div');
+                    card.className = 'project-card';
+                    card.innerHTML = `
+                        <div class="card-title">${proj.title}</div>
+                        <div class="card-meta">Scenes: ${Object.keys(proj.scenes).length} | Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
+                        <div class="card-actions">
+                            <button class="btn-primary" onclick="app.openProject('${id}')">EDIT</button>
+                            <button class="btn-danger" onclick="app.deleteProject('${id}')">DELETE</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            },
+
+            // --- GESTÃO DE PROJETOS ---
             createNewProject() {
-                const startId = this.generateId();
-                this.project = {
+                const projId = 'proj_' + this.generateId();
+                const startScnId = 'scn_' + this.generateId();
+                
+                this.data[projId] = {
                     title: "Untitled Story",
-                    startScene: startId,
+                    updated: Date.now(),
+                    startScene: startScnId,
                     scenes: {}
                 };
-                // Create first scene
-                this.project.scenes[startId] = {
-                    name: "Scene 1",
-                    text: "",
-                    bg: "",
-                    filter: "filter-none",
-                    choices: [] // { text: "Go left", target: "id" }
+                
+                this.data[projId].scenes[startScnId] = {
+                    name: "Opening Scene",
+                    text: "", bg: "", filter: "filter-none", choices: []
                 };
                 
-                this.currentSceneId = startId;
+                this.saveDb();
+                this.openProject(projId);
+            },
+
+            openProject(id) {
+                this.currentId = id;
+                this.currentSceneId = this.data[id].startScene;
+                document.getElementById('projectName').value = this.data[id].title;
                 this.showView('view-editor');
                 this.renderEditor();
             },
 
+            deleteProject(id) {
+                if(confirm(dict[this.lang].confirmDel)) {
+                    delete this.data[id];
+                    this.saveDb();
+                    this.renderHome();
+                }
+            },
+
+            updateProjectTitle() {
+                if(!this.currentId) return;
+                this.data[this.currentId].title = document.getElementById('projectName').value || "Untitled";
+                this.data[this.currentId].updated = Date.now();
+                this.saveDb();
+            },
+
+            // Sistema de Cartucho (Export/Import)
             exportProject() {
-                if(!this.project) return;
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.project));
+                if(!this.currentId) return;
+                const projData = this.data[this.currentId];
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projData));
                 const a = document.createElement('a');
                 a.href = dataStr;
-                a.download = "my_story.dearend";
+                // Formata o nome do arquivo tirando espaços
+                const safeName = projData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                a.download = `${safeName}.dearend`;
                 a.click();
             },
 
@@ -298,11 +402,13 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     try {
-                        this.project = JSON.parse(e.target.result);
-                        this.currentSceneId = this.project.startScene;
-                        this.showView('view-editor');
-                        this.renderEditor();
-                    } catch (err) { alert("Invalid file format."); }
+                        const importedData = JSON.parse(e.target.result);
+                        const newProjId = 'proj_' + this.generateId();
+                        importedData.updated = Date.now(); // Reseta a data
+                        this.data[newProjId] = importedData;
+                        this.saveDb();
+                        this.openProject(newProjId);
+                    } catch (err) { alert("Invalid .dearend file format."); }
                 };
                 reader.readAsText(file);
                 event.target.value = '';
@@ -317,30 +423,32 @@
             renderSceneList() {
                 const list = document.getElementById('sceneList');
                 list.innerHTML = '';
+                const proj = this.data[this.currentId];
                 
-                Object.keys(this.project.scenes).forEach(id => {
-                    const scene = this.project.scenes[id];
+                Object.keys(proj.scenes).forEach(id => {
+                    const scene = proj.scenes[id];
                     const div = document.createElement('div');
                     div.className = `scene-item ${id === this.currentSceneId ? 'active' : ''}`;
                     div.innerHTML = `
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${scene.name}</span>
-                        ${id !== this.project.startScene ? `<button class="del-scene" onclick="app.deleteScene('${id}', event)">X</button>` : '<span>★</span>'}
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 200px;">${scene.name}</span>
+                        ${id !== proj.startScene ? `<button class="del-scene" onclick="app.deleteScene('${id}', event)">✖</button>` : '<span style="color:var(--brand); font-size:12px;">★ START</span>'}
                     `;
                     div.onclick = () => { this.currentSceneId = id; this.renderEditor(); };
                     list.appendChild(div);
                 });
-                this.renderChoiceTargetDropdowns(); // Update dropdowns if scene list changed
+                
+                // Atualiza os dropdowns de escolha caso o nome das cenas tenha mudado
+                this.renderEditorChoices();
             },
 
             loadSceneToEditor() {
-                const scene = this.project.scenes[this.currentSceneId];
+                const scene = this.data[this.currentId].scenes[this.currentSceneId];
                 if(!scene) return;
 
-                // Load Text & Settings
+                document.getElementById('sceneNameInput').value = scene.name;
                 document.getElementById('editorText').value = scene.text;
                 document.getElementById('editorFilter').value = scene.filter;
                 
-                // Load BG
                 const canvas = document.getElementById('editorCanvas');
                 canvas.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
                 canvas.className = `story-canvas ${scene.filter}`;
@@ -349,36 +457,50 @@
             },
 
             updateCurrentScene() {
-                const scene = this.project.scenes[this.currentSceneId];
+                const proj = this.data[this.currentId];
+                const scene = proj.scenes[this.currentSceneId];
+                
+                const oldName = scene.name;
+                scene.name = document.getElementById('sceneNameInput').value || "Unnamed";
                 scene.text = document.getElementById('editorText').value;
                 scene.filter = document.getElementById('editorFilter').value;
                 
-                // Live preview update
+                // Atualiza o visual
                 const canvas = document.getElementById('editorCanvas');
                 canvas.className = `story-canvas ${scene.filter}`;
+                
+                proj.updated = Date.now();
+                this.saveDb();
+                
+                // Se o nome mudou, re-renderiza a lista do lado
+                if(oldName !== scene.name) this.renderSceneList();
             },
 
             addScene() {
-                const id = this.generateId();
-                const num = Object.keys(this.project.scenes).length + 1;
-                this.project.scenes[id] = {
+                const proj = this.data[this.currentId];
+                const id = 'scn_' + this.generateId();
+                const num = Object.keys(proj.scenes).length + 1;
+                proj.scenes[id] = {
                     name: `${dict[this.lang].newScene} ${num}`, text: "", bg: "", filter: "filter-none", choices: []
                 };
                 this.currentSceneId = id;
+                this.saveDb();
                 this.renderEditor();
             },
 
             deleteScene(id, event) {
                 event.stopPropagation();
-                if(id === this.project.startScene) return; // Cannot delete start
-                delete this.project.scenes[id];
+                const proj = this.data[this.currentId];
+                if(id === proj.startScene) return; // Proteção
                 
-                // Clean up choices pointing to this deleted scene
-                Object.values(this.project.scenes).forEach(s => {
+                delete proj.scenes[id];
+                // Limpa referências órfãs
+                Object.values(proj.scenes).forEach(s => {
                     s.choices.forEach(c => { if(c.target === id) c.target = ""; });
                 });
 
-                this.currentSceneId = this.project.startScene;
+                this.currentSceneId = proj.startScene;
+                this.saveDb();
                 this.renderEditor();
             },
 
@@ -388,7 +510,8 @@
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     this.compressImage(event.target.result, (compressed) => {
-                        this.project.scenes[this.currentSceneId].bg = compressed;
+                        this.data[this.currentId].scenes[this.currentSceneId].bg = compressed;
+                        this.saveDb();
                         this.loadSceneToEditor();
                     });
                 };
@@ -396,79 +519,73 @@
                 e.target.value = '';
             },
 
-            // Compress BG to save space in the .dearend file
             compressImage(dataUrl, callback) {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX = 1280; // VN standard HD width
+                    const MAX = 1280; // Boa resolução para VN sem destruir localStorage
                     let w = img.width; let h = img.height;
                     if (w > MAX) { h *= MAX / w; w = MAX; }
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    callback(canvas.toDataURL('image/jpeg', 0.6));
+                    callback(canvas.toDataURL('image/jpeg', 0.7)); // Compressão agressiva e elegante
                 };
                 img.src = dataUrl;
             },
 
-            // --- CHOICES MANAGEMENT (EDITOR) ---
+            // --- SISTEMA DE ESCOLHAS ---
             addChoice() {
-                const scene = this.project.scenes[this.currentSceneId];
-                if(scene.choices.length >= 4) return; // Max 4 choices
-                scene.choices.push({ text: "New Option", target: "" });
+                const scene = this.data[this.currentId].scenes[this.currentSceneId];
+                if(scene.choices.length >= 4) return;
+                scene.choices.push({ text: "New Action", target: "" });
+                this.saveDb();
                 this.renderEditorChoices();
             },
 
             renderEditorChoices() {
-                const scene = this.project.scenes[this.currentSceneId];
+                const proj = this.data[this.currentId];
+                const scene = proj.scenes[this.currentSceneId];
                 const list = document.getElementById('editorChoicesList');
-                const preview = document.getElementById('editorChoicesPreview');
-                list.innerHTML = ''; preview.innerHTML = '';
+                list.innerHTML = '';
 
                 scene.choices.forEach((choice, index) => {
-                    // Panel Editor Row
                     const row = document.createElement('div');
                     row.className = 'choice-editor-row';
                     
                     const input = document.createElement('input');
                     input.className = 'choice-input'; input.value = choice.text;
-                    input.oninput = (e) => { choice.text = e.target.value; this.renderEditorChoices(); };
+                    input.oninput = (e) => { choice.text = e.target.value; this.saveDb(); };
                     
                     const select = document.createElement('select');
                     select.className = 'choice-target';
-                    this.populateTargetSelect(select, choice.target);
-                    select.onchange = (e) => { choice.target = e.target.value; };
+                    this.populateTargetSelect(select, choice.target, proj.scenes);
+                    select.onchange = (e) => { choice.target = e.target.value; this.saveDb(); };
 
                     const delBtn = document.createElement('button');
-                    delBtn.innerText = "X"; delBtn.style.padding = "2px 6px";
-                    delBtn.onclick = () => { scene.choices.splice(index, 1); this.renderEditorChoices(); };
+                    delBtn.innerText = "✖"; delBtn.style.padding = "4px 8px"; delBtn.className = "btn-danger";
+                    delBtn.onclick = () => { scene.choices.splice(index, 1); this.saveDb(); this.renderEditorChoices(); };
 
                     row.appendChild(input); row.appendChild(select); row.appendChild(delBtn);
                     list.appendChild(row);
-
-                    // Visual Preview
-                    const pre = document.createElement('div');
-                    pre.className = 'choice-btn-preview';
-                    pre.innerText = choice.text;
-                    preview.appendChild(pre);
                 });
             },
 
-            populateTargetSelect(selectEl, currentVal) {
-                selectEl.innerHTML = `<option value="">[END]</option>`;
-                Object.keys(this.project.scenes).forEach(id => {
+            populateTargetSelect(selectEl, currentVal, allScenes) {
+                selectEl.innerHTML = `<option value="">[ THE END ]</option>`;
+                Object.keys(allScenes).forEach(id => {
                     const opt = document.createElement('option');
-                    opt.value = id; opt.innerText = this.project.scenes[id].name;
+                    opt.value = id; opt.innerText = allScenes[id].name;
                     if(id === currentVal) opt.selected = true;
                     selectEl.appendChild(opt);
                 });
             },
 
-            // --- PLAYER LOGIC ---
+            // --- O MODO LEITOR (PLAYER) ---
             playProject() {
-                if(!this.project) return;
+                if(!this.currentId) return;
+                const proj = this.data[this.currentId];
                 this.playState.history = [];
-                this.playState.current = this.project.startScene;
+                this.playState.current = proj.startScene;
                 this.showView('view-player');
                 this.renderPlayerScene();
             },
@@ -478,7 +595,7 @@
             },
 
             renderPlayerScene() {
-                const scene = this.project.scenes[this.playState.current];
+                const scene = this.data[this.currentId].scenes[this.playState.current];
                 if(!scene) return;
 
                 const bg = document.getElementById('player-bg');
@@ -490,23 +607,23 @@
                 const choicesDiv = document.getElementById('player-choices');
                 choicesDiv.innerHTML = '';
 
-                if (scene.choices.length === 0 || !scene.choices.some(c => c.target !== "")) {
-                    // It's an ENDING scene
+                // Se não há escolhas OU nenhuma escolha aponta para uma cena válida = Fim de Jogo
+                const hasValidPath = scene.choices.length > 0 && scene.choices.some(c => c.target !== "");
+                
+                if (!hasValidPath) {
                     const btn = document.createElement('button');
                     btn.className = 'player-choice-btn';
-                    btn.style.borderColor = var(--brand);
+                    btn.style.borderColor = "var(--brand)";
                     btn.innerText = dict[this.lang].viewBooklet;
                     btn.onclick = () => this.generateBooklet();
                     choicesDiv.appendChild(btn);
                 } else {
-                    // Render interactive choices
                     scene.choices.forEach(choice => {
-                        if(!choice.target) return; // Skip empty targets
+                        if(!choice.target) return; // Pula botões vazios no player
                         const btn = document.createElement('button');
                         btn.className = 'player-choice-btn';
                         btn.innerText = choice.text;
                         btn.onclick = () => {
-                            // Log history
                             this.playState.history.push({ text: scene.text, choice: choice.text });
                             this.playState.current = choice.target;
                             this.renderPlayerScene();
@@ -516,10 +633,9 @@
                 }
             },
 
-            // --- BOOKLET (CONSEQUENCES LOG) ---
+            // --- O LIVRINHO DE CONSEQUÊNCIAS (EXPORT PNG) ---
             generateBooklet() {
-                // Log final scene text without a choice
-                const finalScene = this.project.scenes[this.playState.current];
+                const finalScene = this.data[this.currentId].scenes[this.playState.current];
                 if(finalScene) this.playState.history.push({ text: finalScene.text, choice: dict[this.lang].endReached });
 
                 const logs = document.getElementById('bookletLogs');
@@ -530,7 +646,7 @@
                     div.className = 'log-entry';
                     div.innerHTML = `
                         <div class="log-text">"${entry.text}"</div>
-                        <div class="log-choice">➔ ${entry.choice}</div>
+                        <div class="log-choice">${entry.choice}</div>
                     `;
                     logs.appendChild(div);
                 });
@@ -538,12 +654,29 @@
                 this.showView('view-booklet');
             },
 
-            // --- UTILS ---
-            generateId() { return 'scn_' + Math.random().toString(36).substr(2, 9); },
+            downloadBooklet() {
+                const area = document.getElementById('bookletContent');
+                const btn = document.getElementById('t-downloadBooklet');
+                const originalText = btn.innerText;
+                btn.innerText = "GENERATING...";
 
+                html2canvas(area, { backgroundColor: '#18181b', scale: 2 }).then(canvas => {
+                    const link = document.createElement('a');
+                    const safeName = this.data[this.currentId].title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                    link.download = `${safeName}_path.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    btn.innerText = originalText;
+                });
+            },
+
+            // --- TRADUÇÃO ---
             changeLanguage(l) {
                 this.lang = l;
+                localStorage.setItem('dearend_lang', l);
                 const d = dict[l];
+                
+                document.getElementById('t-myStories').innerText = d.myStories;
                 document.getElementById('t-create').innerText = d.create;
                 document.getElementById('t-import').innerText = d.import;
                 document.getElementById('t-scenes').innerText = d.scenes;
@@ -552,9 +685,11 @@
                 document.getElementById('t-choices').innerText = d.choices;
                 document.getElementById('t-exit').innerText = d.exit;
                 document.getElementById('editorText').placeholder = d.placeholder;
-                if(this.project && document.getElementById('view-editor').classList.contains('active')) {
-                    this.renderEditor();
-                }
+                document.getElementById('t-sceneName').innerText = d.sceneName;
+                document.getElementById('t-downloadBooklet').innerText = d.downloadBooklet;
+                
+                if(this.currentId == null) this.renderHome();
+                else this.renderEditor();
             }
         };
 
