@@ -3,719 +3,580 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DearEnd Studio | Finaltime Studios</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>Demanding Life | Finaltime Studios</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Montserrat:wght@900&family=VT323&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Montserrat:wght@900&family=VT323&display=swap');
 
         :root {
-            --bg-base: #09090b;
-            --bg-panel: #18181b;
-            --bg-elevated: #27272a;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --accent: #e4e4e7;
-            --accent-hover: #ffffff;
-            --border: #3f3f46;
-            --brand: #991b1b; 
+            --bg-dark: #050505;
+            --brand-red: #dc2626;
+            --glass: rgba(15, 15, 15, 0.85);
             
-            --font-ui: 'Inter', sans-serif;
-            --font-display: 'Montserrat', sans-serif;
-            --font-story: 'Courier New', Courier, monospace;
+            /* Frequencies Colors */
+            --col-bass: #ef4444;    /* Red - Graves (Kick/Bass) */
+            --col-lowmid: #facc15;  /* Yellow - Medios Graves (Snare/Guitars) */
+            --col-highmid: #3b82f6; /* Blue - Medios Agudos (Vocals/Synths) */
+            --col-treble: #a855f7;  /* Purple - Agudos (Hi-hats/Cymbals) */
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
         body {
-            font-family: var(--font-ui); background-color: var(--bg-base); color: var(--text-main);
-            min-height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+            background-color: var(--bg-dark); color: #fff;
+            font-family: 'Inter', sans-serif; overflow: hidden;
+            width: 100vw; height: 100vh;
         }
 
-        /* --- NAVBAR & LOGO --- */
-        nav {
+        /* --- NAVBAR & BRANDING --- */
+        .game-nav {
+            position: absolute; top: 0; left: 0; width: 100%; padding: 15px 30px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 32px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.5); position: relative;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            z-index: 999;
         }
-        
-        .brand-container { display: flex; align-items: center; gap: 14px; cursor: pointer; transition: opacity 0.2s; }
+        .brand-container { display: flex; align-items: center; gap: 12px; cursor: pointer; transition: opacity 0.2s; }
         .brand-container:hover { opacity: 0.8; }
         
-        /* Aqui o logo vai aparecer. Se ele não existir ainda, fica escondido suavemente */
-        .nav-logo { height: 38px; width: auto; object-fit: contain; border-radius: 4px; }
-        
-        .brand { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #fff; text-transform: uppercase; margin-top: 2px;}
-        .brand span { color: var(--brand); font-weight: 400; }
-        .nav-controls { display: flex; gap: 12px; align-items: center; }
+        .nav-logo { height: 32px; width: auto; object-fit: contain; border-radius: 4px; }
+        .brand { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 900; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
+        .brand span { color: var(--brand-red); }
+        .watermark-nav { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 900; letter-spacing: 2px; color: rgba(255,255,255,0.3); }
 
-        button, select, input[type="text"] {
-            background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);
-            padding: 8px 16px; border-radius: 4px; font-family: var(--font-ui); font-size: 0.85rem;
-            font-weight: 600; transition: all 0.2s; outline: none;
+        /* --- BACKGROUND ART --- */
+        #game-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('roof-bg.jpg') center/cover no-repeat;
+            filter: brightness(0.2) contrast(1.3) grayscale(0.3);
+            z-index: 1; transition: filter 0.05s ease-out;
         }
-        button { cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
-        button:hover { background: #3f3f46; border-color: var(--text-muted); }
-        .btn-primary { background: var(--text-main); color: var(--bg-base); border-color: var(--text-main); }
-        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-brand { background: rgba(153, 27, 27, 0.1); border-color: var(--brand); color: var(--brand); }
-        .btn-brand:hover { background: var(--brand); color: white; }
-        .btn-danger { background: transparent; color: #ef4444; border-color: #ef4444; }
-        .btn-danger:hover { background: #ef4444; color: white; }
+        .bg-pulse { filter: brightness(0.7) contrast(1.5) grayscale(0) !important; }
 
-        .watermark { position: absolute; bottom: 12px; right: 16px; font-family: var(--font-display); font-size: 0.8rem; color: rgba(255, 255, 255, 0.15); letter-spacing: 2px; font-weight: 900; z-index: 50; pointer-events: none; text-transform: uppercase; }
-
-        /* Views Setup */
-        .view { display: none; height: calc(100vh - 65px); width: 100%; position: relative; }
-        .view.active { display: flex; animation: fadeIn 0.3s ease; }
+        /* --- VIEWS --- */
+        .view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .view.active { display: flex; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- HOME (DASHBOARD) --- */
-        /* Imagem de Fundo Permanente na Home + Filtro Escuro */
-        #view-home { 
-            flex-direction: column; padding: 40px; overflow-y: auto; 
-            background: linear-gradient(to bottom, rgba(9,9,11,0.85) 0%, rgba(24,24,27,0.95) 100%), url('home-bg.jpg') center/cover no-repeat; 
-        }
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; max-width: 1200px; margin-inline: auto; width: 100%; }
-        .home-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; text-transform: uppercase; text-shadow: 0 4px 12px rgba(0,0,0,0.8); }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; max-width: 1200px; margin-inline: auto; width: 100%; }
-        
-        .project-card { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 6px; padding: 24px; transition: all 0.2s; position: relative; overflow: hidden; }
-        .project-card:hover { border-color: var(--brand); box-shadow: 0 10px 30px rgba(153, 27, 27, 0.2); transform: translateY(-3px); background: rgba(24, 24, 27, 0.95);}
-        .card-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; color: #fff; }
-        .card-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
-        .card-actions { display: flex; gap: 8px; }
+        /* --- INTRO NARRATIVE --- */
+        #view-intro { background: #000; z-index: 100; padding: 20px; text-align: center; }
+        .intro-text { font-family: 'VT323', monospace; font-size: 2.2rem; max-width: 800px; line-height: 1.5; color: #aaa; margin-bottom: 50px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .intro-text span { color: var(--brand-red); }
+        .btn-epic { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid var(--brand-red); color: var(--brand-red); padding: 18px 45px; font-size: 1.3rem; font-weight: 900; letter-spacing: 3px; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 15px rgba(220, 38, 38, 0.2); border-radius: 4px; }
+        .btn-epic:hover { background: var(--brand-red); color: #fff; box-shadow: 0 0 40px rgba(220, 38, 38, 0.7); transform: scale(1.05); }
 
-        /* --- EDITOR VIEW --- */
-        .sidebar { width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
-        .project-name-input { width: 100%; background: var(--bg-base); font-size: 1.1rem; font-weight: 800; border-color: transparent; padding: 8px; color: var(--brand); border-bottom: 1px solid var(--border); border-radius: 0; }
-        .project-name-input:focus { border-color: var(--brand); }
+        /* --- HOME (TRACKLIST) --- */
+        .home-container { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid #333; padding: 50px; border-radius: 12px; width: 90%; max-width: 600px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.9); z-index: 20; }
+        .home-title { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; color: #fff; }
+        .home-subtitle { font-size: 0.9rem; color: #888; margin-bottom: 30px; letter-spacing: 1px; }
         
-        .scene-list { flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-        .scene-item { padding: 12px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
-        .scene-item:hover { border-color: var(--text-muted); }
-        .scene-item.active { border-color: var(--brand); background: rgba(153, 27, 27, 0.1); border-left: 4px solid var(--brand); }
-        .del-scene { background: transparent; border: none; color: var(--text-muted); padding: 4px; font-size: 0.7rem; }
-        .del-scene:hover { color: #ef4444; }
-
-        .editor-main { flex-grow: 1; display: flex; flex-direction: column; position: relative; background: #000; }
-        
-        .story-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 60px; background-size: cover; background-position: center; transition: filter 0.3s; }
-        
-        /* Filters */
-        .filter-none { filter: none; }
-        .filter-grime { filter: grayscale(80%) sepia(30%) contrast(150%) brightness(0.8); }
-        .filter-noir { filter: grayscale(100%) contrast(200%) brightness(0.7); }
-        .filter-sepia { filter: sepia(80%) contrast(120%); }
-
-        /* Story Textbox */
-        .textbox-container { width: 90%; max-width: 1000px; background: rgba(0, 0, 0, 0.75); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 30px; z-index: 10; backdrop-filter: blur(8px); }
-        .story-text-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-family: var(--font-story); font-size: 1.3rem; resize: none; outline: none; line-height: 1.6; text-align: center; }
-
-        /* Tools Panel */
-        .editor-tools { position: absolute; top: 20px; right: 20px; background: rgba(24, 24, 27, 0.95); border: 1px solid var(--border); padding: 20px; border-radius: 6px; z-index: 20; display: flex; flex-direction: column; gap: 16px; width: 320px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .tool-group { display: flex; flex-direction: column; gap: 6px; }
-        .tool-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
-        
-        .choice-editor-row { display: flex; gap: 8px; align-items: center; background: #000; padding: 8px; border: 1px solid #333; border-radius: 4px;}
-        .choice-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 4px; }
-        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 6px; cursor: pointer; }
-
+        .upload-zone { border: 2px dashed #555; padding: 30px; border-radius: 8px; transition: all 0.3s; cursor: pointer; margin-bottom: 20px; background: rgba(0,0,0,0.5); }
+        .upload-zone:hover, .upload-zone.drag-over { border-color: var(--brand-red); background: rgba(220, 38, 38, 0.15); }
         input[type="file"] { display: none; }
-
-        /* --- PLAYER VIEW --- */
-        #view-player { background: #000; justify-content: center; align-items: flex-end; padding-bottom: 60px; }
-        #player-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; transition: background 0.5s ease; }
-        .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 2; pointer-events: none; }
         
-        #player-content { width: 90%; max-width: 1000px; z-index: 10; display: flex; flex-direction: column; gap: 30px; }
-        .player-text-box { background: rgba(0, 0, 0, 0.6); border-top: 1px solid #444; border-bottom: 1px solid #444; padding: 40px; text-align: center; backdrop-filter: blur(4px); }
-        #player-text { font-family: var(--font-story); font-size: 1.5rem; line-height: 1.6; color: #fff; text-shadow: 1px 1px 2px #000;}
-        
-        #player-choices { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .player-choice-btn { width: 100%; max-width: 600px; background: rgba(0,0,0,0.8); border: 1px solid #555; color: #e4e4e7; padding: 16px; font-family: var(--font-ui); font-size: 1.1rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; }
-        .player-choice-btn:hover { background: var(--text-main); color: #000; border-color: var(--text-main); transform: scale(1.02); }
-        
-        /* Botões Flutuantes Globais para evitar bugs de ficar preso */
-        .player-controls { position: absolute; top: 20px; right: 20px; z-index: 999; }
+        .track-list { display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; text-align: left; padding-right: 5px;}
+        .track-item { background: #111; border: 1px solid #333; padding: 15px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .track-item:hover { border-color: #fff; background: #222; }
+        .track-play-btn { background: #fff; color: #000; border: none; padding: 8px 20px; font-weight: 900; border-radius: 4px; cursor: pointer; letter-spacing: 1px; transition: 0.2s; }
+        .track-play-btn:hover { background: var(--brand-red); color: white; }
 
-        /* --- BOOKLET VIEW --- */
-        #view-booklet { flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; background: #111; }
-        #bookletContent { width: 100%; max-width: 800px; background: #18181b; border: 1px solid #333; padding: 60px; position: relative; margin-top: 40px; }
-        .booklet-title { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 40px; text-align: center; text-transform: uppercase; color: #fff; border-bottom: 2px solid var(--brand); padding-bottom: 16px; }
-        .log-entry { margin-bottom: 30px; padding-left: 20px; border-left: 3px solid #444; position: relative; }
-        .log-entry::before { content: ''; position: absolute; left: -7px; top: 0; width: 11px; height: 11px; background: var(--brand); border-radius: 50%; }
-        .log-text { font-family: var(--font-story); font-size: 1.1rem; color: #ccc; line-height: 1.6; margin-bottom: 12px; }
-        .log-choice { font-family: var(--font-ui); font-size: 0.9rem; color: var(--brand); font-weight: bold; text-transform: uppercase; background: rgba(153,27,27,0.1); display: inline-block; padding: 4px 8px; border-radius: 4px;}
+        /* --- GAMEPLAY HUD --- */
+        #view-game { justify-content: flex-start; padding-top: 80px; }
+        .game-hud { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 20; }
+        .hud-stats { display: flex; gap: 40px; font-family: 'Montserrat', sans-serif; }
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-label { font-size: 0.75rem; color: #888; letter-spacing: 2px; text-transform: uppercase; font-weight: 900;}
+        .stat-value { font-size: 2.2rem; font-weight: 900; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .hud-controls button { background: rgba(0,0,0,0.5); border: 1px solid #555; color: #fff; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px; transition: 0.2s; backdrop-filter: blur(5px);}
+        .hud-controls button:hover { background: #fff; color: #000; }
 
+        /* --- CANVAS --- */
+        #gameCanvas { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 100%; z-index: 15; }
+        
+        /* Keys Helper */
+        .key-hints { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; width: 100%; max-width: 600px; z-index: 20; pointer-events: none;}
+        .key-hint { flex: 1; text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.8rem; opacity: 0.4; text-shadow: 0 2px 10px rgba(0,0,0,0.9);}
+
+        /* Glitch Effect on Miss */
+        .glitch-effect { animation: glitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite; }
+        @keyframes glitch { 
+            0% { transform: translate(0) }
+            20% { transform: translate(-8px, 8px) }
+            40% { transform: translate(-8px, -8px) }
+            60% { transform: translate(8px, 8px) }
+            80% { transform: translate(8px, -8px) }
+            100% { transform: translate(0) }
+        }
+
+        /* --- PAUSE / END OVERLAY --- */
+        .overlay-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px; backdrop-filter: blur(8px); }
+        .overlay-menu.active { display: flex; }
+        .overlay-title { font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 900; color: #fff; margin-bottom: 10px; letter-spacing: 2px;}
+        .overlay-btn { background: #fff; color: #000; border: none; padding: 15px 40px; font-size: 1.1rem; font-weight: 900; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.2s; letter-spacing: 1px;}
+        .overlay-btn:hover { background: var(--brand-red); color: #fff; transform: scale(1.05);}
+        
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: var(--border); }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="brand-container" onclick="app.goHome()">
+    <nav class="game-nav">
+        <div class="brand-container" onclick="window.dlApp.exitToHome()">
             <img src="logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
-            <div class="brand">DEAREND <span>STUDIO</span></div>
+            <div class="brand">DEMANDING <span>LIFE</span></div>
         </div>
-        <div class="nav-controls">
-            <select id="langSelect" onchange="app.changeLanguage(this.value)">
-                <option value="en">English</option>
-                <option value="pt">Português</option>
-            </select>
-            <button id="navPlayBtn" class="btn-primary" style="display:none;" onclick="app.playProject()">▶ PLAY</button>
-            <button id="navExportBtn" style="display:none;" onclick="app.exportProject()">⬇ EXPORT .DEAREND</button>
-        </div>
+        <div class="watermark-nav">FINALTIME STUDIOS</div>
     </nav>
 
-    <main id="view-home" class="view active">
-        <div class="dashboard-header">
-            <h2 class="home-title" id="t-myStories">My Stories</h2>
-            <div style="display: flex; gap: 12px;">
-                <button class="btn-primary" onclick="app.createNewProject()" id="t-create">+ NEW STORY</button>
-                <label for="importFile" class="btn-brand" style="margin:0; padding:8px 16px; border-radius:4px; font-weight:600; cursor:pointer; font-size:0.85rem; border: 1px solid var(--brand); display:flex; align-items:center;" id="t-import">IMPORT</label>
-                <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
-            </div>
-        </div>
-        <div class="project-grid" id="projectGrid"></div>
-        <div class="watermark">FINALTIME STUDIOS</div>
+    <div id="game-bg"></div>
+
+    <main id="view-intro" class="view active">
+        <div class="intro-text" id="introText"></div>
+        <button class="btn-epic" onclick="window.dlApp.enterHome()">FREEZE TIME & PLAY</button>
     </main>
 
-    <main id="view-editor" class="view">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <input type="text" id="projectName" class="project-name-input" value="Untitled Story" onblur="app.updateProjectTitle()">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                    <span style="font-weight: 800; font-size: 0.8rem; color: var(--text-muted);" id="t-scenes">TIMELINE</span>
-                    <button onclick="app.addScene()" style="padding: 4px 12px; font-size: 1.2rem;">+</button>
+    <main id="view-home" class="view">
+        <div class="home-container">
+            <div class="home-title">Your Playlist</div>
+            <div class="home-subtitle">Spectrum Synesthesia Engine - Drop an MP3 to start the show.</div>
+            
+            <label for="audioUpload">
+                <div class="upload-zone" id="dropZone">
+                    <p style="font-weight: 900; font-size: 1.2rem; margin-bottom: 8px; letter-spacing: 1px;">DROP MP3 FILE HERE</p>
+                    <p style="font-size: 0.85rem; color: #aaa;">Or click to browse. Learn to isolate frequencies.</p>
+                </div>
+            </label>
+            <input type="file" id="audioUpload" accept="audio/*" onchange="window.dlApp.handleAudioUpload(event)">
+
+            <div class="track-list" id="trackList">
+                <p style="text-align:center; color:#666; margin-top:30px; font-size:0.95rem; font-weight: 600;">No tracks loaded in this session.</p>
+            </div>
+        </div>
+    </main>
+
+    <main id="view-game" class="view">
+        <div class="game-hud">
+            <div class="hud-stats">
+                <div class="stat-box">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="ui-score">0000</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Combo</span>
+                    <span class="stat-value" id="ui-combo" style="color: var(--col-lowmid);">0</span>
                 </div>
             </div>
-            <div class="scene-list" id="sceneList"></div>
-        </aside>
+            <div class="hud-controls">
+                <button onclick="window.dlGame.togglePause()" id="btn-pause">PAUSE</button>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
         
-        <section class="editor-main">
-            <div class="story-canvas" id="editorCanvas">
-                <div class="textbox-container">
-                    <textarea class="story-text-input" id="editorText" rows="5" placeholder="Scene text goes here..." oninput="app.triggerSave()"></textarea>
-                </div>
-            </div>
+        <div class="key-hints">
+            <div class="key-hint" style="color: var(--col-bass);">D<br><span style="font-size:0.6rem; color:#fff;">BASS</span></div>
+            <div class="key-hint" style="color: var(--col-lowmid);">F<br><span style="font-size:0.6rem; color:#fff;">L-MID</span></div>
+            <div class="key-hint" style="color: var(--col-highmid);">J<br><span style="font-size:0.6rem; color:#fff;">H-MID</span></div>
+            <div class="key-hint" style="color: var(--col-treble);">K<br><span style="font-size:0.6rem; color:#fff;">TREBLE</span></div>
+        </div>
 
-            <div class="editor-tools">
-                <div class="tool-group">
-                    <label id="t-sceneName">Scene Name</label>
-                    <input type="text" id="sceneNameInput" style="width: 100%; background: #000;" oninput="app.triggerSave()">
-                </div>
-                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
-                <div class="tool-group">
-                    <label id="t-bgImage">Background Image</label>
-                    <label for="bgUpload" style="background:#222; padding:8px; text-align:center; cursor:pointer; border-radius:4px; font-weight: 600; color: #fff;">UPLOAD JPG/PNG</label>
-                    <input type="file" id="bgUpload" accept="image/*" onchange="app.uploadBackground(event)">
-                </div>
-                <div class="tool-group" style="margin-top: 8px;">
-                    <label id="t-filter">Cinematic Filter</label>
-                    <select id="editorFilter" onchange="app.triggerSave()" style="width: 100%;">
-                        <option value="filter-none">None</option>
-                        <option value="filter-grime">Grime / Retro</option>
-                        <option value="filter-noir">Noir / Dark</option>
-                        <option value="filter-sepia">Corroded Sepia</option>
-                    </select>
-                </div>
-                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
-                <div class="tool-group">
-                    <label id="t-choices">Branching Choices</label>
-                    <div id="editorChoicesList" style="display: flex; flex-direction: column; gap: 6px;"></div>
-                    <button onclick="app.addChoice()" style="margin-top: 8px;">+ ADD CHOICE</button>
-                </div>
-            </div>
-            <div class="watermark">FINALTIME STUDIOS</div>
-        </section>
+        <audio id="gameAudio" style="display:none;"></audio>
     </main>
 
-    <main id="view-player" class="view">
-        <div class="player-controls">
-            <button onclick="app.exitPlayer()" id="t-exit" class="btn-danger" style="background: rgba(0,0,0,0.8); border: 1px solid #ef4444;">EXIT READ MODE</button>
-        </div>
-        <div id="player-bg" class="filter-none"></div>
-        <div class="player-overlay"></div>
-        
-        <div id="player-content">
-            <div class="player-text-box">
-                <div id="player-text"></div>
-            </div>
-            <div id="player-choices"></div>
-        </div>
-        <div class="watermark">FINALTIME STUDIOS</div>
-    </main>
+    <div id="pauseMenu" class="overlay-menu">
+        <div class="overlay-title">TIME FROZEN</div>
+        <button class="overlay-btn" onclick="window.dlGame.togglePause()">RESUME SHOW</button>
+        <button class="overlay-btn" onclick="window.dlGame.restartSong()">RESTART SONG</button>
+        <button class="overlay-btn" style="background: transparent; border: 2px solid #555; color:#fff;" onclick="window.dlApp.exitToHome()">QUIT TO HOME</button>
+    </div>
 
-    <main id="view-booklet" class="view">
-        <div class="player-controls" style="display: flex; gap: 12px;">
-            <button onclick="app.exitPlayer()" style="background: rgba(0,0,0,0.8);">BACK TO EDITOR</button>
-            <button class="btn-brand" onclick="app.downloadBooklet()" id="t-downloadBooklet" style="background: rgba(153, 27, 27, 0.8); color: white;">DOWNLOAD IMAGE</button>
-        </div>
-        <div class="booklet-container" id="bookletContent">
-            <h1 class="booklet-title">THE PATH TAKEN</h1>
-            <div id="bookletLogs"></div>
-            <div class="watermark" style="bottom: 20px; right: 20px;">FINALTIME STUDIOS</div>
-        </div>
-    </main>
+    <div id="endMenu" class="overlay-menu">
+        <div class="overlay-title" style="color: var(--col-lowmid);">SHOW ENDED</div>
+        <p style="font-size: 1.5rem; margin-bottom: 30px; font-weight: 600;">Final Score: <span id="end-score" style="font-weight:900; color: #fff;">0</span></p>
+        <button class="overlay-btn" onclick="window.dlApp.exitToHome()">BACK TO TRACKLIST</button>
+    </div>
 
     <script>
-        const dict = {
-            en: {
-                myStories: "My Stories", create: "NEW STORY", import: "IMPORT", scenes: "TIMELINE",
-                bgImage: "Background Image", filter: "Cinematic Filter", choices: "Branching Choices",
-                exit: "EXIT READ MODE", placeholder: "Scene text goes here...", newScene: "Scene",
-                endReached: "END OF STORY REACHED.", viewBooklet: "VIEW CONSEQUENCES REPORT",
-                sceneName: "Scene Name", downloadBooklet: "DOWNLOAD IMAGE", confirmDel: "Delete this story permanently?"
-            },
-            pt: {
-                myStories: "Minhas Histórias", create: "NOVA HISTÓRIA", import: "IMPORTAR", scenes: "LINHA DO TEMPO",
-                bgImage: "Imagem de Fundo", filter: "Filtro Cinematográfico", choices: "Escolhas e Caminhos",
-                exit: "SAIR DA LEITURA", placeholder: "O texto da cena vai aqui...", newScene: "Cena",
-                endReached: "FIM DA HISTÓRIA ALCANÇADO.", viewBooklet: "VER RELATÓRIO DE CONSEQUÊNCIAS",
-                sceneName: "Nome da Cena", downloadBooklet: "BAIXAR IMAGEM", confirmDel: "Deletar esta história para sempre?"
-            }
-        };
-
-        const app = {
-            lang: 'en',
-            data: {}, 
-            currentId: null,
-            currentSceneId: null,
-            playState: { current: null, history: [] },
-            saveTimeout: null, // Timer do Debounce para evitar lags
-
+        // Lógica de App
+        const dlApp = {
+            tracks: [], 
+            
             init() {
-                const savedData = localStorage.getItem('dearend_v3');
-                if (savedData) this.data = JSON.parse(savedData);
+                this.typeIntro();
+                this.setupDragDrop();
+            },
+
+            typeIntro() {
+                const text = "You are the last villain our heroes will face.\nBefore the end, use your <span>Synesthesia</span> to freeze time.\nPlay your final symphony.\nDissect the sound.";
+                let i = 0;
+                const el = document.getElementById('introText');
                 
-                const savedLang = localStorage.getItem('dearend_lang');
-                if(savedLang) {
-                    this.lang = savedLang;
-                    document.getElementById('langSelect').value = savedLang;
+                function type() {
+                    if (i < text.length) {
+                        if(text.charAt(i) === '<') {
+                            let tag = "";
+                            while(text.charAt(i) !== '>' && i < text.length) { tag += text.charAt(i); i++; }
+                            tag += '>'; el.innerHTML += tag; i++;
+                        } else if(text.charAt(i) === '\n') {
+                            el.innerHTML += '<br>'; i++;
+                        } else {
+                            el.innerHTML += text.charAt(i); i++;
+                        }
+                        setTimeout(type, 40);
+                    }
                 }
-                
-                this.updateLangUI();
-                this.goHome();
+                setTimeout(type, 500);
             },
 
-            // --- SISTEMA DE SALVAMENTO SEGURO (DEBOUNCE) ---
-            triggerSave() {
-                // Atualiza o estado da cena em memória imediatamente
-                const proj = this.data[this.currentId];
-                const scene = proj.scenes[this.currentSceneId];
+            enterHome() {
+                document.getElementById('view-intro').classList.remove('active');
+                document.getElementById('view-home').classList.add('active');
                 
-                const oldName = scene.name;
-                scene.name = document.getElementById('sceneNameInput').value || "Unnamed";
-                scene.text = document.getElementById('editorText').value;
-                scene.filter = document.getElementById('editorFilter').value;
-                
-                // Atualiza o Canvas visual
-                const canvas = document.getElementById('editorCanvas');
-                canvas.className = `story-canvas ${scene.filter}`;
-                
-                if(oldName !== scene.name) this.renderSceneList();
-
-                // Atrasa o save real no banco para não travar o navegador
-                clearTimeout(this.saveTimeout);
-                this.saveTimeout = setTimeout(() => {
-                    this.saveDb();
-                }, 500);
+                if(!window.dlGame.audioCtx) window.dlGame.initAudio();
             },
 
-            saveDb() {
-                if(this.currentId) this.data[this.currentId].updated = Date.now();
-                try {
-                    localStorage.setItem('dearend_v3', JSON.stringify(this.data));
-                } catch(e) {
-                    console.error("Storage quota reached");
-                }
+            exitToHome() {
+                window.dlGame.stop();
+                document.getElementById('view-game').classList.remove('active');
+                document.getElementById('pauseMenu').classList.remove('active');
+                document.getElementById('endMenu').classList.remove('active');
+                document.getElementById('view-home').classList.add('active');
             },
 
-            generateId() { return Math.random().toString(36).substr(2, 9); },
-
-            // --- NAVEGAÇÃO ---
-            showView(id) {
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                
-                const isEditor = id === 'view-editor';
-                document.getElementById('navPlayBtn').style.display = isEditor ? 'block' : 'none';
-                document.getElementById('navExportBtn').style.display = isEditor ? 'block' : 'none';
-            },
-
-            goHome() {
-                this.currentId = null;
-                this.currentSceneId = null;
-                this.showView('view-home');
-                this.renderHome();
-            },
-
-            renderHome() {
-                const grid = document.getElementById('projectGrid');
-                grid.innerHTML = '';
-                const ids = Object.keys(this.data);
-                
-                if(ids.length === 0) {
-                    grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1; text-align: center; margin-top: 50px; font-size: 1.2rem;">No stories found. Create your first masterpiece.</p>`;
-                    return;
-                }
-
-                ids.sort((a,b) => this.data[b].updated - this.data[a].updated).forEach(id => {
-                    const proj = this.data[id];
-                    const card = document.createElement('div');
-                    card.className = 'project-card';
-                    card.innerHTML = `
-                        <div class="card-title">${proj.title}</div>
-                        <div class="card-meta">Scenes: ${Object.keys(proj.scenes).length} | Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
-                        <div class="card-actions">
-                            <button class="btn-primary" onclick="app.openProject('${id}')">EDIT</button>
-                            <button class="btn-danger" onclick="app.deleteProject('${id}')">DELETE</button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
+            setupDragDrop() {
+                const zone = document.getElementById('dropZone');
+                if(!zone) return;
+                zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+                zone.addEventListener('dragleave', e => zone.classList.remove('drag-over'));
+                zone.addEventListener('drop', e => {
+                    e.preventDefault(); zone.classList.remove('drag-over');
+                    if(e.dataTransfer.files.length > 0) this.addTrack(e.dataTransfer.files[0]);
                 });
             },
 
-            // --- PROJETOS ---
-            createNewProject() {
-                const projId = 'proj_' + this.generateId();
-                const startScnId = 'scn_' + this.generateId();
-                
-                this.data[projId] = {
-                    title: "Untitled Story",
-                    updated: Date.now(),
-                    startScene: startScnId,
-                    scenes: {}
-                };
-                
-                this.data[projId].scenes[startScnId] = {
-                    name: "Opening Scene",
-                    text: "", bg: "", filter: "filter-none", choices: []
-                };
-                
-                this.saveDb();
-                this.openProject(projId);
-            },
-
-            openProject(id) {
-                this.currentId = id;
-                this.currentSceneId = this.data[id].startScene;
-                document.getElementById('projectName').value = this.data[id].title;
-                this.showView('view-editor');
-                this.renderEditor();
-            },
-
-            deleteProject(id) {
-                if(confirm(dict[this.lang].confirmDel)) {
-                    delete this.data[id];
-                    this.saveDb();
-                    this.renderHome();
-                }
-            },
-
-            updateProjectTitle() {
-                if(!this.currentId) return;
-                this.data[this.currentId].title = document.getElementById('projectName').value || "Untitled";
-                this.saveDb();
-            },
-
-            exportProject() {
-                if(!this.currentId) return;
-                const projData = this.data[this.currentId];
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projData));
-                const a = document.createElement('a');
-                a.href = dataStr;
-                const safeName = projData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                a.download = `${safeName}.dearend`;
-                a.click();
-            },
-
-            importProject(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        const newProjId = 'proj_' + this.generateId();
-                        importedData.updated = Date.now(); 
-                        this.data[newProjId] = importedData;
-                        this.saveDb();
-                        this.openProject(newProjId);
-                    } catch (err) { alert("Invalid .dearend file format."); }
-                };
-                reader.readAsText(file);
-                event.target.value = '';
-            },
-
-            // --- EDITOR ---
-            renderEditor() {
-                this.renderSceneList();
-                this.loadSceneToEditor();
-            },
-
-            renderSceneList() {
-                const list = document.getElementById('sceneList');
-                list.innerHTML = '';
-                const proj = this.data[this.currentId];
-                
-                Object.keys(proj.scenes).forEach(id => {
-                    const scene = proj.scenes[id];
-                    const div = document.createElement('div');
-                    div.className = `scene-item ${id === this.currentSceneId ? 'active' : ''}`;
-                    div.innerHTML = `
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 200px;">${scene.name}</span>
-                        ${id !== proj.startScene ? `<button class="del-scene" onclick="app.deleteScene('${id}', event)">✖</button>` : '<span style="color:var(--brand); font-size:12px;">★ START</span>'}
-                    `;
-                    div.onclick = () => { this.currentSceneId = id; this.renderEditor(); };
-                    list.appendChild(div);
-                });
-                
-                this.renderEditorChoices();
-            },
-
-            loadSceneToEditor() {
-                const scene = this.data[this.currentId].scenes[this.currentSceneId];
-                if(!scene) return;
-
-                document.getElementById('sceneNameInput').value = scene.name;
-                document.getElementById('editorText').value = scene.text;
-                document.getElementById('editorFilter').value = scene.filter;
-                
-                const canvas = document.getElementById('editorCanvas');
-                canvas.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
-                canvas.className = `story-canvas ${scene.filter}`;
-
-                this.renderEditorChoices();
-            },
-
-            addScene() {
-                const proj = this.data[this.currentId];
-                const id = 'scn_' + this.generateId();
-                const num = Object.keys(proj.scenes).length + 1;
-                proj.scenes[id] = {
-                    name: `${dict[this.lang].newScene} ${num}`, text: "", bg: "", filter: "filter-none", choices: []
-                };
-                this.currentSceneId = id;
-                this.saveDb();
-                this.renderEditor();
-            },
-
-            deleteScene(id, event) {
-                event.stopPropagation();
-                const proj = this.data[this.currentId];
-                if(id === proj.startScene) return; 
-                
-                delete proj.scenes[id];
-                Object.values(proj.scenes).forEach(s => {
-                    s.choices.forEach(c => { if(c.target === id) c.target = ""; });
-                });
-
-                this.currentSceneId = proj.startScene;
-                this.saveDb();
-                this.renderEditor();
-            },
-
-            uploadBackground(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    this.compressImage(event.target.result, (compressed) => {
-                        this.data[this.currentId].scenes[this.currentSceneId].bg = compressed;
-                        this.saveDb();
-                        this.loadSceneToEditor();
-                    });
-                };
-                reader.readAsDataURL(file);
+            handleAudioUpload(e) {
+                if(e.target.files.length > 0) this.addTrack(e.target.files[0]);
                 e.target.value = '';
             },
 
-            compressImage(dataUrl, callback) {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX = 1280; 
-                    let w = img.width; let h = img.height;
-                    if (w > MAX) { h *= MAX / w; w = MAX; }
-                    canvas.width = w; canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    callback(canvas.toDataURL('image/jpeg', 0.7)); 
-                };
-                img.src = dataUrl;
+            addTrack(file) {
+                if(!file.type.startsWith('audio/')) { alert("Please drop a valid audio file (MP3/WAV)."); return; }
+                const url = URL.createObjectURL(file);
+                const track = { id: Date.now(), name: file.name.replace(/\.[^/.]+$/, ""), url: url };
+                this.tracks.push(track);
+                this.renderTrackList();
             },
 
-            // --- ESCOLHAS (CHOICES) ---
-            addChoice() {
-                const scene = this.data[this.currentId].scenes[this.currentSceneId];
-                if(scene.choices.length >= 4) return;
-                scene.choices.push({ text: "New Action", target: "" });
-                this.saveDb();
-                this.renderEditorChoices();
-            },
-
-            renderEditorChoices() {
-                const proj = this.data[this.currentId];
-                const scene = proj.scenes[this.currentSceneId];
-                const list = document.getElementById('editorChoicesList');
+            renderTrackList() {
+                const list = document.getElementById('trackList');
                 list.innerHTML = '';
-
-                scene.choices.forEach((choice, index) => {
-                    const row = document.createElement('div');
-                    row.className = 'choice-editor-row';
-                    
-                    const input = document.createElement('input');
-                    input.className = 'choice-input'; input.value = choice.text;
-                    input.oninput = (e) => { choice.text = e.target.value; this.triggerSave(); };
-                    
-                    const select = document.createElement('select');
-                    select.className = 'choice-target';
-                    this.populateTargetSelect(select, choice.target, proj.scenes);
-                    select.onchange = (e) => { choice.target = e.target.value; this.saveDb(); };
-
-                    const delBtn = document.createElement('button');
-                    delBtn.innerText = "✖"; delBtn.style.padding = "4px 8px"; delBtn.className = "btn-danger";
-                    delBtn.onclick = () => { scene.choices.splice(index, 1); this.saveDb(); this.renderEditorChoices(); };
-
-                    row.appendChild(input); row.appendChild(select); row.appendChild(delBtn);
-                    list.appendChild(row);
+                this.tracks.forEach(track => {
+                    const el = document.createElement('div');
+                    el.className = 'track-item';
+                    // CORREÇÃO: Adicionando window.dlGame aqui na hora de gerar a lista
+                    el.innerHTML = `
+                        <span style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70%; font-size: 1.1rem;">${track.name}</span>
+                        <button class="track-play-btn" onclick="window.dlGame.startSong('${track.url}')">PLAY</button>
+                    `;
+                    list.appendChild(el);
                 });
+            }
+        };
+
+        // Lógica da Engine do Jogo
+        const dlGame = {
+            audioCtx: null, analyser: null, source: null, delayNode: null,
+            audioEl: document.getElementById('gameAudio'),
+            canvas: document.getElementById('gameCanvas'), ctx: null,
+            
+            lanes: 4, keys: ['d', 'f', 'j', 'k'],
+            colors: ['#ef4444', '#facc15', '#3b82f6', '#a855f7'],
+            delayTime: 1.8, 
+            hitZoneY: 0, laneWidth: 0,
+            
+            isPlaying: false, isPaused: false,
+            notes: [], score: 0, combo: 0, multiplier: 1,
+            particles: [], texts: [],
+            lastTime: 0, currentUrl: '',
+            
+            freqData: null,
+            cooldowns: [0, 0, 0, 0], 
+
+            initAudio() {
+                try {
+                    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    this.analyser = this.audioCtx.createAnalyser();
+                    this.analyser.fftSize = 2048; 
+                    this.freqData = new Uint8Array(this.analyser.frequencyBinCount);
+                    
+                    this.delayNode = this.audioCtx.createDelay(5.0);
+                    this.delayNode.delayTime.value = this.delayTime;
+
+                    this.source = this.audioCtx.createMediaElementSource(this.audioEl);
+                    this.source.connect(this.analyser);
+                    this.analyser.connect(this.delayNode);
+                    this.delayNode.connect(this.audioCtx.destination);
+
+                    this.ctx = this.canvas.getContext('2d');
+                    window.addEventListener('resize', () => this.resize());
+                    window.addEventListener('keydown', e => this.handleInput(e.key.toLowerCase()));
+                    this.audioEl.addEventListener('ended', () => this.endSong());
+                } catch(e) {
+                    console.error("Audio API Error", e);
+                }
             },
 
-            populateTargetSelect(selectEl, currentVal, allScenes) {
-                selectEl.innerHTML = `<option value="">[ THE END ]</option>`;
-                Object.keys(allScenes).forEach(id => {
-                    const opt = document.createElement('option');
-                    opt.value = id; opt.innerText = allScenes[id].name;
-                    if(id === currentVal) opt.selected = true;
-                    selectEl.appendChild(opt);
-                });
+            resize() {
+                this.canvas.width = this.canvas.clientWidth;
+                this.canvas.height = this.canvas.clientHeight;
+                this.laneWidth = this.canvas.width / this.lanes;
+                this.hitZoneY = this.canvas.height - 130; 
             },
 
-            // --- PLAYER ---
-            playProject() {
-                if(!this.currentId) return;
-                const proj = this.data[this.currentId];
-                this.playState.history = [];
-                this.playState.current = proj.startScene;
-                this.showView('view-player');
-                this.renderPlayerScene();
+            startSong(url) {
+                if(this.audioCtx.state === 'suspended') this.audioCtx.resume();
+                this.currentUrl = url;
+                this.audioEl.src = url;
+                
+                document.getElementById('view-home').classList.remove('active');
+                document.getElementById('view-game').classList.add('active');
+                
+                this.resize();
+                
+                this.resetState();
+                this.audioEl.play();
+                this.isPlaying = true;
+                
+                this.lastTime = performance.now();
+                requestAnimationFrame((t) => this.loop(t));
             },
 
-            exitPlayer() {
-                this.showView('view-editor');
+            restartSong() {
+                document.getElementById('pauseMenu').classList.remove('active');
+                this.startSong(this.currentUrl);
             },
 
-            renderPlayerScene() {
-                const scene = this.data[this.currentId].scenes[this.playState.current];
-                if(!scene) return;
+            stop() {
+                this.isPlaying = false;
+                this.audioEl.pause();
+            },
 
-                const bg = document.getElementById('player-bg');
-                bg.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
-                bg.className = scene.filter;
-
-                document.getElementById('player-text').innerText = scene.text;
-                const choicesDiv = document.getElementById('player-choices');
-                choicesDiv.innerHTML = '';
-
-                // A CORREÇÃO ABSOLUTA DA LÓGICA DE FIM
-                if (scene.choices.length === 0) {
-                    // A cena não tem botões criados = A história para aqui.
-                    const btn = document.createElement('button');
-                    btn.className = 'player-choice-btn';
-                    btn.style.borderColor = "var(--brand)";
-                    btn.innerText = dict[this.lang].viewBooklet;
-                    btn.onclick = () => this.generateBooklet();
-                    choicesDiv.appendChild(btn);
+            togglePause() {
+                if(!this.isPlaying) return;
+                this.isPaused = !this.isPaused;
+                const menu = document.getElementById('pauseMenu');
+                
+                if(this.isPaused) {
+                    this.audioEl.pause();
+                    menu.classList.add('active');
+                    document.getElementById('btn-pause').innerText = "RESUME";
                 } else {
-                    // A cena tem opções. Vamos renderizar todas.
-                    scene.choices.forEach(choice => {
-                        const btn = document.createElement('button');
-                        btn.className = 'player-choice-btn';
-                        btn.innerText = choice.text;
-                        btn.onclick = () => {
-                            this.playState.history.push({ text: scene.text, choice: choice.text });
+                    this.audioEl.play();
+                    menu.classList.remove('active');
+                    document.getElementById('btn-pause').innerText = "PAUSE";
+                    this.lastTime = performance.now(); 
+                    requestAnimationFrame((t) => this.loop(t));
+                }
+            },
+
+            endSong() {
+                this.isPlaying = false;
+                document.getElementById('end-score').innerText = this.score;
+                document.getElementById('endMenu').classList.add('active');
+            },
+
+            resetState() {
+                this.notes = []; this.particles = []; this.texts = [];
+                this.score = 0; this.combo = 0; this.multiplier = 1; this.isPaused = false;
+                this.updateHUD();
+                document.getElementById('game-bg').className = '';
+            },
+
+            handleInput(key) {
+                if(!this.isPlaying || this.isPaused) return;
+                const lane = this.keys.indexOf(key);
+                if(lane === -1) return; 
+
+                this.createHitFlash(lane);
+
+                let hit = false;
+                const hitTolerance = 80; 
+
+                for(let i = 0; i < this.notes.length; i++) {
+                    const n = this.notes[i];
+                    if(n.lane === lane && !n.hit) {
+                        const dist = Math.abs(n.y - this.hitZoneY);
+                        if(dist < hitTolerance) {
+                            hit = true;
+                            n.hit = true; 
                             
-                            // Se ESSA escolha específica for "Fim", chame o livrinho
-                            if (choice.target === "") {
-                                this.generateBooklet();
-                            } else {
-                                this.playState.current = choice.target;
-                                this.renderPlayerScene();
-                            }
-                        };
-                        choicesDiv.appendChild(btn);
+                            let pts = dist < 25 ? 300 : 100;
+                            let msg = dist < 25 ? "PERFECT" : "GOOD";
+                            
+                            this.addScore(pts);
+                            this.createPopup(msg, lane, n.y, pts === 300 ? '#fff' : this.colors[lane]);
+                            this.spawnParticles(lane, this.hitZoneY);
+                            
+                            const bg = document.getElementById('game-bg');
+                            bg.classList.add('bg-pulse');
+                            setTimeout(() => bg.classList.remove('bg-pulse'), 120);
+                            break;
+                        }
+                    }
+                }
+
+                if(!hit) this.breakCombo();
+            },
+
+            addScore(pts) {
+                this.combo++;
+                if(this.combo > 10) this.multiplier = 2;
+                if(this.combo > 30) this.multiplier = 3;
+                if(this.combo > 50) this.multiplier = 4;
+                
+                this.score += pts * this.multiplier;
+                this.updateHUD();
+            },
+
+            breakCombo() {
+                if(this.combo > 5) this.createPopup("MISS", 1.5, this.hitZoneY - 80, '#ef4444');
+                this.combo = 0; this.multiplier = 1;
+                this.updateHUD();
+                
+                document.body.classList.add('glitch-effect');
+                setTimeout(() => document.body.classList.remove('glitch-effect'), 200);
+            },
+
+            updateHUD() {
+                document.getElementById('ui-score').innerText = String(this.score).padStart(5, '0');
+                document.getElementById('ui-combo').innerText = this.combo;
+                document.getElementById('ui-combo').style.color = this.combo > 20 ? var(--brand-red) : '#fff';
+            },
+
+            analyzeAudio() {
+                this.analyser.getByteFrequencyData(this.freqData);
+                
+                const ranges = [
+                    { lane: 0, start: 1, end: 5, threshold: 210 },   
+                    { lane: 1, start: 5, end: 15, threshold: 180 },  
+                    { lane: 2, start: 15, end: 50, threshold: 140 }, 
+                    { lane: 3, start: 50, end: 200, threshold: 110}  
+                ];
+
+                ranges.forEach(r => {
+                    let sum = 0;
+                    for(let i = r.start; i < r.end; i++) sum += this.freqData[i];
+                    let avg = sum / (r.end - r.start);
+
+                    if(this.cooldowns[r.lane] > 0) this.cooldowns[r.lane]--;
+
+                    if(avg > r.threshold && this.cooldowns[r.lane] === 0) {
+                        this.spawnNote(r.lane);
+                        this.cooldowns[r.lane] = 12; 
+                    }
+                });
+            },
+
+            spawnNote(lane) {
+                this.notes.push({ lane: lane, y: 0, hit: false, color: this.colors[lane] });
+            },
+
+            createHitFlash(lane) {
+                this.particles.push({ type: 'flash', lane: lane, alpha: 1.0 });
+            },
+
+            createPopup(text, lane, y, color) {
+                this.texts.push({
+                    text: text, x: (lane * this.laneWidth) + (this.laneWidth / 2),
+                    y: y, alpha: 1.0, color: color
+                });
+            },
+
+            spawnParticles(lane, y) {
+                for(let i=0; i<10; i++) {
+                    this.particles.push({
+                        type: 'dot',
+                        x: (lane * this.laneWidth) + (this.laneWidth / 2),
+                        y: y,
+                        vx: (Math.random() - 0.5) * 15,
+                        vy: (Math.random() - 0.5) * 15 - 5,
+                        life: 1.0, color: this.colors[lane]
                     });
                 }
             },
 
-            // --- BOOKLET ---
-            generateBooklet() {
-                const finalScene = this.data[this.currentId].scenes[this.playState.current];
-                if(finalScene && finalScene.choices.length === 0) {
-                    // Só marca o "end reached" forçado se não havia opções
-                    this.playState.history.push({ text: finalScene.text, choice: dict[this.lang].endReached });
+            loop(timestamp) {
+                if(!this.isPlaying || this.isPaused) return;
+
+                const dt = (timestamp - this.lastTime) / 1000;
+                this.lastTime = timestamp;
+
+                this.analyzeAudio();
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                for(let i=0; i<this.lanes; i++) {
+                    this.ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.strokeRect(i * this.laneWidth + 15, this.hitZoneY, this.laneWidth - 30, 25);
                 }
 
-                const logs = document.getElementById('bookletLogs');
-                logs.innerHTML = '';
+                const speed = this.canvas.height / this.delayTime; 
                 
-                this.playState.history.forEach(entry => {
-                    const div = document.createElement('div');
-                    div.className = 'log-entry';
-                    div.innerHTML = `
-                        <div class="log-text">"${entry.text}"</div>
-                        <div class="log-choice">${entry.choice}</div>
-                    `;
-                    logs.appendChild(div);
-                });
+                for(let i = this.notes.length - 1; i >= 0; i--) {
+                    let n = this.notes[i];
+                    if(n.hit) continue;
 
-                this.showView('view-booklet');
-            },
+                    n.y += speed * dt;
 
-            downloadBooklet() {
-                const area = document.getElementById('bookletContent');
-                const btn = document.getElementById('t-downloadBooklet');
-                const originalText = btn.innerText;
-                btn.innerText = "GENERATING...";
+                    this.ctx.fillStyle = n.color;
+                    this.ctx.shadowColor = n.color;
+                    this.ctx.shadowBlur = 20;
+                    this.ctx.fillRect(n.lane * this.laneWidth + 15, n.y, this.laneWidth - 30, 25);
+                    this.ctx.shadowBlur = 0; 
 
-                html2canvas(area, { backgroundColor: '#18181b', scale: 2 }).then(canvas => {
-                    const link = document.createElement('a');
-                    const safeName = this.data[this.currentId].title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                    link.download = `${safeName}_path.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    btn.innerText = originalText;
-                });
-            },
+                    if(n.y > this.canvas.height) {
+                        this.breakCombo();
+                        this.notes.splice(i, 1);
+                    }
+                }
 
-            // --- LANGUAGE ---
-            changeLanguage(l) {
-                this.lang = l;
-                localStorage.setItem('dearend_lang', l);
-                const d = dict[l];
-                
-                document.getElementById('t-myStories').innerText = d.myStories;
-                document.getElementById('t-create').innerText = d.create;
-                document.getElementById('t-import').innerText = d.import;
-                document.getElementById('t-scenes').innerText = d.scenes;
-                document.getElementById('t-bgImage').innerText = d.bgImage;
-                document.getElementById('t-filter').innerText = d.filter;
-                document.getElementById('t-choices').innerText = d.choices;
-                document.getElementById('t-exit').innerText = d.exit;
-                document.getElementById('editorText').placeholder = d.placeholder;
-                document.getElementById('t-sceneName').innerText = d.sceneName;
-                document.getElementById('t-downloadBooklet').innerText = d.downloadBooklet;
-                
-                if(this.currentId == null) this.renderHome();
-                else this.renderEditor();
+                for(let i = this.particles.length - 1; i >= 0; i--) {
+                    let p = this.particles[i];
+                    if(p.type === 'flash') {
+                        p.alpha -= dt * 4;
+                        if(p.alpha <= 0) { this.particles.splice(i, 1); continue; }
+                        this.ctx.fillStyle = `rgba(255,255,255,${p.alpha * 0.6})`;
+                        this.ctx.fillRect(p.lane * this.laneWidth + 15, this.hitZoneY - 60, this.laneWidth - 30, 140);
+                    } else if(p.type === 'dot') {
+                        p.x += p.vx; p.y += p.vy; p.life -= dt * 2.5;
+                        if(p.life <= 0) { this.particles.splice(i, 1); continue; }
+                        this.ctx.fillStyle = p.color;
+                        this.ctx.globalAlpha = p.life;
+                        this.ctx.beginPath(); this.ctx.arc(p.x, p.y, 5, 0, Math.PI*2); this.ctx.fill();
+                        this.ctx.globalAlpha = 1.0;
+                    }
+                }
+
+                for(let i = this.texts.length - 1; i >= 0; i--) {
+                    let t = this.texts[i];
+                    t.y -= dt * 60; t.alpha -= dt * 1.5;
+                    if(t.alpha <= 0) { this.texts.splice(i, 1); continue; }
+                    this.ctx.fillStyle = t.color;
+                    this.ctx.globalAlpha = t.alpha;
+                    this.ctx.font = '900 26px Montserrat';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(t.text, t.x, t.y);
+                    this.ctx.globalAlpha = 1.0;
+                }
+
+                requestAnimationFrame((t) => this.loop(t));
             }
         };
 
-        window.onload = () => app.init();
+        // AMARRAÇÃO DEFENITIVA DE ESCOPO GLOBAL
+        window.dlApp = dlApp;
+        window.dlGame = dlGame;
+        window.onload = () => window.dlApp.init();
     </script>
 </body>
 </html>
