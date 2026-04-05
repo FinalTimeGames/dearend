@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DearEnd Studio | Finaltime Studios</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Montserrat:wght@900&family=VT323&display=swap');
+
+        :root {
+            --bg-base: #09090b;
+            --bg-panel: #18181b;
+            --bg-elevated: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --accent: #e4e4e7;
+            --accent-hover: #ffffff;
+            --border: #3f3f46;
+            --brand: #dc2626; /* A dark red brand color for DearEnd */
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-display: 'Montserrat', sans-serif;
+            --font-story: 'Courier New', Courier, monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-ui); background-color: var(--bg-base); color: var(--text-main);
+            min-height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        /* Nav */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 24px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+        .brand { font-family: var(--font-display); font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; color: #fff; cursor: pointer; text-transform: uppercase;}
+        .brand span { color: var(--brand); }
+        .nav-controls { display: flex; gap: 12px; }
+
+        button, select {
+            background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: 4px; font-family: var(--font-ui); font-size: 0.85rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        button:hover { background: #3f3f46; border-color: var(--text-muted); }
+        .btn-primary { background: var(--text-main); color: var(--bg-base); border-color: var(--text-main); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-brand { background: transparent; border-color: var(--brand); color: var(--brand); }
+        .btn-brand:hover { background: var(--brand); color: white; }
+
+        /* Views */
+        .view { display: none; height: calc(100vh - 55px); width: 100%; }
+        .view.active { display: flex; }
+
+        /* --- HOME VIEW --- */
+        #view-home { flex-direction: column; align-items: center; justify-content: center; gap: 24px; background: radial-gradient(circle at center, #18181b 0%, #09090b 100%); }
+        .home-title { font-family: var(--font-display); font-size: 4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; text-shadow: 0 10px 30px rgba(220, 38, 38, 0.2); }
+        .home-actions { display: flex; gap: 16px; }
+        input[type="file"] { display: none; }
+
+        /* --- EDITOR VIEW --- */
+        .sidebar { width: 300px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .scene-list { flex-grow: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .scene-item { padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; justify-content: space-between; }
+        .scene-item:hover { border-color: var(--text-muted); }
+        .scene-item.active { border-color: var(--brand); border-left: 4px solid var(--brand); }
+        .del-scene { background: transparent; border: none; color: var(--text-muted); padding: 0; }
+        .del-scene:hover { color: var(--brand); background: transparent; }
+
+        .editor-main { flex-grow: 1; display: flex; flex-direction: column; position: relative; background: #000; overflow: hidden; }
+        
+        /* The Canvas (Preview & Player) */
+        .story-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 40px; background-size: cover; background-position: center; transition: filter 0.3s; }
+        
+        /* Filters */
+        .filter-none { filter: none; }
+        .filter-grime { filter: grayscale(80%) sepia(30%) contrast(150%) brightness(0.8); }
+        .filter-noir { filter: grayscale(100%) contrast(200%) brightness(0.7); }
+        .filter-sepia { filter: sepia(80%) contrast(120%); }
+
+        /* Text Box */
+        .textbox-container { width: 90%; max-width: 900px; background: rgba(0, 0, 0, 0.85); border: 1px solid #333; padding: 24px; border-radius: 4px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+        .story-text-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-family: var(--font-story); font-size: 1.2rem; resize: none; outline: none; line-height: 1.5; text-align: center; }
+        
+        /* Choices Preview */
+        .choices-preview { display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 900px; margin-bottom: 20px; z-index: 10; }
+        .choice-btn-preview { background: rgba(20, 20, 20, 0.9); border: 1px solid #555; color: #fff; padding: 12px; font-family: var(--font-ui); font-size: 1rem; cursor: default; text-align: center; transition: all 0.2s; }
+        
+        /* Editor Tools Panel (Bottom overlay) */
+        .editor-tools { position: absolute; top: 16px; right: 16px; background: rgba(24, 24, 27, 0.9); border: 1px solid var(--border); padding: 16px; border-radius: 4px; z-index: 20; display: flex; flex-direction: column; gap: 12px; width: 300px; backdrop-filter: blur(10px); }
+        .tool-group { display: flex; flex-direction: column; gap: 4px; }
+        .tool-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        
+        .choice-editor-row { display: flex; gap: 8px; align-items: center; background: #000; padding: 8px; border: 1px solid #333; }
+        .choice-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; outline: none; }
+        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 4px; }
+        
+        /* --- PLAYER VIEW --- */
+        #view-player { position: relative; background: #000; justify-content: center; align-items: flex-end; padding-bottom: 40px; }
+        #player-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; transition: background 0.5s ease; }
+        .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8) 100%); z-index: 2; pointer-events: none; }
+        
+        #player-content { width: 90%; max-width: 900px; z-index: 10; display: flex; flex-direction: column; gap: 24px; }
+        .player-text-box { background: rgba(0, 0, 0, 0.7); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 32px; text-align: center; }
+        #player-text { font-family: var(--font-story); font-size: 1.4rem; line-height: 1.6; color: #fff; }
+        
+        #player-choices { display: flex; flex-direction: column; gap: 12px; }
+        .player-choice-btn { background: rgba(0,0,0,0.8); border: 1px solid #444; color: #ccc; padding: 16px; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .player-choice-btn:hover { background: var(--text-main); color: #000; border-color: var(--text-main); transform: scale(1.02); }
+        
+        .player-controls { position: absolute; top: 20px; right: 20px; z-index: 50; }
+
+        /* --- BOOKLET VIEW --- */
+        #view-booklet { flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; background: #111; }
+        .booklet-container { width: 100%; max-width: 700px; background: #1e1e1e; border: 1px solid #333; padding: 40px; }
+        .booklet-title { font-family: var(--font-display); font-size: 2rem; margin-bottom: 24px; text-align: center; text-transform: uppercase; border-bottom: 2px solid var(--brand); padding-bottom: 12px; }
+        .log-entry { margin-bottom: 24px; padding-left: 16px; border-left: 2px solid #444; }
+        .log-text { font-family: var(--font-story); font-size: 1rem; color: #ccc; line-height: 1.5; margin-bottom: 8px; }
+        .log-choice { font-family: var(--font-ui); font-size: 0.85rem; color: var(--brand); font-weight: bold; text-transform: uppercase; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--border); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand" onclick="app.goHome()">DEAREND <span>STUDIO</span></div>
+        <div class="nav-controls">
+            <select id="langSelect" onchange="app.changeLanguage(this.value)">
+                <option value="en">EN</option>
+                <option value="pt">PT-BR</option>
+            </select>
+            <button id="navPlayBtn" class="btn-primary" style="display:none;" onclick="app.playProject()">PLAY</button>
+            <button id="navExportBtn" style="display:none;" onclick="app.exportProject()">EXPORT PROJECT</button>
+        </div>
+    </nav>
+
+    <main id="view-home" class="view active">
+        <div class="home-title">DEAREND</div>
+        <div class="home-actions">
+            <button class="btn-primary" onclick="app.createNewProject()" id="t-create">CREATE NEW STORY</button>
+            <label for="importFile" class="btn-brand" style="display:inline-block; margin:0;" id="t-import">IMPORT .DEAREND</label>
+            <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
+        </div>
+    </main>
+
+    <main id="view-editor" class="view">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span style="font-weight: 800; font-size: 0.9rem;" id="t-scenes">SCENES</span>
+                <button onclick="app.addScene()" style="padding: 4px 8px;">+</button>
+            </div>
+            <div class="scene-list" id="sceneList"></div>
+        </aside>
+        
+        <section class="editor-main">
+            <div class="story-canvas" id="editorCanvas">
+                
+                <div class="choices-preview" id="editorChoicesPreview"></div>
+
+                <div class="textbox-container">
+                    <textarea class="story-text-input" id="editorText" rows="4" placeholder="Scene text goes here..." oninput="app.updateCurrentScene()"></textarea>
+                </div>
+            </div>
+
+            <div class="editor-tools">
+                <div class="tool-group">
+                    <label id="t-bgImage">Background Image</label>
+                    <label for="bgUpload" style="background:#333; padding:6px; text-align:center; cursor:pointer; font-size:0.8rem; border-radius:4px;">UPLOAD JPG/PNG</label>
+                    <input type="file" id="bgUpload" accept="image/*" onchange="app.uploadBackground(event)">
+                </div>
+                <div class="tool-group">
+                    <label id="t-filter">Scene Filter</label>
+                    <select id="editorFilter" onchange="app.updateCurrentScene()">
+                        <option value="filter-none">None</option>
+                        <option value="filter-grime">Grime / Retro</option>
+                        <option value="filter-noir">Noir / Dark</option>
+                        <option value="filter-sepia">Corroded Sepia</option>
+                    </select>
+                </div>
+                <hr style="border:none; border-top:1px solid #333; margin: 8px 0;">
+                <div class="tool-group">
+                    <label id="t-choices">Choices / Branching</label>
+                    <div id="editorChoicesList" style="display: flex; flex-direction: column; gap: 4px;"></div>
+                    <button onclick="app.addChoice()" style="margin-top: 4px; padding: 4px;">+ ADD CHOICE</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <main id="view-player" class="view">
+        <div class="player-controls">
+            <button onclick="app.exitPlayer()" id="t-exit">EXIT READ MODE</button>
+        </div>
+        <div id="player-bg" class="filter-none"></div>
+        <div class="player-overlay"></div>
+        
+        <div id="player-content">
+            <div class="player-text-box">
+                <div id="player-text"></div>
+            </div>
+            <div id="player-choices"></div>
+        </div>
+    </main>
+
+    <main id="view-booklet" class="view">
+        <div class="player-controls">
+            <button onclick="app.exitPlayer()">BACK TO EDITOR</button>
+        </div>
+        <div class="booklet-container" id="bookletContent">
+            <h1 class="booklet-title">THE PATH TAKEN</h1>
+            <div id="bookletLogs"></div>
+        </div>
+    </main>
+
+    <script>
+        const dict = {
+            en: {
+                create: "CREATE NEW STORY", import: "IMPORT .DEAREND", scenes: "SCENES",
+                bgImage: "Background Image", filter: "Scene Filter", choices: "Choices / Branching",
+                exit: "EXIT READ MODE", placeholder: "Scene text goes here...", newScene: "New Scene",
+                endReached: "END OF STORY REACHED.", viewBooklet: "VIEW CONSEQUENCES REPORT"
+            },
+            pt: {
+                create: "CRIAR NOVA HISTÓRIA", import: "IMPORTAR .DEAREND", scenes: "CENAS",
+                bgImage: "Imagem de Fundo", filter: "Filtro da Cena", choices: "Escolhas / Caminhos",
+                exit: "SAIR DA LEITURA", placeholder: "O texto da cena vai aqui...", newScene: "Nova Cena",
+                endReached: "FIM DA HISTÓRIA ALCANÇADO.", viewBooklet: "VER RELATÓRIO DE CONSEQUÊNCIAS"
+            }
+        };
+
+        const app = {
+            lang: 'en',
+            project: null,
+            currentSceneId: null,
+            
+            // Player Engine State
+            playState: { current: null, history: [] },
+
+            init() {
+                this.changeLanguage(this.lang);
+            },
+
+            // --- NAVIGATION ---
+            showView(id) {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                
+                const isEditor = id === 'view-editor';
+                document.getElementById('navPlayBtn').style.display = isEditor ? 'block' : 'none';
+                document.getElementById('navExportBtn').style.display = isEditor ? 'block' : 'none';
+            },
+            goHome() {
+                this.project = null;
+                this.showView('view-home');
+            },
+
+            // --- PROJECT MANAGEMENT ---
+            createNewProject() {
+                const startId = this.generateId();
+                this.project = {
+                    title: "Untitled Story",
+                    startScene: startId,
+                    scenes: {}
+                };
+                // Create first scene
+                this.project.scenes[startId] = {
+                    name: "Scene 1",
+                    text: "",
+                    bg: "",
+                    filter: "filter-none",
+                    choices: [] // { text: "Go left", target: "id" }
+                };
+                
+                this.currentSceneId = startId;
+                this.showView('view-editor');
+                this.renderEditor();
+            },
+
+            exportProject() {
+                if(!this.project) return;
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.project));
+                const a = document.createElement('a');
+                a.href = dataStr;
+                a.download = "my_story.dearend";
+                a.click();
+            },
+
+            importProject(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        this.project = JSON.parse(e.target.result);
+                        this.currentSceneId = this.project.startScene;
+                        this.showView('view-editor');
+                        this.renderEditor();
+                    } catch (err) { alert("Invalid file format."); }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            },
+
+            // --- EDITOR LOGIC ---
+            renderEditor() {
+                this.renderSceneList();
+                this.loadSceneToEditor();
+            },
+
+            renderSceneList() {
+                const list = document.getElementById('sceneList');
+                list.innerHTML = '';
+                
+                Object.keys(this.project.scenes).forEach(id => {
+                    const scene = this.project.scenes[id];
+                    const div = document.createElement('div');
+                    div.className = `scene-item ${id === this.currentSceneId ? 'active' : ''}`;
+                    div.innerHTML = `
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${scene.name}</span>
+                        ${id !== this.project.startScene ? `<button class="del-scene" onclick="app.deleteScene('${id}', event)">X</button>` : '<span>★</span>'}
+                    `;
+                    div.onclick = () => { this.currentSceneId = id; this.renderEditor(); };
+                    list.appendChild(div);
+                });
+                this.renderChoiceTargetDropdowns(); // Update dropdowns if scene list changed
+            },
+
+            loadSceneToEditor() {
+                const scene = this.project.scenes[this.currentSceneId];
+                if(!scene) return;
+
+                // Load Text & Settings
+                document.getElementById('editorText').value = scene.text;
+                document.getElementById('editorFilter').value = scene.filter;
+                
+                // Load BG
+                const canvas = document.getElementById('editorCanvas');
+                canvas.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
+                canvas.className = `story-canvas ${scene.filter}`;
+
+                this.renderEditorChoices();
+            },
+
+            updateCurrentScene() {
+                const scene = this.project.scenes[this.currentSceneId];
+                scene.text = document.getElementById('editorText').value;
+                scene.filter = document.getElementById('editorFilter').value;
+                
+                // Live preview update
+                const canvas = document.getElementById('editorCanvas');
+                canvas.className = `story-canvas ${scene.filter}`;
+            },
+
+            addScene() {
+                const id = this.generateId();
+                const num = Object.keys(this.project.scenes).length + 1;
+                this.project.scenes[id] = {
+                    name: `${dict[this.lang].newScene} ${num}`, text: "", bg: "", filter: "filter-none", choices: []
+                };
+                this.currentSceneId = id;
+                this.renderEditor();
+            },
+
+            deleteScene(id, event) {
+                event.stopPropagation();
+                if(id === this.project.startScene) return; // Cannot delete start
+                delete this.project.scenes[id];
+                
+                // Clean up choices pointing to this deleted scene
+                Object.values(this.project.scenes).forEach(s => {
+                    s.choices.forEach(c => { if(c.target === id) c.target = ""; });
+                });
+
+                this.currentSceneId = this.project.startScene;
+                this.renderEditor();
+            },
+
+            uploadBackground(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    this.compressImage(event.target.result, (compressed) => {
+                        this.project.scenes[this.currentSceneId].bg = compressed;
+                        this.loadSceneToEditor();
+                    });
+                };
+                reader.readAsDataURL(file);
+                e.target.value = '';
+            },
+
+            // Compress BG to save space in the .dearend file
+            compressImage(dataUrl, callback) {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX = 1280; // VN standard HD width
+                    let w = img.width; let h = img.height;
+                    if (w > MAX) { h *= MAX / w; w = MAX; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    callback(canvas.toDataURL('image/jpeg', 0.6));
+                };
+                img.src = dataUrl;
+            },
+
+            // --- CHOICES MANAGEMENT (EDITOR) ---
+            addChoice() {
+                const scene = this.project.scenes[this.currentSceneId];
+                if(scene.choices.length >= 4) return; // Max 4 choices
+                scene.choices.push({ text: "New Option", target: "" });
+                this.renderEditorChoices();
+            },
+
+            renderEditorChoices() {
+                const scene = this.project.scenes[this.currentSceneId];
+                const list = document.getElementById('editorChoicesList');
+                const preview = document.getElementById('editorChoicesPreview');
+                list.innerHTML = ''; preview.innerHTML = '';
+
+                scene.choices.forEach((choice, index) => {
+                    // Panel Editor Row
+                    const row = document.createElement('div');
+                    row.className = 'choice-editor-row';
+                    
+                    const input = document.createElement('input');
+                    input.className = 'choice-input'; input.value = choice.text;
+                    input.oninput = (e) => { choice.text = e.target.value; this.renderEditorChoices(); };
+                    
+                    const select = document.createElement('select');
+                    select.className = 'choice-target';
+                    this.populateTargetSelect(select, choice.target);
+                    select.onchange = (e) => { choice.target = e.target.value; };
+
+                    const delBtn = document.createElement('button');
+                    delBtn.innerText = "X"; delBtn.style.padding = "2px 6px";
+                    delBtn.onclick = () => { scene.choices.splice(index, 1); this.renderEditorChoices(); };
+
+                    row.appendChild(input); row.appendChild(select); row.appendChild(delBtn);
+                    list.appendChild(row);
+
+                    // Visual Preview
+                    const pre = document.createElement('div');
+                    pre.className = 'choice-btn-preview';
+                    pre.innerText = choice.text;
+                    preview.appendChild(pre);
+                });
+            },
+
+            populateTargetSelect(selectEl, currentVal) {
+                selectEl.innerHTML = `<option value="">[END]</option>`;
+                Object.keys(this.project.scenes).forEach(id => {
+                    const opt = document.createElement('option');
+                    opt.value = id; opt.innerText = this.project.scenes[id].name;
+                    if(id === currentVal) opt.selected = true;
+                    selectEl.appendChild(opt);
+                });
+            },
+
+            // --- PLAYER LOGIC ---
+            playProject() {
+                if(!this.project) return;
+                this.playState.history = [];
+                this.playState.current = this.project.startScene;
+                this.showView('view-player');
+                this.renderPlayerScene();
+            },
+
+            exitPlayer() {
+                this.showView('view-editor');
+            },
+
+            renderPlayerScene() {
+                const scene = this.project.scenes[this.playState.current];
+                if(!scene) return;
+
+                const bg = document.getElementById('player-bg');
+                bg.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
+                bg.className = scene.filter;
+
+                document.getElementById('player-text').innerText = scene.text;
+                
+                const choicesDiv = document.getElementById('player-choices');
+                choicesDiv.innerHTML = '';
+
+                if (scene.choices.length === 0 || !scene.choices.some(c => c.target !== "")) {
+                    // It's an ENDING scene
+                    const btn = document.createElement('button');
+                    btn.className = 'player-choice-btn';
+                    btn.style.borderColor = var(--brand);
+                    btn.innerText = dict[this.lang].viewBooklet;
+                    btn.onclick = () => this.generateBooklet();
+                    choicesDiv.appendChild(btn);
+                } else {
+                    // Render interactive choices
+                    scene.choices.forEach(choice => {
+                        if(!choice.target) return; // Skip empty targets
+                        const btn = document.createElement('button');
+                        btn.className = 'player-choice-btn';
+                        btn.innerText = choice.text;
+                        btn.onclick = () => {
+                            // Log history
+                            this.playState.history.push({ text: scene.text, choice: choice.text });
+                            this.playState.current = choice.target;
+                            this.renderPlayerScene();
+                        };
+                        choicesDiv.appendChild(btn);
+                    });
+                }
+            },
+
+            // --- BOOKLET (CONSEQUENCES LOG) ---
+            generateBooklet() {
+                // Log final scene text without a choice
+                const finalScene = this.project.scenes[this.playState.current];
+                if(finalScene) this.playState.history.push({ text: finalScene.text, choice: dict[this.lang].endReached });
+
+                const logs = document.getElementById('bookletLogs');
+                logs.innerHTML = '';
+                
+                this.playState.history.forEach(entry => {
+                    const div = document.createElement('div');
+                    div.className = 'log-entry';
+                    div.innerHTML = `
+                        <div class="log-text">"${entry.text}"</div>
+                        <div class="log-choice">➔ ${entry.choice}</div>
+                    `;
+                    logs.appendChild(div);
+                });
+
+                this.showView('view-booklet');
+            },
+
+            // --- UTILS ---
+            generateId() { return 'scn_' + Math.random().toString(36).substr(2, 9); },
+
+            changeLanguage(l) {
+                this.lang = l;
+                const d = dict[l];
+                document.getElementById('t-create').innerText = d.create;
+                document.getElementById('t-import').innerText = d.import;
+                document.getElementById('t-scenes').innerText = d.scenes;
+                document.getElementById('t-bgImage').innerText = d.bgImage;
+                document.getElementById('t-filter').innerText = d.filter;
+                document.getElementById('t-choices').innerText = d.choices;
+                document.getElementById('t-exit').innerText = d.exit;
+                document.getElementById('editorText').placeholder = d.placeholder;
+                if(this.project && document.getElementById('view-editor').classList.contains('active')) {
+                    this.renderEditor();
+                }
+            }
+        };
+
+        window.onload = () => app.init();
+    </script>
+</body>
+</html>
