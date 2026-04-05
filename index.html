@@ -17,7 +17,7 @@
             --accent: #e4e4e7;
             --accent-hover: #ffffff;
             --border: #3f3f46;
-            --brand: #991b1b; /* Sangue escuro elegante */
+            --brand: #991b1b; 
             
             --font-ui: 'Inter', sans-serif;
             --font-display: 'Montserrat', sans-serif;
@@ -31,13 +31,20 @@
             min-height: 100vh; overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* --- UI COMPONENTS --- */
+        /* --- NAVBAR & LOGO --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 32px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            padding: 12px 32px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
+            z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.5); position: relative;
         }
-        .brand { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #fff; cursor: pointer; text-transform: uppercase;}
+        
+        .brand-container { display: flex; align-items: center; gap: 14px; cursor: pointer; transition: opacity 0.2s; }
+        .brand-container:hover { opacity: 0.8; }
+        
+        /* Aqui o logo vai aparecer. Se ele não existir ainda, fica escondido suavemente */
+        .nav-logo { height: 38px; width: auto; object-fit: contain; border-radius: 4px; }
+        
+        .brand { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #fff; text-transform: uppercase; margin-top: 2px;}
         .brand span { color: var(--brand); font-weight: 400; }
         .nav-controls { display: flex; gap: 12px; align-items: center; }
 
@@ -50,7 +57,7 @@
         button:hover { background: #3f3f46; border-color: var(--text-muted); }
         .btn-primary { background: var(--text-main); color: var(--bg-base); border-color: var(--text-main); }
         .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-brand { background: transparent; border-color: var(--brand); color: var(--brand); }
+        .btn-brand { background: rgba(153, 27, 27, 0.1); border-color: var(--brand); color: var(--brand); }
         .btn-brand:hover { background: var(--brand); color: white; }
         .btn-danger { background: transparent; color: #ef4444; border-color: #ef4444; }
         .btn-danger:hover { background: #ef4444; color: white; }
@@ -63,13 +70,17 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* --- HOME (DASHBOARD) --- */
-        #view-home { flex-direction: column; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top, #18181b 0%, #09090b 100%); }
+        /* Imagem de Fundo Permanente na Home + Filtro Escuro */
+        #view-home { 
+            flex-direction: column; padding: 40px; overflow-y: auto; 
+            background: linear-gradient(to bottom, rgba(9,9,11,0.85) 0%, rgba(24,24,27,0.95) 100%), url('home-bg.jpg') center/cover no-repeat; 
+        }
         .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; max-width: 1200px; margin-inline: auto; width: 100%; }
-        .home-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; text-transform: uppercase; }
+        .home-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; text-transform: uppercase; text-shadow: 0 4px 12px rgba(0,0,0,0.8); }
         .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; max-width: 1200px; margin-inline: auto; width: 100%; }
         
-        .project-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 6px; padding: 24px; transition: all 0.2s; position: relative; overflow: hidden; }
-        .project-card:hover { border-color: var(--brand); box-shadow: 0 10px 30px rgba(153, 27, 27, 0.1); transform: translateY(-3px); }
+        .project-card { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 6px; padding: 24px; transition: all 0.2s; position: relative; overflow: hidden; }
+        .project-card:hover { border-color: var(--brand); box-shadow: 0 10px 30px rgba(153, 27, 27, 0.2); transform: translateY(-3px); background: rgba(24, 24, 27, 0.95);}
         .card-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; color: #fff; }
         .card-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
         .card-actions { display: flex; gap: 8px; }
@@ -108,7 +119,9 @@
         
         .choice-editor-row { display: flex; gap: 8px; align-items: center; background: #000; padding: 8px; border: 1px solid #333; border-radius: 4px;}
         .choice-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 4px; }
-        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 6px; }
+        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 6px; cursor: pointer; }
+
+        input[type="file"] { display: none; }
 
         /* --- PLAYER VIEW --- */
         #view-player { background: #000; justify-content: center; align-items: flex-end; padding-bottom: 60px; }
@@ -123,11 +136,12 @@
         .player-choice-btn { width: 100%; max-width: 600px; background: rgba(0,0,0,0.8); border: 1px solid #555; color: #e4e4e7; padding: 16px; font-family: var(--font-ui); font-size: 1.1rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; }
         .player-choice-btn:hover { background: var(--text-main); color: #000; border-color: var(--text-main); transform: scale(1.02); }
         
-        .player-controls { position: absolute; top: 20px; right: 20px; z-index: 50; }
+        /* Botões Flutuantes Globais para evitar bugs de ficar preso */
+        .player-controls { position: absolute; top: 20px; right: 20px; z-index: 999; }
 
         /* --- BOOKLET VIEW --- */
         #view-booklet { flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; background: #111; }
-        #bookletContent { width: 100%; max-width: 800px; background: #18181b; border: 1px solid #333; padding: 60px; position: relative; }
+        #bookletContent { width: 100%; max-width: 800px; background: #18181b; border: 1px solid #333; padding: 60px; position: relative; margin-top: 40px; }
         .booklet-title { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 40px; text-align: center; text-transform: uppercase; color: #fff; border-bottom: 2px solid var(--brand); padding-bottom: 16px; }
         .log-entry { margin-bottom: 30px; padding-left: 20px; border-left: 3px solid #444; position: relative; }
         .log-entry::before { content: ''; position: absolute; left: -7px; top: 0; width: 11px; height: 11px; background: var(--brand); border-radius: 50%; }
@@ -142,7 +156,10 @@
 <body>
 
     <nav>
-        <div class="brand" onclick="app.goHome()">DEAREND <span>STUDIO</span></div>
+        <div class="brand-container" onclick="app.goHome()">
+            <img src="logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
+            <div class="brand">DEAREND <span>STUDIO</span></div>
+        </div>
         <div class="nav-controls">
             <select id="langSelect" onchange="app.changeLanguage(this.value)">
                 <option value="en">English</option>
@@ -158,12 +175,11 @@
             <h2 class="home-title" id="t-myStories">My Stories</h2>
             <div style="display: flex; gap: 12px;">
                 <button class="btn-primary" onclick="app.createNewProject()" id="t-create">+ NEW STORY</button>
-                <label for="importFile" class="btn-brand" style="margin:0; padding:8px 16px; border-radius:4px; font-weight:600; cursor:pointer; font-size:0.85rem;" id="t-import">IMPORT</label>
+                <label for="importFile" class="btn-brand" style="margin:0; padding:8px 16px; border-radius:4px; font-weight:600; cursor:pointer; font-size:0.85rem; border: 1px solid var(--brand); display:flex; align-items:center;" id="t-import">IMPORT</label>
                 <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
             </div>
         </div>
-        <div class="project-grid" id="projectGrid">
-            </div>
+        <div class="project-grid" id="projectGrid"></div>
         <div class="watermark">FINALTIME STUDIOS</div>
     </main>
 
@@ -182,14 +198,14 @@
         <section class="editor-main">
             <div class="story-canvas" id="editorCanvas">
                 <div class="textbox-container">
-                    <textarea class="story-text-input" id="editorText" rows="5" placeholder="Scene text goes here..." oninput="app.updateCurrentScene()"></textarea>
+                    <textarea class="story-text-input" id="editorText" rows="5" placeholder="Scene text goes here..." oninput="app.triggerSave()"></textarea>
                 </div>
             </div>
 
             <div class="editor-tools">
                 <div class="tool-group">
                     <label id="t-sceneName">Scene Name</label>
-                    <input type="text" id="sceneNameInput" style="width: 100%; background: #000;" oninput="app.updateCurrentScene()">
+                    <input type="text" id="sceneNameInput" style="width: 100%; background: #000;" oninput="app.triggerSave()">
                 </div>
                 <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
                 <div class="tool-group">
@@ -199,7 +215,7 @@
                 </div>
                 <div class="tool-group" style="margin-top: 8px;">
                     <label id="t-filter">Cinematic Filter</label>
-                    <select id="editorFilter" onchange="app.updateCurrentScene()" style="width: 100%;">
+                    <select id="editorFilter" onchange="app.triggerSave()" style="width: 100%;">
                         <option value="filter-none">None</option>
                         <option value="filter-grime">Grime / Retro</option>
                         <option value="filter-noir">Noir / Dark</option>
@@ -219,7 +235,7 @@
 
     <main id="view-player" class="view">
         <div class="player-controls">
-            <button onclick="app.exitPlayer()" id="t-exit">EXIT READ MODE</button>
+            <button onclick="app.exitPlayer()" id="t-exit" class="btn-danger" style="background: rgba(0,0,0,0.8); border: 1px solid #ef4444;">EXIT READ MODE</button>
         </div>
         <div id="player-bg" class="filter-none"></div>
         <div class="player-overlay"></div>
@@ -234,14 +250,14 @@
     </main>
 
     <main id="view-booklet" class="view">
-        <div class="player-controls" style="display: flex; gap: 12px; position: fixed;">
-            <button onclick="app.exitPlayer()">BACK TO EDITOR</button>
-            <button class="btn-brand" onclick="app.downloadBooklet()" id="t-downloadBooklet">DOWNLOAD IMAGE</button>
+        <div class="player-controls" style="display: flex; gap: 12px;">
+            <button onclick="app.exitPlayer()" style="background: rgba(0,0,0,0.8);">BACK TO EDITOR</button>
+            <button class="btn-brand" onclick="app.downloadBooklet()" id="t-downloadBooklet" style="background: rgba(153, 27, 27, 0.8); color: white;">DOWNLOAD IMAGE</button>
         </div>
         <div class="booklet-container" id="bookletContent">
             <h1 class="booklet-title">THE PATH TAKEN</h1>
             <div id="bookletLogs"></div>
-            <div class="watermark" style="bottom: -30px;">FINALTIME STUDIOS</div>
+            <div class="watermark" style="bottom: 20px; right: 20px;">FINALTIME STUDIOS</div>
         </div>
     </main>
 
@@ -265,14 +281,14 @@
 
         const app = {
             lang: 'en',
-            data: {}, // O Banco de Dados Mestre!
+            data: {}, 
             currentId: null,
             currentSceneId: null,
             playState: { current: null, history: [] },
+            saveTimeout: null, // Timer do Debounce para evitar lags
 
             init() {
-                // Carrega os dados salvos do LocalStorage
-                const savedData = localStorage.getItem('dearend_v2');
+                const savedData = localStorage.getItem('dearend_v3');
                 if (savedData) this.data = JSON.parse(savedData);
                 
                 const savedLang = localStorage.getItem('dearend_lang');
@@ -285,17 +301,42 @@
                 this.goHome();
             },
 
+            // --- SISTEMA DE SALVAMENTO SEGURO (DEBOUNCE) ---
+            triggerSave() {
+                // Atualiza o estado da cena em memória imediatamente
+                const proj = this.data[this.currentId];
+                const scene = proj.scenes[this.currentSceneId];
+                
+                const oldName = scene.name;
+                scene.name = document.getElementById('sceneNameInput').value || "Unnamed";
+                scene.text = document.getElementById('editorText').value;
+                scene.filter = document.getElementById('editorFilter').value;
+                
+                // Atualiza o Canvas visual
+                const canvas = document.getElementById('editorCanvas');
+                canvas.className = `story-canvas ${scene.filter}`;
+                
+                if(oldName !== scene.name) this.renderSceneList();
+
+                // Atrasa o save real no banco para não travar o navegador
+                clearTimeout(this.saveTimeout);
+                this.saveTimeout = setTimeout(() => {
+                    this.saveDb();
+                }, 500);
+            },
+
             saveDb() {
+                if(this.currentId) this.data[this.currentId].updated = Date.now();
                 try {
-                    localStorage.setItem('dearend_v2', JSON.stringify(this.data));
+                    localStorage.setItem('dearend_v3', JSON.stringify(this.data));
                 } catch(e) {
-                    alert("Storage limit reached! Please delete some old stories or use lighter background images.");
+                    console.error("Storage quota reached");
                 }
             },
 
             generateId() { return Math.random().toString(36).substr(2, 9); },
 
-            // --- NAVEGAÇÃO E DASHBOARD ---
+            // --- NAVEGAÇÃO ---
             showView(id) {
                 document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
                 document.getElementById(id).classList.add('active');
@@ -318,11 +359,10 @@
                 const ids = Object.keys(this.data);
                 
                 if(ids.length === 0) {
-                    grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1; text-align: center; margin-top: 50px;">No stories found. Create your first masterpiece.</p>`;
+                    grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1; text-align: center; margin-top: 50px; font-size: 1.2rem;">No stories found. Create your first masterpiece.</p>`;
                     return;
                 }
 
-                // Ordena do mais recente para o mais antigo
                 ids.sort((a,b) => this.data[b].updated - this.data[a].updated).forEach(id => {
                     const proj = this.data[id];
                     const card = document.createElement('div');
@@ -339,7 +379,7 @@
                 });
             },
 
-            // --- GESTÃO DE PROJETOS ---
+            // --- PROJETOS ---
             createNewProject() {
                 const projId = 'proj_' + this.generateId();
                 const startScnId = 'scn_' + this.generateId();
@@ -379,18 +419,15 @@
             updateProjectTitle() {
                 if(!this.currentId) return;
                 this.data[this.currentId].title = document.getElementById('projectName').value || "Untitled";
-                this.data[this.currentId].updated = Date.now();
                 this.saveDb();
             },
 
-            // Sistema de Cartucho (Export/Import)
             exportProject() {
                 if(!this.currentId) return;
                 const projData = this.data[this.currentId];
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projData));
                 const a = document.createElement('a');
                 a.href = dataStr;
-                // Formata o nome do arquivo tirando espaços
                 const safeName = projData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
                 a.download = `${safeName}.dearend`;
                 a.click();
@@ -404,7 +441,7 @@
                     try {
                         const importedData = JSON.parse(e.target.result);
                         const newProjId = 'proj_' + this.generateId();
-                        importedData.updated = Date.now(); // Reseta a data
+                        importedData.updated = Date.now(); 
                         this.data[newProjId] = importedData;
                         this.saveDb();
                         this.openProject(newProjId);
@@ -414,7 +451,7 @@
                 event.target.value = '';
             },
 
-            // --- EDITOR LOGIC ---
+            // --- EDITOR ---
             renderEditor() {
                 this.renderSceneList();
                 this.loadSceneToEditor();
@@ -437,7 +474,6 @@
                     list.appendChild(div);
                 });
                 
-                // Atualiza os dropdowns de escolha caso o nome das cenas tenha mudado
                 this.renderEditorChoices();
             },
 
@@ -456,26 +492,6 @@
                 this.renderEditorChoices();
             },
 
-            updateCurrentScene() {
-                const proj = this.data[this.currentId];
-                const scene = proj.scenes[this.currentSceneId];
-                
-                const oldName = scene.name;
-                scene.name = document.getElementById('sceneNameInput').value || "Unnamed";
-                scene.text = document.getElementById('editorText').value;
-                scene.filter = document.getElementById('editorFilter').value;
-                
-                // Atualiza o visual
-                const canvas = document.getElementById('editorCanvas');
-                canvas.className = `story-canvas ${scene.filter}`;
-                
-                proj.updated = Date.now();
-                this.saveDb();
-                
-                // Se o nome mudou, re-renderiza a lista do lado
-                if(oldName !== scene.name) this.renderSceneList();
-            },
-
             addScene() {
                 const proj = this.data[this.currentId];
                 const id = 'scn_' + this.generateId();
@@ -491,10 +507,9 @@
             deleteScene(id, event) {
                 event.stopPropagation();
                 const proj = this.data[this.currentId];
-                if(id === proj.startScene) return; // Proteção
+                if(id === proj.startScene) return; 
                 
                 delete proj.scenes[id];
-                // Limpa referências órfãs
                 Object.values(proj.scenes).forEach(s => {
                     s.choices.forEach(c => { if(c.target === id) c.target = ""; });
                 });
@@ -523,17 +538,17 @@
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX = 1280; // Boa resolução para VN sem destruir localStorage
+                    const MAX = 1280; 
                     let w = img.width; let h = img.height;
                     if (w > MAX) { h *= MAX / w; w = MAX; }
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    callback(canvas.toDataURL('image/jpeg', 0.7)); // Compressão agressiva e elegante
+                    callback(canvas.toDataURL('image/jpeg', 0.7)); 
                 };
                 img.src = dataUrl;
             },
 
-            // --- SISTEMA DE ESCOLHAS ---
+            // --- ESCOLHAS (CHOICES) ---
             addChoice() {
                 const scene = this.data[this.currentId].scenes[this.currentSceneId];
                 if(scene.choices.length >= 4) return;
@@ -554,7 +569,7 @@
                     
                     const input = document.createElement('input');
                     input.className = 'choice-input'; input.value = choice.text;
-                    input.oninput = (e) => { choice.text = e.target.value; this.saveDb(); };
+                    input.oninput = (e) => { choice.text = e.target.value; this.triggerSave(); };
                     
                     const select = document.createElement('select');
                     select.className = 'choice-target';
@@ -580,7 +595,7 @@
                 });
             },
 
-            // --- O MODO LEITOR (PLAYER) ---
+            // --- PLAYER ---
             playProject() {
                 if(!this.currentId) return;
                 const proj = this.data[this.currentId];
@@ -603,14 +618,12 @@
                 bg.className = scene.filter;
 
                 document.getElementById('player-text').innerText = scene.text;
-                
                 const choicesDiv = document.getElementById('player-choices');
                 choicesDiv.innerHTML = '';
 
-                // Se não há escolhas OU nenhuma escolha aponta para uma cena válida = Fim de Jogo
-                const hasValidPath = scene.choices.length > 0 && scene.choices.some(c => c.target !== "");
-                
-                if (!hasValidPath) {
+                // A CORREÇÃO ABSOLUTA DA LÓGICA DE FIM
+                if (scene.choices.length === 0) {
+                    // A cena não tem botões criados = A história para aqui.
                     const btn = document.createElement('button');
                     btn.className = 'player-choice-btn';
                     btn.style.borderColor = "var(--brand)";
@@ -618,25 +631,34 @@
                     btn.onclick = () => this.generateBooklet();
                     choicesDiv.appendChild(btn);
                 } else {
+                    // A cena tem opções. Vamos renderizar todas.
                     scene.choices.forEach(choice => {
-                        if(!choice.target) return; // Pula botões vazios no player
                         const btn = document.createElement('button');
                         btn.className = 'player-choice-btn';
                         btn.innerText = choice.text;
                         btn.onclick = () => {
                             this.playState.history.push({ text: scene.text, choice: choice.text });
-                            this.playState.current = choice.target;
-                            this.renderPlayerScene();
+                            
+                            // Se ESSA escolha específica for "Fim", chame o livrinho
+                            if (choice.target === "") {
+                                this.generateBooklet();
+                            } else {
+                                this.playState.current = choice.target;
+                                this.renderPlayerScene();
+                            }
                         };
                         choicesDiv.appendChild(btn);
                     });
                 }
             },
 
-            // --- O LIVRINHO DE CONSEQUÊNCIAS (EXPORT PNG) ---
+            // --- BOOKLET ---
             generateBooklet() {
                 const finalScene = this.data[this.currentId].scenes[this.playState.current];
-                if(finalScene) this.playState.history.push({ text: finalScene.text, choice: dict[this.lang].endReached });
+                if(finalScene && finalScene.choices.length === 0) {
+                    // Só marca o "end reached" forçado se não havia opções
+                    this.playState.history.push({ text: finalScene.text, choice: dict[this.lang].endReached });
+                }
 
                 const logs = document.getElementById('bookletLogs');
                 logs.innerHTML = '';
@@ -670,7 +692,7 @@
                 });
             },
 
-            // --- TRADUÇÃO ---
+            // --- LANGUAGE ---
             changeLanguage(l) {
                 this.lang = l;
                 localStorage.setItem('dearend_lang', l);
