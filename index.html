@@ -1,721 +1,2428 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DearEnd Studio | Finaltime Studios</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Montserrat:wght@900&family=VT323&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DearEnd Studio v2.0 | Finaltime Studios</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono&family=Crimson+Pro:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070a;
+  --surface: #111117;
+  --surface2: #1a1a24;
+  --surface3: #22222f;
+  --border: #2a2a3a;
+  --border2: #3a3a50;
+  --text: #e8e8f0;
+  --text2: #9090b0;
+  --text3: #5a5a7a;
+  --accent: #c084fc;
+  --accent2: #818cf8;
+  --accent3: #34d399;
+  --danger: #f87171;
+  --warn: #fb923c;
+  --gold: #fbbf24;
+  --brand: #c084fc;
+  --brand-dim: rgba(192,132,252,0.12);
+  --glow: rgba(192,132,252,0.4);
+  --r: 8px;
+  --r2: 12px;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-story: 'Crimson Pro', serif;
+}
 
-        :root {
-            --bg-base: #09090b;
-            --bg-panel: #18181b;
-            --bg-elevated: #27272a;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --accent: #e4e4e7;
-            --accent-hover: #ffffff;
-            --border: #3f3f46;
-            --brand: #991b1b; 
-            
-            --font-ui: 'Inter', sans-serif;
-            --font-display: 'Montserrat', sans-serif;
-            --font-story: 'Courier New', Courier, monospace;
-        }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font-body)}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+/* SCROLLBARS */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
 
-        body {
-            font-family: var(--font-ui); background-color: var(--bg-base); color: var(--text-main);
-            min-height: 100vh; overflow: hidden; display: flex; flex-direction: column;
-        }
+/* VIEWS */
+.view{display:none;height:100vh;width:100vw;position:fixed;inset:0;flex-direction:column}
+.view.active{display:flex;animation:vIn 0.4s cubic-bezier(0.16,1,0.3,1)}
+@keyframes vIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-        /* --- NAVBAR & LOGO --- */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 32px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.5); position: relative;
-        }
-        
-        .brand-container { display: flex; align-items: center; gap: 14px; cursor: pointer; transition: opacity 0.2s; }
-        .brand-container:hover { opacity: 0.8; }
-        
-        /* Aqui o logo vai aparecer. Se ele não existir ainda, fica escondido suavemente */
-        .nav-logo { height: 38px; width: auto; object-fit: contain; border-radius: 4px; }
-        
-        .brand { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #fff; text-transform: uppercase; margin-top: 2px;}
-        .brand span { color: var(--brand); font-weight: 400; }
-        .nav-controls { display: flex; gap: 12px; align-items: center; }
+/* TOPBAR */
+.topbar{
+  height:56px;min-height:56px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;background:rgba(7,7,10,0.8);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);z-index:999;position:relative;
+}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-mark{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,#c084fc,#818cf8);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.logo-text{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text)}
+.logo-text span{color:var(--accent);font-style:italic}
+.logo-badge{font-size:0.6rem;background:var(--brand-dim);border:1px solid var(--accent);color:var(--accent);padding:2px 6px;border-radius:99px;font-family:var(--font-mono);letter-spacing:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
 
-        button, select, input[type="text"] {
-            background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);
-            padding: 8px 16px; border-radius: 4px; font-family: var(--font-ui); font-size: 0.85rem;
-            font-weight: 600; transition: all 0.2s; outline: none;
-        }
-        button { cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
-        button:hover { background: #3f3f46; border-color: var(--text-muted); }
-        .btn-primary { background: var(--text-main); color: var(--bg-base); border-color: var(--text-main); }
-        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-brand { background: rgba(153, 27, 27, 0.1); border-color: var(--brand); color: var(--brand); }
-        .btn-brand:hover { background: var(--brand); color: white; }
-        .btn-danger { background: transparent; color: #ef4444; border-color: #ef4444; }
-        .btn-danger:hover { background: #ef4444; color: white; }
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);
+  font-family:var(--font-body);font-size:0.82rem;font-weight:500;cursor:pointer;
+  border:1px solid transparent;transition:all 0.18s;white-space:nowrap;outline:none;
+}
+.btn:active{transform:scale(0.97)}
+.btn-ghost{background:transparent;border-color:var(--border);color:var(--text2)}
+.btn-ghost:hover{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+.btn-filled{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+.btn-filled:hover{background:var(--surface3);border-color:var(--border2)}
+.btn-accent{background:linear-gradient(135deg,#c084fc,#818cf8);border:none;color:#fff;font-weight:600}
+.btn-accent:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-danger{background:transparent;border-color:var(--danger);color:var(--danger)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-success{background:transparent;border-color:var(--accent3);color:var(--accent3)}
+.btn-success:hover{background:var(--accent3);color:#000}
+.btn-sm{padding:5px 10px;font-size:0.75rem}
+.btn-lg{padding:12px 24px;font-size:0.95rem}
+.btn-icon{padding:7px;aspect-ratio:1}
 
-        .watermark { position: absolute; bottom: 12px; right: 16px; font-family: var(--font-display); font-size: 0.8rem; color: rgba(255, 255, 255, 0.15); letter-spacing: 2px; font-weight: 900; z-index: 50; pointer-events: none; text-transform: uppercase; }
+/* INPUTS */
+input[type=text],input[type=number],textarea,select{
+  background:var(--surface);border:1px solid var(--border);color:var(--text);
+  border-radius:var(--r);font-family:var(--font-body);font-size:0.85rem;padding:8px 12px;
+  outline:none;transition:border 0.18s;width:100%;
+}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--accent)}
+input[type=file]{display:none}
+select option{background:var(--surface2)}
+textarea{resize:vertical;line-height:1.6}
 
-        /* Views Setup */
-        .view { display: none; height: calc(100vh - 65px); width: 100%; position: relative; }
-        .view.active { display: flex; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;font-size:0.72rem;font-weight:600}
+.badge-purple{background:var(--brand-dim);color:var(--accent);border:1px solid rgba(192,132,252,0.3)}
+.badge-green{background:rgba(52,211,153,0.1);color:var(--accent3);border:1px solid rgba(52,211,153,0.3)}
+.badge-orange{background:rgba(251,146,60,0.1);color:var(--warn);border:1px solid rgba(251,146,60,0.3)}
 
-        /* --- HOME (DASHBOARD) --- */
-        /* Imagem de Fundo Permanente na Home + Filtro Escuro */
-        #view-home { 
-            flex-direction: column; padding: 40px; overflow-y: auto; 
-            background: linear-gradient(to bottom, rgba(9,9,11,0.85) 0%, rgba(24,24,27,0.95) 100%), url('home-bg.jpg') center/cover no-repeat; 
-        }
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; max-width: 1200px; margin-inline: auto; width: 100%; }
-        .home-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; text-transform: uppercase; text-shadow: 0 4px 12px rgba(0,0,0,0.8); }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; max-width: 1200px; margin-inline: auto; width: 100%; }
-        
-        .project-card { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 6px; padding: 24px; transition: all 0.2s; position: relative; overflow: hidden; }
-        .project-card:hover { border-color: var(--brand); box-shadow: 0 10px 30px rgba(153, 27, 27, 0.2); transform: translateY(-3px); background: rgba(24, 24, 27, 0.95);}
-        .card-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; color: #fff; }
-        .card-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
-        .card-actions { display: flex; gap: 8px; }
+/* TAG */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:600;background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
 
-        /* --- EDITOR VIEW --- */
-        .sidebar { width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
-        .project-name-input { width: 100%; background: var(--bg-base); font-size: 1.1rem; font-weight: 800; border-color: transparent; padding: 8px; color: var(--brand); border-bottom: 1px solid var(--border); border-radius: 0; }
-        .project-name-input:focus { border-color: var(--brand); }
-        
-        .scene-list { flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-        .scene-item { padding: 12px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
-        .scene-item:hover { border-color: var(--text-muted); }
-        .scene-item.active { border-color: var(--brand); background: rgba(153, 27, 27, 0.1); border-left: 4px solid var(--brand); }
-        .del-scene { background: transparent; border: none; color: var(--text-muted); padding: 4px; font-size: 0.7rem; }
-        .del-scene:hover { color: #ef4444; }
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:8px 0}
 
-        .editor-main { flex-grow: 1; display: flex; flex-direction: column; position: relative; background: #000; }
-        
-        .story-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 60px; background-size: cover; background-position: center; transition: filter 0.3s; }
-        
-        /* Filters */
-        .filter-none { filter: none; }
-        .filter-grime { filter: grayscale(80%) sepia(30%) contrast(150%) brightness(0.8); }
-        .filter-noir { filter: grayscale(100%) contrast(200%) brightness(0.7); }
-        .filter-sepia { filter: sepia(80%) contrast(120%); }
+/* TOOLTIP */
+[data-tip]{position:relative}
+[data-tip]:hover::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--surface3);color:var(--text);padding:5px 10px;border-radius:6px;
+  font-size:0.75rem;white-space:nowrap;z-index:9999;border:1px solid var(--border2);pointer-events:none;
+}
 
-        /* Story Textbox */
-        .textbox-container { width: 90%; max-width: 1000px; background: rgba(0, 0, 0, 0.75); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 30px; z-index: 10; backdrop-filter: blur(8px); }
-        .story-text-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-family: var(--font-story); font-size: 1.3rem; resize: none; outline: none; line-height: 1.6; text-align: center; }
+/* ========== HOME VIEW ========== */
+#view-home{overflow:hidden;background:var(--bg)}
+.home-body{flex:1;overflow-y:auto;padding:32px}
+.home-hero{
+  max-width:1100px;margin:0 auto 40px;display:flex;align-items:center;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;
+}
+.home-heading{font-family:var(--font-display);font-size:2rem;font-weight:900;letter-spacing:-0.5px}
+.home-heading span{
+  background:linear-gradient(135deg,#c084fc,#818cf8,#34d399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.home-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-        /* Tools Panel */
-        .editor-tools { position: absolute; top: 20px; right: 20px; background: rgba(24, 24, 27, 0.95); border: 1px solid var(--border); padding: 20px; border-radius: 6px; z-index: 20; display: flex; flex-direction: column; gap: 16px; width: 320px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .tool-group { display: flex; flex-direction: column; gap: 6px; }
-        .tool-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
-        
-        .choice-editor-row { display: flex; gap: 8px; align-items: center; background: #000; padding: 8px; border: 1px solid #333; border-radius: 4px;}
-        .choice-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 4px; }
-        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 6px; cursor: pointer; }
+/* Story Cards */
+.story-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.story-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  overflow:hidden;cursor:pointer;transition:all 0.22s;position:relative;
+}
+.story-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+.story-card-thumb{
+  height:150px;background:var(--surface2);position:relative;
+  background-size:cover;background-position:center;overflow:hidden;
+}
+.story-card-thumb-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 30%,rgba(7,7,10,0.9) 100%);
+}
+.story-card-genre{position:absolute;top:10px;left:10px}
+.story-card-body{padding:16px}
+.story-card-title{font-family:var(--font-display);font-size:1.15rem;font-weight:700;margin-bottom:6px;color:var(--text)}
+.story-card-meta{font-size:0.75rem;color:var(--text3);display:flex;gap:12px;margin-bottom:14px}
+.story-card-meta span{display:flex;align-items:center;gap:4px}
+.story-card-actions{display:flex;gap:6px}
+.empty-state{
+  grid-column:1/-1;text-align:center;padding:80px 20px;
+  color:var(--text3);
+}
+.empty-icon{font-size:4rem;margin-bottom:16px;opacity:0.3}
+.empty-title{font-family:var(--font-display);font-size:1.5rem;margin-bottom:8px;color:var(--text2)}
 
-        input[type="file"] { display: none; }
+/* ========== EDITOR VIEW ========== */
+#view-editor{flex-direction:row}
+.editor-sidebar{
+  width:260px;min-width:260px;background:var(--surface);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  transition:width 0.25s;overflow:hidden;
+}
+.editor-sidebar.collapsed{width:0;min-width:0}
+.sidebar-top{padding:16px;border-bottom:1px solid var(--border)}
+.sidebar-project-name{
+  font-family:var(--font-display);font-size:1rem;font-weight:700;
+  background:transparent;border:none;border-bottom:1px solid var(--border);
+  color:var(--accent);padding:6px 0;border-radius:0;font-size:1.05rem;
+}
+.sidebar-project-name:focus{border-bottom-color:var(--accent)}
+.sidebar-tabs{display:flex;gap:4px;padding:12px 16px 0;border-bottom:1px solid var(--border)}
+.stab{
+  flex:1;text-align:center;padding:6px;font-size:0.72rem;font-weight:600;
+  cursor:pointer;border-radius:6px 6px 0 0;color:var(--text3);
+  border:1px solid transparent;border-bottom:none;transition:all 0.18s;
+}
+.stab.active{background:var(--surface2);color:var(--accent);border-color:var(--border)}
+.sidebar-panel{flex:1;overflow-y:auto;padding:12px}
+.sidebar-panel.hidden{display:none}
 
-        /* --- PLAYER VIEW --- */
-        #view-player { background: #000; justify-content: center; align-items: flex-end; padding-bottom: 60px; }
-        #player-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; transition: background 0.5s ease; }
-        .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 2; pointer-events: none; }
-        
-        #player-content { width: 90%; max-width: 1000px; z-index: 10; display: flex; flex-direction: column; gap: 30px; }
-        .player-text-box { background: rgba(0, 0, 0, 0.6); border-top: 1px solid #444; border-bottom: 1px solid #444; padding: 40px; text-align: center; backdrop-filter: blur(4px); }
-        #player-text { font-family: var(--font-story); font-size: 1.5rem; line-height: 1.6; color: #fff; text-shadow: 1px 1px 2px #000;}
-        
-        #player-choices { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .player-choice-btn { width: 100%; max-width: 600px; background: rgba(0,0,0,0.8); border: 1px solid #555; color: #e4e4e7; padding: 16px; font-family: var(--font-ui); font-size: 1.1rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; }
-        .player-choice-btn:hover { background: var(--text-main); color: #000; border-color: var(--text-main); transform: scale(1.02); }
-        
-        /* Botões Flutuantes Globais para evitar bugs de ficar preso */
-        .player-controls { position: absolute; top: 20px; right: 20px; z-index: 999; }
+/* Scene List */
+.scene-item{
+  display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:var(--r);
+  cursor:pointer;transition:all 0.15s;border:1px solid transparent;margin-bottom:4px;
+}
+.scene-item:hover{background:var(--surface2)}
+.scene-item.active{background:var(--brand-dim);border-color:rgba(192,132,252,0.3);color:var(--accent)}
+.scene-item-icon{font-size:1rem;flex-shrink:0}
+.scene-item-name{flex:1;font-size:0.83rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scene-item-badge{font-size:0.65rem;background:var(--surface3);padding:2px 5px;border-radius:4px;color:var(--text3)}
+.scene-del{background:none;border:none;color:var(--text3);cursor:pointer;padding:3px;font-size:0.75rem;flex-shrink:0;border-radius:4px}
+.scene-del:hover{color:var(--danger);background:rgba(248,113,113,0.1)}
 
-        /* --- BOOKLET VIEW --- */
-        #view-booklet { flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; background: #111; }
-        #bookletContent { width: 100%; max-width: 800px; background: #18181b; border: 1px solid #333; padding: 60px; position: relative; margin-top: 40px; }
-        .booklet-title { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 40px; text-align: center; text-transform: uppercase; color: #fff; border-bottom: 2px solid var(--brand); padding-bottom: 16px; }
-        .log-entry { margin-bottom: 30px; padding-left: 20px; border-left: 3px solid #444; position: relative; }
-        .log-entry::before { content: ''; position: absolute; left: -7px; top: 0; width: 11px; height: 11px; background: var(--brand); border-radius: 50%; }
-        .log-text { font-family: var(--font-story); font-size: 1.1rem; color: #ccc; line-height: 1.6; margin-bottom: 12px; }
-        .log-choice { font-family: var(--font-ui); font-size: 0.9rem; color: var(--brand); font-weight: bold; text-transform: uppercase; background: rgba(153,27,27,0.1); display: inline-block; padding: 4px 8px; border-radius: 4px;}
+/* Chars */
+.char-card{
+  display:flex;align-items:center;gap:10px;padding:10px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+  margin-bottom:8px;cursor:pointer;transition:all 0.15s;
+}
+.char-card:hover{border-color:var(--border2)}
+.char-avatar{
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:1.1rem;flex-shrink:0;
+}
+.char-name{font-size:0.85rem;font-weight:600}
+.char-role{font-size:0.72rem;color:var(--text3)}
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: var(--border); }
-    </style>
+/* EDITOR CENTER */
+.editor-center{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.editor-canvas{
+  flex:1;position:relative;background:#000;overflow:hidden;
+  background-size:cover;background-position:center;
+}
+.editor-canvas-empty{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;color:var(--text3);
+  pointer-events:none;
+}
+.canvas-overlay{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.6) 70%,rgba(0,0,0,0.85) 100%);
+}
+.char-display{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  display:flex;gap:40px;z-index:2;align-items:flex-end;
+}
+.char-sprite{text-align:center;transition:all 0.3s}
+.char-sprite-avatar{font-size:4rem;line-height:1}
+.char-sprite-name{font-size:0.7rem;color:var(--text2);margin-top:4px}
+
+/* Textbox */
+.textbox-area{
+  position:absolute;bottom:0;left:0;right:0;z-index:5;
+  padding:0 10% 20px;
+}
+.speaker-label{
+  display:inline-block;padding:4px 12px;border-radius:6px 6px 0 0;
+  font-size:0.78rem;font-weight:600;font-family:var(--font-mono);margin-bottom:-1px;
+  background:var(--surface2);border:1px solid var(--border2);color:var(--accent);
+}
+.story-textbox{
+  background:rgba(7,7,10,0.88);backdrop-filter:blur(12px);
+  border:1px solid var(--border2);border-radius:0 var(--r2) var(--r2) var(--r2);
+  padding:20px 24px;
+}
+.story-textbox-input{
+  width:100%;background:transparent;border:none;color:var(--text);
+  font-family:var(--font-story);font-size:1.25rem;line-height:1.65;
+  resize:none;outline:none;min-height:80px;
+}
+.textbox-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px}
+.speaker-select{
+  background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+  padding:4px 8px;border-radius:6px;font-size:0.75rem;max-width:160px;
+}
+
+/* Choices preview */
+.choices-preview{
+  position:absolute;bottom:0;left:0;right:0;z-index:6;
+  padding:0 10% 20px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none;
+  display:none;
+}
+.choice-bubble{
+  background:rgba(7,7,10,0.7);border:1px solid var(--border2);
+  border-radius:99px;padding:8px 16px;font-size:0.82rem;color:var(--text2);
+  font-style:italic;
+}
+
+/* EDITOR RIGHT PANEL */
+.editor-right{
+  width:280px;min-width:280px;background:var(--surface);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;transition:width 0.25s;
+}
+.editor-right.collapsed{width:0;min-width:0}
+.right-tabs{display:flex;border-bottom:1px solid var(--border)}
+.rtab{
+  flex:1;padding:10px 4px;text-align:center;font-size:0.7rem;font-weight:600;
+  cursor:pointer;color:var(--text3);transition:all 0.15s;border-bottom:2px solid transparent;
+  white-space:nowrap;
+}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.rtab:hover:not(.active){color:var(--text2)}
+.right-panel{flex:1;overflow-y:auto;padding:14px;display:none}
+.right-panel.active{display:block}
+.right-section{margin-bottom:18px}
+.right-section-label{
+  font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.filter-btn{
+  padding:8px 6px;text-align:center;font-size:0.72rem;cursor:pointer;
+  border-radius:var(--r);border:2px solid transparent;transition:all 0.15s;
+  font-weight:600;color:var(--text2);background:var(--surface2);
+}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:var(--brand-dim)}
+
+/* Choices Editor */
+.choice-row{
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+  padding:10px;margin-bottom:8px;
+}
+.choice-row-top{display:flex;gap:6px;margin-bottom:6px;align-items:center}
+.choice-text-input{flex:1;background:var(--bg);border:1px solid var(--border);padding:6px 8px;border-radius:6px;font-size:0.82rem;color:var(--text)}
+.choice-row-bottom{display:flex;gap:6px;align-items:center}
+.choice-target-select{flex:1;background:var(--bg);border:1px solid var(--border);padding:5px 8px;border-radius:6px;font-size:0.75rem;color:var(--text2)}
+
+/* Music */
+.music-row{display:flex;gap:6px;align-items:center}
+.music-status{font-size:0.72rem;color:var(--text3);margin-top:4px}
+
+/* Quiz editor */
+.quiz-card{
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+  padding:12px;margin-bottom:8px;
+}
+.quiz-option-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.quiz-correct-btn{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);
+  cursor:pointer;flex-shrink:0;transition:all 0.15s;background:transparent;padding:0;
+}
+.quiz-correct-btn.correct{background:var(--accent3);border-color:var(--accent3)}
+
+/* Annotations */
+.annotation-item{
+  background:var(--surface2);border-left:3px solid var(--accent);
+  border-radius:0 var(--r) var(--r) 0;padding:10px;margin-bottom:8px;
+  font-size:0.82rem;line-height:1.5;
+}
+
+/* ========== PLAYER VIEW ========== */
+#view-player{background:#000;align-items:flex-end;justify-content:center}
+#pbg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:1;transition:all 0.7s ease}
+.player-gradient{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(to bottom,transparent 20%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.95) 100%);
+}
+.player-hud{
+  position:absolute;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.6),transparent);
+}
+.player-title{font-family:var(--font-display);font-size:0.95rem;color:rgba(255,255,255,0.7);font-style:italic}
+.player-progress{
+  height:3px;background:rgba(255,255,255,0.1);border-radius:99px;
+  flex:1;margin:0 16px;overflow:hidden;
+}
+.player-progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s ease;border-radius:99px}
+
+/* Chars on player */
+.player-chars{
+  position:absolute;bottom:0;left:0;right:0;z-index:3;
+  display:flex;justify-content:center;align-items:flex-end;gap:60px;
+  padding-bottom:220px;pointer-events:none;
+}
+.pchar{text-align:center;transition:all 0.4s}
+.pchar.active{transform:scale(1.1)}
+.pchar.inactive{opacity:0.35;filter:grayscale(80%)}
+.pchar-avatar{font-size:5rem;line-height:1}
+.pchar-name{
+  font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.6);
+  margin-top:4px;background:rgba(0,0,0,0.5);padding:2px 8px;border-radius:99px;
+}
+
+/* Player content */
+.player-content{
+  position:relative;z-index:10;width:100%;max-width:860px;
+  margin:0 20px;padding:0 0 32px;display:flex;flex-direction:column;gap:12px;
+}
+.player-speaker{
+  font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  font-family:var(--font-mono);padding-left:4px;margin-bottom:-6px;
+}
+.player-box{
+  background:rgba(7,7,10,0.85);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:var(--r2);padding:24px 28px;
+  animation:boxIn 0.3s ease;
+}
+@keyframes boxIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+#ptext{font-family:var(--font-story);font-size:1.35rem;line-height:1.7;color:#f0f0f8}
+.player-choices-grid{display:flex;flex-direction:column;gap:8px}
+.pchoice{
+  background:rgba(7,7,10,0.7);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:var(--r2);
+  padding:14px 20px;font-size:1rem;color:rgba(255,255,255,0.85);
+  cursor:pointer;transition:all 0.2s;text-align:left;font-family:var(--font-body);
+  display:flex;align-items:center;gap:12px;
+}
+.pchoice:hover{background:rgba(192,132,252,0.15);border-color:var(--accent);color:#fff;transform:translateX(4px)}
+.pchoice-arrow{opacity:0;transition:opacity 0.2s;color:var(--accent)}
+.pchoice:hover .pchoice-arrow{opacity:1}
+
+/* Quiz player */
+.quiz-player-card{
+  background:rgba(7,7,10,0.85);backdrop-filter:blur(16px);
+  border:1px solid rgba(192,132,252,0.3);border-radius:var(--r2);
+  padding:24px;animation:boxIn 0.3s ease;
+}
+.quiz-question{font-family:var(--font-display);font-size:1.2rem;margin-bottom:16px;color:var(--text)}
+.quiz-opt{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;
+  border:1px solid var(--border2);border-radius:var(--r);margin-bottom:8px;
+  cursor:pointer;transition:all 0.18s;background:var(--surface2);
+}
+.quiz-opt:hover{border-color:var(--accent);background:var(--brand-dim)}
+.quiz-opt.correct{background:rgba(52,211,153,0.15);border-color:var(--accent3)}
+.quiz-opt.wrong{background:rgba(248,113,113,0.1);border-color:var(--danger)}
+.quiz-letter{
+  width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;font-size:0.75rem;
+  font-weight:700;flex-shrink:0;
+}
+.quiz-feedback{padding:12px;border-radius:var(--r);margin-top:12px;font-size:0.9rem;font-weight:500}
+.quiz-feedback.ok{background:rgba(52,211,153,0.1);border:1px solid var(--accent3);color:var(--accent3)}
+.quiz-feedback.fail{background:rgba(248,113,113,0.1);border:1px solid var(--danger);color:var(--danger)}
+
+/* Annotation callout */
+.annotation-callout{
+  background:rgba(192,132,252,0.12);border:1px solid rgba(192,132,252,0.3);
+  border-radius:var(--r2);padding:16px 20px;animation:boxIn 0.3s;
+}
+.annotation-callout-label{font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;text-transform:uppercase}
+.annotation-callout-text{font-size:0.95rem;line-height:1.6;color:var(--text)}
+
+/* ========== BOOKLET VIEW ========== */
+#view-booklet{overflow:hidden;background:var(--bg)}
+#view-booklet .book-body{flex:1;overflow-y:auto;padding:32px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.booklet-paper{
+  width:100%;max-width:700px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:var(--r2);padding:50px;
+}
+.booklet-paper-title{font-family:var(--font-display);font-size:2rem;font-weight:900;text-align:center;margin-bottom:6px}
+.booklet-paper-subtitle{text-align:center;font-size:0.85rem;color:var(--text3);margin-bottom:40px}
+.booklet-entry{border-left:2px solid var(--border2);padding-left:20px;margin-bottom:24px;position:relative}
+.booklet-entry::before{
+  content:'';position:absolute;left:-5px;top:4px;width:8px;height:8px;
+  border-radius:50%;background:var(--accent);
+}
+.booklet-scene-name{font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.booklet-text{font-family:var(--font-story);font-size:1.05rem;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.booklet-choice{font-size:0.8rem;font-weight:600;color:var(--text3);font-style:italic}
+.booklet-chapter-tag{display:inline-block;padding:2px 8px;background:var(--brand-dim);color:var(--accent);border-radius:4px;font-size:0.7rem;font-weight:700;margin-bottom:8px}
+
+/* ========== FLOW MAP VIEW ========== */
+#view-flowmap{overflow:hidden}
+.flowmap-body{flex:1;overflow:hidden;position:relative;background:var(--bg)}
+#flowmap-canvas{width:100%;height:100%;cursor:grab;position:relative}
+#flowmap-canvas:active{cursor:grabbing}
+.flow-node{
+  position:absolute;background:var(--surface);border:2px solid var(--border2);
+  border-radius:var(--r2);padding:12px 16px;min-width:160px;max-width:200px;
+  cursor:pointer;transition:all 0.2s;user-select:none;
+}
+.flow-node:hover{border-color:var(--accent);z-index:10}
+.flow-node.start{border-color:var(--accent3)}
+.flow-node.selected{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.flow-node-title{font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flow-node-preview{font-size:0.68rem;color:var(--text3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.flow-node-choices-count{margin-top:8px;font-size:0.65rem;color:var(--accent);font-weight:600}
+.flow-svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
+
+/* ========== MODALS ========== */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+  z-index:9990;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;animation:fadeIn 0.2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--r2);
+  max-width:520px;width:100%;max-height:80vh;overflow-y:auto;animation:mIn 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes mIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:1.2rem;padding:4px;border-radius:4px}
+.modal-close:hover{color:var(--text);background:var(--surface2)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.form-row{margin-bottom:14px}
+.form-label{font-size:0.75rem;font-weight:600;color:var(--text2);margin-bottom:6px;display:block}
+.form-hint{font-size:0.7rem;color:var(--text3);margin-top:4px}
+
+/* New Story modal - genre grid */
+.genre-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.genre-card{
+  padding:12px 8px;text-align:center;border-radius:var(--r);border:2px solid var(--border);
+  cursor:pointer;transition:all 0.15s;font-size:0.75rem;font-weight:600;color:var(--text2);
+}
+.genre-card:hover{border-color:var(--border2);color:var(--text)}
+.genre-card.selected{border-color:var(--accent);background:var(--brand-dim);color:var(--accent)}
+.genre-icon{font-size:1.5rem;display:block;margin-bottom:4px}
+
+/* Char modal */
+.color-grid{display:flex;gap:6px;flex-wrap:wrap}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;transition:all 0.15s;border:3px solid transparent}
+.color-swatch.selected{border-color:#fff;transform:scale(1.15)}
+.emoji-grid{display:flex;gap:6px;flex-wrap:wrap}
+.emoji-opt{font-size:1.5rem;cursor:pointer;padding:4px;border-radius:6px;transition:all 0.15s}
+.emoji-opt:hover,.emoji-opt.selected{background:var(--surface3)}
+
+/* AI Assistant */
+.ai-panel{
+  position:absolute;right:0;top:0;bottom:0;width:320px;background:var(--surface);
+  border-left:1px solid var(--border);z-index:50;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.ai-panel.open{transform:translateX(0)}
+.ai-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.ai-badge{
+  padding:3px 8px;border-radius:99px;font-size:0.65rem;font-weight:700;letter-spacing:1px;
+  background:linear-gradient(135deg,rgba(192,132,252,0.2),rgba(129,140,248,0.2));
+  border:1px solid var(--accent);color:var(--accent);
+}
+.ai-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.ai-msg{padding:10px 12px;border-radius:var(--r);font-size:0.82rem;line-height:1.5;max-width:90%}
+.ai-msg.ai{background:var(--brand-dim);border:1px solid rgba(192,132,252,0.2);color:var(--text);align-self:flex-start}
+.ai-msg.user{background:var(--surface3);color:var(--text2);align-self:flex-end}
+.ai-msg.typing{color:var(--text3);font-style:italic}
+.ai-input-area{padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.ai-presets{display:flex;gap:4px;flex-wrap:wrap}
+.ai-preset-btn{
+  padding:4px 8px;border-radius:99px;font-size:0.7rem;cursor:pointer;
+  background:var(--surface2);border:1px solid var(--border2);color:var(--text2);transition:all 0.15s;
+}
+.ai-preset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ai-input-row{display:flex;gap:6px}
+.ai-input{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--r);font-size:0.82rem;resize:none;min-height:36px}
+
+/* Typewriter animation */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.cursor-blink{animation:blink 1s infinite;color:var(--accent)}
+
+/* Toast */
+.toast-container{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{
+  padding:10px 18px;border-radius:99px;font-size:0.82rem;font-weight:500;
+  background:var(--surface3);border:1px solid var(--border2);color:var(--text);
+  animation:toastIn 0.3s ease;box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+.toast.ok{border-color:var(--accent3);color:var(--accent3)}
+.toast.err{border-color:var(--danger);color:var(--danger)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Certificate */
+.certificate{
+  max-width:700px;width:100%;background:linear-gradient(135deg,#1a1a24,#111117);
+  border:2px solid var(--border2);border-radius:var(--r2);padding:50px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.certificate::before{
+  content:'';position:absolute;inset:-2px;border-radius:inherit;
+  background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
+  z-index:-1;opacity:0.4;
+}
+.cert-seal{font-size:4rem;margin-bottom:16px}
+.cert-title{font-family:var(--font-display);font-size:2rem;font-weight:900;margin-bottom:6px}
+.cert-subtitle{color:var(--text3);margin-bottom:30px}
+.cert-story-name{font-family:var(--font-display);font-size:1.5rem;color:var(--accent);font-style:italic;margin-bottom:16px}
+.cert-score{font-size:3rem;font-weight:900;font-family:var(--font-mono);background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Loading screen */
+#loading-screen{
+  position:fixed;inset:0;background:var(--bg);z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  animation:fadeOut 0.5s ease 1.2s forwards;
+}
+@keyframes fadeOut{to{opacity:0;pointer-events:none;display:none}}
+.loading-logo{font-family:var(--font-display);font-size:3rem;font-weight:900;opacity:0;animation:appear 0.5s ease 0.2s forwards}
+@keyframes appear{to{opacity:1}}
+.loading-bar-wrap{width:200px;height:2px;background:var(--border);border-radius:99px;overflow:hidden}
+.loading-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;animation:lbar 1s ease 0.3s forwards;width:0}
+@keyframes lbar{to{width:100%}}
+
+/* Misc */
+.sep{display:flex;align-items:center;gap:10px;color:var(--text3);font-size:0.75rem}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* TEACH MODE badge */
+.mode-banner{
+  background:linear-gradient(90deg,rgba(52,211,153,0.1),rgba(129,140,248,0.1));
+  border-bottom:1px solid rgba(52,211,153,0.3);padding:6px 20px;
+  display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.78rem;color:var(--accent3);
+}
+
+/* Share modal share link */
+.share-link-box{
+  background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);
+  padding:10px 12px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text3);
+  word-break:break-all;cursor:text;
+}
+
+/* Responsive touches */
+@media(max-width:700px){
+  .editor-sidebar,.editor-right{display:none}
+  .editor-sidebar.mobile-open,.editor-right.mobile-open{display:flex;position:absolute;z-index:100;height:100%;top:0}
+}
+
+/* pulse animation for start node */
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,0.4)}50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+.flow-node.start{animation:pulse 2s infinite}
+
+/* Scene type icons */
+.stype-badge{font-size:0.68rem;padding:2px 6px;border-radius:4px;font-weight:700}
+.stype-story{background:rgba(192,132,252,0.15);color:var(--accent)}
+.stype-quiz{background:rgba(52,211,153,0.12);color:var(--accent3)}
+.stype-note{background:rgba(251,191,36,0.12);color:var(--gold)}
+</style>
 </head>
 <body>
 
-    <nav>
-        <div class="brand-container" onclick="app.goHome()">
-            <img src="logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
-            <div class="brand">DEAREND <span>STUDIO</span></div>
-        </div>
-        <div class="nav-controls">
-            <select id="langSelect" onchange="app.changeLanguage(this.value)">
-                <option value="en">English</option>
-                <option value="pt">Português</option>
-            </select>
-            <button id="navPlayBtn" class="btn-primary" style="display:none;" onclick="app.playProject()">▶ PLAY</button>
-            <button id="navExportBtn" style="display:none;" onclick="app.exportProject()">⬇ EXPORT .DEAREND</button>
-        </div>
-    </nav>
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loading-logo">DearEnd <span style="color:var(--accent);font-style:italic">Studio</span></div>
+  <div style="font-size:0.75rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase">v2.0 — Finaltime Studios</div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+</div>
 
-    <main id="view-home" class="view active">
-        <div class="dashboard-header">
-            <h2 class="home-title" id="t-myStories">My Stories</h2>
-            <div style="display: flex; gap: 12px;">
-                <button class="btn-primary" onclick="app.createNewProject()" id="t-create">+ NEW STORY</button>
-                <label for="importFile" class="btn-brand" style="margin:0; padding:8px 16px; border-radius:4px; font-weight:600; cursor:pointer; font-size:0.85rem; border: 1px solid var(--brand); display:flex; align-items:center;" id="t-import">IMPORT</label>
-                <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
+<!-- TOAST -->
+<div class="toast-container" id="toastZone"></div>
+
+<!-- ============ HOME ============ -->
+<div class="view active" id="view-home">
+  <div class="topbar">
+    <div class="logo" onclick="app.goHome()">
+      <div class="logo-mark">✦</div>
+      <div class="logo-text">DearEnd <span>Studio</span></div>
+      <div class="logo-badge">v2.0</div>
+    </div>
+    <div class="topbar-right">
+      <select id="langSelect" class="btn btn-ghost" onchange="app.setLang(this.value)" style="padding:6px 10px">
+        <option value="pt">🇧🇷 Português</option>
+        <option value="en">🇺🇸 English</option>
+      </select>
+    </div>
+  </div>
+  <div class="home-body">
+    <div class="home-hero">
+      <div>
+        <div class="home-heading" id="t-home-title">Suas <span>Histórias</span></div>
+        <div style="color:var(--text3);font-size:0.85rem;margin-top:6px" id="t-home-sub">Crie mundos. Ensine com narrativa. Publique sua obra.</div>
+      </div>
+      <div class="home-actions">
+        <label for="importFile" class="btn btn-ghost" id="t-import">⬆ Importar</label>
+        <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
+        <button class="btn btn-accent" onclick="app.openNewModal()" id="t-new">✦ Nova História</button>
+      </div>
+    </div>
+    <div class="story-grid" id="storyGrid"></div>
+  </div>
+</div>
+
+<!-- ============ EDITOR ============ -->
+<div class="view" id="view-editor">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="logo" onclick="app.goHome()" data-tip="Voltar ao início">
+        <div class="logo-mark">✦</div>
+      </div>
+      <div style="width:1px;height:20px;background:var(--border)"></div>
+      <input type="text" id="edProjectName" value="Minha História"
+        style="background:transparent;border:none;font-family:var(--font-display);font-size:0.95rem;font-weight:700;width:200px;color:var(--text);padding:4px;"
+        onblur="app.saveProjectName()">
+      <span id="edModeBadge" class="badge badge-purple" style="display:none">📚 Ensino</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="app.toggleAI()" data-tip="Assistente de Escrita IA" id="t-ai-btn">✨ IA</button>
+      <button class="btn btn-ghost btn-sm" onclick="app.showView('view-flowmap')" data-tip="Mapa de Fluxo">⬡ Fluxo</button>
+      <button class="btn btn-filled btn-sm" onclick="app.exportProject()">⬇ Exportar</button>
+      <button class="btn btn-accent" onclick="app.playProject()">▶ Jogar</button>
+    </div>
+  </div>
+
+  <div style="display:flex;flex:1;overflow:hidden;position:relative">
+    <!-- LEFT SIDEBAR -->
+    <div class="editor-sidebar" id="edSidebar">
+      <div class="sidebar-top">
+        <div class="right-section-label">📖 <span id="t-scenes-label">CENAS</span></div>
+        <button class="btn btn-filled btn-sm" style="width:100%" onclick="app.addScene()">+ Nova Cena</button>
+      </div>
+      <div class="sidebar-tabs">
+        <div class="stab active" onclick="app.switchSTab(this,'st-scenes')" id="t-tab-scenes">Cenas</div>
+        <div class="stab" onclick="app.switchSTab(this,'st-chars')" id="t-tab-chars">Personagens</div>
+        <div class="stab" onclick="app.switchSTab(this,'st-settings')" id="t-tab-settings">Projeto</div>
+      </div>
+      <div id="st-scenes" class="sidebar-panel" style="display:block">
+        <div id="sceneList"></div>
+      </div>
+      <div id="st-chars" class="sidebar-panel">
+        <div id="charList"></div>
+        <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick="app.openCharModal()">+ Novo Personagem</button>
+      </div>
+      <div id="st-settings" class="sidebar-panel">
+        <div class="right-section">
+          <div class="right-section-label" id="t-proj-settings">CONFIGURAÇÕES</div>
+          <div class="form-row">
+            <label class="form-label" id="t-genre-label">Gênero</label>
+            <div id="edProjectGenre" style="color:var(--text3);font-size:0.82rem;font-style:italic">Não definido</div>
+          </div>
+          <div class="form-row">
+            <label class="form-label" id="t-teach-label">Modo Ensino</label>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div id="teachToggle" class="toggle-pill" onclick="app.toggleTeachMode()" style="width:36px;height:20px;border-radius:99px;border:2px solid var(--border2);cursor:pointer;transition:all 0.2s;background:var(--surface2);position:relative">
+                <div id="teachToggleKnob" style="position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--text3);transition:all 0.2s"></div>
+              </div>
+              <span style="font-size:0.8rem;color:var(--text2)" id="t-teach-desc">Desativado</span>
             </div>
+          </div>
+          <div class="form-row">
+            <label class="form-label" id="t-cover-label">Imagem de Capa</label>
+            <label class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;cursor:pointer" for="coverUpload">📷 Upload</label>
+            <input type="file" id="coverUpload" accept="image/*" onchange="app.uploadCover(event)">
+          </div>
+          <div class="form-row">
+            <label class="form-label" id="t-desc-label">Descrição</label>
+            <textarea id="edProjectDesc" rows="3" placeholder="Sobre o que é esta história..." oninput="app.saveProjectDesc()" style="font-size:0.8rem"></textarea>
+          </div>
         </div>
-        <div class="project-grid" id="projectGrid"></div>
-        <div class="watermark">FINALTIME STUDIOS</div>
-    </main>
+      </div>
+    </div>
 
-    <main id="view-editor" class="view">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <input type="text" id="projectName" class="project-name-input" value="Untitled Story" onblur="app.updateProjectTitle()">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                    <span style="font-weight: 800; font-size: 0.8rem; color: var(--text-muted);" id="t-scenes">TIMELINE</span>
-                    <button onclick="app.addScene()" style="padding: 4px 12px; font-size: 1.2rem;">+</button>
-                </div>
+    <!-- CANVAS -->
+    <div class="editor-center">
+      <div class="editor-canvas" id="editorCanvas">
+        <div class="editor-canvas-empty" id="canvasEmpty">
+          <div style="font-size:3rem;opacity:0.2">🖼</div>
+          <div style="font-size:0.85rem" id="t-no-bg">Sem imagem de fundo — use o painel direito</div>
+        </div>
+        <div class="canvas-overlay"></div>
+
+        <!-- Characters on canvas -->
+        <div class="char-display" id="charDisplay"></div>
+
+        <!-- Textbox -->
+        <div class="textbox-area" id="textboxArea">
+          <div class="speaker-label" id="edSpeakerLabel" style="display:none">Narrador</div>
+          <div class="story-textbox">
+            <textarea class="story-textbox-input" id="editorText" rows="3"
+              placeholder="O texto da cena vai aqui..." oninput="app.triggerSave()"></textarea>
+            <div class="textbox-bottom">
+              <select class="speaker-select" id="editorSpeaker" onchange="app.updateSpeaker()">
+                <option value="">🎙 Narrador</option>
+              </select>
+              <div style="font-size:0.7rem;color:var(--text3)" id="charCounter">0 / 600</div>
             </div>
-            <div class="scene-list" id="sceneList"></div>
-        </aside>
-        
-        <section class="editor-main">
-            <div class="story-canvas" id="editorCanvas">
-                <div class="textbox-container">
-                    <textarea class="story-text-input" id="editorText" rows="5" placeholder="Scene text goes here..." oninput="app.triggerSave()"></textarea>
-                </div>
+          </div>
+        </div>
+
+        <!-- Quiz editor mode -->
+        <div class="textbox-area" id="quizEditorArea" style="display:none">
+          <div class="story-textbox">
+            <div style="color:var(--accent3);font-size:0.72rem;font-weight:700;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase">📚 QUIZ / PERGUNTA</div>
+            <input type="text" id="quizQuestion" placeholder="Pergunta..." oninput="app.saveQuiz()" style="margin-bottom:8px;background:var(--bg)">
+            <div id="quizOptionsList"></div>
+            <button class="btn btn-ghost btn-sm" onclick="app.addQuizOption()" style="margin-top:4px">+ Opção</button>
+            <div style="margin-top:12px">
+              <label class="form-label" style="font-size:0.7rem" id="t-quiz-feedback">Feedback correto</label>
+              <input type="text" id="quizFeedbackCorrect" placeholder="Ótimo! ..." oninput="app.saveQuiz()" style="margin-bottom:4px;background:var(--bg)">
+              <input type="text" id="quizFeedbackWrong" placeholder="Quase! ..." oninput="app.saveQuiz()" style="background:var(--bg)" id="t-quiz-wrong">
             </div>
-
-            <div class="editor-tools">
-                <div class="tool-group">
-                    <label id="t-sceneName">Scene Name</label>
-                    <input type="text" id="sceneNameInput" style="width: 100%; background: #000;" oninput="app.triggerSave()">
-                </div>
-                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
-                <div class="tool-group">
-                    <label id="t-bgImage">Background Image</label>
-                    <label for="bgUpload" style="background:#222; padding:8px; text-align:center; cursor:pointer; border-radius:4px; font-weight: 600; color: #fff;">UPLOAD JPG/PNG</label>
-                    <input type="file" id="bgUpload" accept="image/*" onchange="app.uploadBackground(event)">
-                </div>
-                <div class="tool-group" style="margin-top: 8px;">
-                    <label id="t-filter">Cinematic Filter</label>
-                    <select id="editorFilter" onchange="app.triggerSave()" style="width: 100%;">
-                        <option value="filter-none">None</option>
-                        <option value="filter-grime">Grime / Retro</option>
-                        <option value="filter-noir">Noir / Dark</option>
-                        <option value="filter-sepia">Corroded Sepia</option>
-                    </select>
-                </div>
-                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
-                <div class="tool-group">
-                    <label id="t-choices">Branching Choices</label>
-                    <div id="editorChoicesList" style="display: flex; flex-direction: column; gap: 6px;"></div>
-                    <button onclick="app.addChoice()" style="margin-top: 8px;">+ ADD CHOICE</button>
-                </div>
-            </div>
-            <div class="watermark">FINALTIME STUDIOS</div>
-        </section>
-    </main>
-
-    <main id="view-player" class="view">
-        <div class="player-controls">
-            <button onclick="app.exitPlayer()" id="t-exit" class="btn-danger" style="background: rgba(0,0,0,0.8); border: 1px solid #ef4444;">EXIT READ MODE</button>
+          </div>
         </div>
-        <div id="player-bg" class="filter-none"></div>
-        <div class="player-overlay"></div>
-        
-        <div id="player-content">
-            <div class="player-text-box">
-                <div id="player-text"></div>
-            </div>
-            <div id="player-choices"></div>
-        </div>
-        <div class="watermark">FINALTIME STUDIOS</div>
-    </main>
 
-    <main id="view-booklet" class="view">
-        <div class="player-controls" style="display: flex; gap: 12px;">
-            <button onclick="app.exitPlayer()" style="background: rgba(0,0,0,0.8);">BACK TO EDITOR</button>
-            <button class="btn-brand" onclick="app.downloadBooklet()" id="t-downloadBooklet" style="background: rgba(153, 27, 27, 0.8); color: white;">DOWNLOAD IMAGE</button>
+        <!-- Annotation editor mode -->
+        <div class="textbox-area" id="annotationArea" style="display:none">
+          <div class="story-textbox" style="border-left:3px solid var(--gold)">
+            <div style="color:var(--gold);font-size:0.72rem;font-weight:700;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase">📌 ANOTAÇÃO / APROFUNDAMENTO</div>
+            <textarea class="story-textbox-input" id="annotationText" rows="4"
+              placeholder="Contexto extra, curiosidade, fonte..." oninput="app.saveAnnotation()"></textarea>
+          </div>
         </div>
-        <div class="booklet-container" id="bookletContent">
-            <h1 class="booklet-title">THE PATH TAKEN</h1>
-            <div id="bookletLogs"></div>
-            <div class="watermark" style="bottom: 20px; right: 20px;">FINALTIME STUDIOS</div>
-        </div>
-    </main>
+      </div>
+    </div>
 
-    <script>
-        const dict = {
-            en: {
-                myStories: "My Stories", create: "NEW STORY", import: "IMPORT", scenes: "TIMELINE",
-                bgImage: "Background Image", filter: "Cinematic Filter", choices: "Branching Choices",
-                exit: "EXIT READ MODE", placeholder: "Scene text goes here...", newScene: "Scene",
-                endReached: "END OF STORY REACHED.", viewBooklet: "VIEW CONSEQUENCES REPORT",
-                sceneName: "Scene Name", downloadBooklet: "DOWNLOAD IMAGE", confirmDel: "Delete this story permanently?"
-            },
-            pt: {
-                myStories: "Minhas Histórias", create: "NOVA HISTÓRIA", import: "IMPORTAR", scenes: "LINHA DO TEMPO",
-                bgImage: "Imagem de Fundo", filter: "Filtro Cinematográfico", choices: "Escolhas e Caminhos",
-                exit: "SAIR DA LEITURA", placeholder: "O texto da cena vai aqui...", newScene: "Cena",
-                endReached: "FIM DA HISTÓRIA ALCANÇADO.", viewBooklet: "VER RELATÓRIO DE CONSEQUÊNCIAS",
-                sceneName: "Nome da Cena", downloadBooklet: "BAIXAR IMAGEM", confirmDel: "Deletar esta história para sempre?"
-            }
+    <!-- RIGHT PANEL -->
+    <div class="editor-right" id="edRight">
+      <div class="right-tabs">
+        <div class="rtab active" onclick="app.switchRTab(this,'rt-scene')" id="t-rt-scene">Cena</div>
+        <div class="rtab" onclick="app.switchRTab(this,'rt-choices')" id="t-rt-choices">Caminhos</div>
+        <div class="rtab" onclick="app.switchRTab(this,'rt-media')" id="t-rt-media">Mídia</div>
+        <div class="rtab" onclick="app.switchRTab(this,'rt-quiz')" id="t-rt-quiz">Quiz</div>
+      </div>
+
+      <!-- Scene tab -->
+      <div class="right-panel active" id="rt-scene">
+        <div class="right-section">
+          <div class="right-section-label" id="t-scene-name-label">NOME DA CENA</div>
+          <input type="text" id="sceneNameInput" oninput="app.triggerSave()">
+        </div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-scene-type-label">TIPO DE CENA</div>
+          <div class="filter-grid">
+            <div class="filter-btn active" data-type="story" onclick="app.setSceneType(this,'story')">📖 Narrativa</div>
+            <div class="filter-btn" data-type="quiz" onclick="app.setSceneType(this,'quiz')">🧠 Quiz</div>
+            <div class="filter-btn" data-type="note" onclick="app.setSceneType(this,'note')">📌 Nota</div>
+            <div class="filter-btn" data-type="end" onclick="app.setSceneType(this,'end')">🏁 Fim</div>
+          </div>
+        </div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-filter-label">FILTRO CINEMATOGRÁFICO</div>
+          <div class="filter-grid">
+            <div class="filter-btn active" data-filter="none" onclick="app.setFilter(this,'none')">☀ Nenhum</div>
+            <div class="filter-btn" data-filter="noir" onclick="app.setFilter(this,'noir')">🎬 Noir</div>
+            <div class="filter-btn" data-filter="sepia" onclick="app.setFilter(this,'sepia')">🟫 Sépia</div>
+            <div class="filter-btn" data-filter="grime" onclick="app.setFilter(this,'grime')">🌫 Grime</div>
+            <div class="filter-btn" data-filter="warm" onclick="app.setFilter(this,'warm')">🌅 Quente</div>
+            <div class="filter-btn" data-filter="cold" onclick="app.setFilter(this,'cold')">❄ Frio</div>
+          </div>
+        </div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-bg-label">IMAGEM DE FUNDO</div>
+          <label class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;cursor:pointer;margin-bottom:8px" for="bgUpload">📷 Upload imagem</label>
+          <input type="file" id="bgUpload" accept="image/*" onchange="app.uploadBackground(event)">
+          <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="app.clearBackground()" id="t-clear-bg">✖ Remover fundo</button>
+        </div>
+      </div>
+
+      <!-- Choices tab -->
+      <div class="right-panel" id="rt-choices">
+        <div class="right-section">
+          <div class="right-section-label" id="t-choices-label">ESCOLHAS / CAMINHOS</div>
+          <div id="editorChoicesList"></div>
+          <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick="app.addChoice()" id="t-add-choice">+ Adicionar Escolha</button>
+        </div>
+        <div class="divider"></div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-auto-label">AUTO-AVANÇAR</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <input type="checkbox" id="autoAdvCheck" onchange="app.toggleAutoAdv()" style="width:auto">
+            <label for="autoAdvCheck" style="font-size:0.8rem;color:var(--text2)" id="t-auto-check">Avançar automaticamente</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:0.75rem;color:var(--text3)" id="t-delay-label">Delay (s):</label>
+            <input type="number" id="autoAdvDelay" value="4" min="1" max="30" style="width:70px" onchange="app.saveAutoAdv()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Media tab -->
+      <div class="right-panel" id="rt-media">
+        <div class="right-section">
+          <div class="right-section-label" id="t-music-label">TRILHA SONORA (URL)</div>
+          <div class="music-row">
+            <input type="text" id="musicUrl" placeholder="YouTube, SoundCloud..." oninput="app.saveMedia()">
+          </div>
+          <div class="music-status" id="musicStatus">💡 Cole uma URL de áudio ou YouTube</div>
+        </div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-music-vol-label">VOLUME DA CENA</div>
+          <input type="range" id="musicVol" min="0" max="100" value="70" style="width:100%" onchange="app.saveMedia()">
+        </div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-trans-label">TRANSIÇÃO DE CENA</div>
+          <select id="sceneTransition" onchange="app.saveMedia()">
+            <option value="fade">Fade</option>
+            <option value="slide">Slide</option>
+            <option value="zoom">Zoom</option>
+            <option value="wipe">Wipe</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quiz/Teaching tab -->
+      <div class="right-panel" id="rt-quiz">
+        <div class="right-section">
+          <div class="right-section-label" id="t-teaching-label">FERRAMENTAS DE ENSINO</div>
+          <div style="font-size:0.78rem;color:var(--text3);line-height:1.5;margin-bottom:10px" id="t-teaching-desc">
+            Adicione quizzes interativos e anotações de aprofundamento para tornar sua história educativa.
+          </div>
+        </div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-annot-label">ANOTAÇÃO</div>
+          <textarea id="rtAnnotation" rows="4" placeholder="Contexto extra, curiosidade, referência..." oninput="app.saveAnnotationFromPanel()" style="font-size:0.8rem"></textarea>
+        </div>
+        <div class="right-section">
+          <div class="right-section-label" id="t-obj-label">OBJETIVO DE APRENDIZADO</div>
+          <input type="text" id="learningObj" placeholder="Ex: Identificar causas da Revolução..." oninput="app.saveLearningObj()">
+        </div>
+      </div>
+    </div>
+
+    <!-- AI ASSISTANT PANEL -->
+    <div class="ai-panel" id="aiPanel">
+      <div class="ai-header">
+        <div>
+          <div style="font-weight:700;font-size:0.9rem">✨ Assistente IA</div>
+          <div class="ai-badge">POWERED BY CLAUDE</div>
+        </div>
+        <button class="btn btn-ghost btn-icon btn-sm" onclick="app.toggleAI()">✕</button>
+      </div>
+      <div class="ai-messages" id="aiMessages">
+        <div class="ai-msg ai">Olá! Sou o assistente de escrita. Posso ajudar você a criar cenas, desenvolver personagens, sugerir caminhos narrativos ou melhorar seus textos. 🎭</div>
+      </div>
+      <div class="ai-input-area">
+        <div class="ai-presets">
+          <div class="ai-preset-btn" onclick="app.aiPreset('continuar')">Continuar</div>
+          <div class="ai-preset-btn" onclick="app.aiPreset('melhorar')">Melhorar</div>
+          <div class="ai-preset-btn" onclick="app.aiPreset('alternativa')">Alternativa</div>
+          <div class="ai-preset-btn" onclick="app.aiPreset('personagem')">Personagem</div>
+          <div class="ai-preset-btn" onclick="app.aiPreset('quiz')">Quiz</div>
+        </div>
+        <div class="ai-input-row">
+          <textarea class="ai-input" id="aiInput" rows="2" placeholder="Como posso ajudar?" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();app.sendAI()}"></textarea>
+          <button class="btn btn-accent btn-sm" onclick="app.sendAI()">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FLOW MAP ============ -->
+<div class="view" id="view-flowmap">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="logo-mark">⬡</div>
+      <div style="font-family:var(--font-display);font-weight:700" id="t-flow-title">Mapa de Fluxo</div>
+    </div>
+    <div class="topbar-right">
+      <span style="font-size:0.75rem;color:var(--text3)" id="t-flow-hint">Clique para editar • Arraste para mover</span>
+      <button class="btn btn-ghost btn-sm" onclick="app.showView('view-editor')">← Voltar ao Editor</button>
+    </div>
+  </div>
+  <div class="flowmap-body">
+    <div id="flowmap-canvas">
+      <svg class="flow-svg" id="flowSvg"></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PLAYER ============ -->
+<div class="view" id="view-player">
+  <div id="pbg"></div>
+  <div class="player-gradient"></div>
+  <div class="player-hud">
+    <div class="player-title" id="pTitle">História</div>
+    <div class="player-progress"><div class="player-progress-bar" id="pProgressBar" style="width:0%"></div></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="app.playerBack()" id="pBackBtn" style="display:none" id="t-back">↩ Voltar</button>
+      <button class="btn btn-danger btn-sm" onclick="app.exitPlayer()">✕ Sair</button>
+    </div>
+  </div>
+
+  <!-- teach mode banner -->
+  <div class="mode-banner" id="teachBanner" style="display:none">
+    <span>📚 Modo Ensino ativo</span>
+    <span style="color:var(--text3)">•</span>
+    <span id="teachScoreDisp">Pontuação: 0</span>
+  </div>
+
+  <div class="player-chars" id="playerChars"></div>
+
+  <div class="player-content" id="playerContent">
+    <div class="player-speaker" id="pSpeaker" style="display:none"></div>
+    <div class="player-box" id="pBox" style="display:none">
+      <div id="ptext"></div>
+    </div>
+    <div id="pAnnotation" style="display:none"></div>
+    <div id="pQuiz" style="display:none"></div>
+    <div class="player-choices-grid" id="pChoices"></div>
+  </div>
+
+  <!-- Hidden audio -->
+  <audio id="bgAudio" loop style="display:none"></audio>
+</div>
+
+<!-- ============ BOOKLET ============ -->
+<div class="view" id="view-booklet">
+  <div class="topbar">
+    <div class="logo-mark">📖</div>
+    <div style="font-family:var(--font-display);font-weight:700;margin-left:8px" id="t-booklet-title">Relatório da Jornada</div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="app.exitPlayer()">← Jogar de Novo</button>
+      <button class="btn btn-accent" onclick="app.downloadBooklet()">⬇ Baixar PDF</button>
+    </div>
+  </div>
+  <div class="book-body" id="bookBody">
+    <div class="booklet-paper" id="bookletContent">
+      <div class="cert-seal">📖</div>
+      <div class="booklet-paper-title" id="bookletTitle">Jornada Completa</div>
+      <div class="booklet-paper-subtitle" id="bookletSubtitle">Seu caminho através da história</div>
+      <div class="divider" style="margin:24px 0"></div>
+      <div id="bookletLogs"></div>
+    </div>
+    <div id="certificateZone"></div>
+  </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- New Story Modal -->
+<div class="modal-overlay" id="modal-new">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="t-new-modal-title">✦ Nova História</div>
+      <button class="modal-close" onclick="app.closeModal('modal-new')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label class="form-label" id="t-title-label">Título</label>
+        <input type="text" id="newTitle" placeholder="O nome da sua história..." style="font-size:1rem;font-family:var(--font-display);font-weight:700">
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="t-desc-modal-label">Descrição (opcional)</label>
+        <textarea id="newDesc" rows="2" placeholder="Uma breve sinopse..."></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="t-genre-modal-label">Gênero</label>
+        <div class="genre-grid" id="genreGrid">
+          <div class="genre-card" data-genre="fantasy" onclick="app.selectGenre(this)"><span class="genre-icon">⚔</span>Fantasia</div>
+          <div class="genre-card" data-genre="sci-fi" onclick="app.selectGenre(this)"><span class="genre-icon">🚀</span>Sci-Fi</div>
+          <div class="genre-card" data-genre="romance" onclick="app.selectGenre(this)"><span class="genre-icon">❤</span>Romance</div>
+          <div class="genre-card" data-genre="horror" onclick="app.selectGenre(this)"><span class="genre-icon">👻</span>Terror</div>
+          <div class="genre-card" data-genre="mystery" onclick="app.selectGenre(this)"><span class="genre-icon">🔍</span>Mistério</div>
+          <div class="genre-card" data-genre="history" onclick="app.selectGenre(this)"><span class="genre-icon">📜</span>História</div>
+          <div class="genre-card" data-genre="education" onclick="app.selectGenre(this)"><span class="genre-icon">📚</span>Educação</div>
+          <div class="genre-card" data-genre="adventure" onclick="app.selectGenre(this)"><span class="genre-icon">🗺</span>Aventura</div>
+          <div class="genre-card" data-genre="custom" onclick="app.selectGenre(this)"><span class="genre-icon">✏</span>Outro</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="t-mode-modal-label">Modo</label>
+        <div style="display:flex;gap:8px">
+          <div class="filter-btn active" id="modeStory" data-mode="story" onclick="app.selectMode(this)" style="flex:1;text-align:center">📖 Narrativa</div>
+          <div class="filter-btn" id="modeTeach" data-mode="teach" onclick="app.selectMode(this)" style="flex:1;text-align:center">📚 Ensino</div>
+        </div>
+        <div class="form-hint" id="t-mode-hint">Modo Ensino adiciona quizzes, anotações e certificado de conclusão.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="app.closeModal('modal-new')" id="t-cancel">Cancelar</button>
+      <button class="btn btn-accent" onclick="app.createProject()" id="t-create-btn">Criar ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- Character Modal -->
+<div class="modal-overlay" id="modal-char">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="t-char-modal-title">👤 Personagem</div>
+      <button class="modal-close" onclick="app.closeModal('modal-char')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label class="form-label" id="t-char-name">Nome</label>
+        <input type="text" id="charName" placeholder="Nome do personagem...">
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="t-char-role">Papel</label>
+        <input type="text" id="charRole" placeholder="Ex: Protagonista, Vilão, Mentor...">
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="t-char-avatar">Avatar</label>
+        <div class="emoji-grid" id="charEmojiGrid">
+          🧑 👩 🧔 👴 👩‍🦳 🧙 🧝 🧛 🤖 👾 🦸 🦹 🐱 🐺 🦊 👑 🎭 💀
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="t-char-color">Cor do Diálogo</label>
+        <div class="color-grid" id="charColorGrid">
+          <div class="color-swatch selected" style="background:#c084fc" data-color="#c084fc" onclick="app.selectCharColor(this)"></div>
+          <div class="color-swatch" style="background:#818cf8" data-color="#818cf8" onclick="app.selectCharColor(this)"></div>
+          <div class="color-swatch" style="background:#34d399" data-color="#34d399" onclick="app.selectCharColor(this)"></div>
+          <div class="color-swatch" style="background:#fb923c" data-color="#fb923c" onclick="app.selectCharColor(this)"></div>
+          <div class="color-swatch" style="background:#f87171" data-color="#f87171" onclick="app.selectCharColor(this)"></div>
+          <div class="color-swatch" style="background:#fbbf24" data-color="#fbbf24" onclick="app.selectCharColor(this)"></div>
+          <div class="color-swatch" style="background:#38bdf8" data-color="#38bdf8" onclick="app.selectCharColor(this)"></div>
+          <div class="color-swatch" style="background:#e2e8f0" data-color="#e2e8f0" onclick="app.selectCharColor(this)"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="t-char-pos">Posição na Cena</label>
+        <div style="display:flex;gap:8px">
+          <div class="filter-btn" data-pos="left" onclick="app.selectCharPos(this)" style="flex:1">← Esquerda</div>
+          <div class="filter-btn active" data-pos="center" onclick="app.selectCharPos(this)" style="flex:1">Centro</div>
+          <div class="filter-btn" data-pos="right" onclick="app.selectCharPos(this)" style="flex:1">Direita →</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="charDelBtn" onclick="app.deleteChar()" style="margin-right:auto;display:none" id="t-char-del">Deletar</button>
+      <button class="btn btn-ghost" onclick="app.closeModal('modal-char')">Cancelar</button>
+      <button class="btn btn-accent" onclick="app.saveChar()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="modal-share">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🔗 Compartilhar História</div>
+      <button class="modal-close" onclick="app.closeModal('modal-share')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label class="form-label">Exportar arquivo .dearend</label>
+        <button class="btn btn-filled" style="width:100%" onclick="app.exportProject()">⬇ Baixar arquivo .dearend</button>
+        <div class="form-hint">Compartilhe o arquivo e outros podem importar no DearEnd Studio</div>
+      </div>
+      <div class="sep">ou</div>
+      <div class="form-row">
+        <label class="form-label">Publicar como Jogo (em breve)</label>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;color:var(--text3);font-size:0.82rem">
+          <div style="font-size:2rem;margin-bottom:8px">🎮</div>
+          <div style="margin-bottom:4px">Exportar para HTML jogável, Ren'Py, ou publicar na Steam</div>
+          <div style="font-size:0.7rem;color:var(--text3)">Recurso em desenvolvimento — Finaltime Studios 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================================================
+// DEAREND STUDIO v2.0 — Finaltime Studios
+// ===================================================
+
+const GENRES = {
+  'fantasy':'⚔ Fantasia','sci-fi':'🚀 Sci-Fi','romance':'❤ Romance',
+  'horror':'👻 Terror','mystery':'🔍 Mistério','history':'📜 História',
+  'education':'📚 Educação','adventure':'🗺 Aventura','custom':'✏ Outro'
+};
+
+const FILTERS = {
+  none:   {css:'',label:'☀ Nenhum'},
+  noir:   {css:'grayscale(100%) contrast(200%) brightness(0.6)',label:'🎬 Noir'},
+  sepia:  {css:'sepia(80%) contrast(110%)',label:'🟫 Sépia'},
+  grime:  {css:'grayscale(60%) sepia(20%) contrast(130%) brightness(0.8)',label:'🌫 Grime'},
+  warm:   {css:'saturate(150%) hue-rotate(-10deg) brightness(1.05)',label:'🌅 Quente'},
+  cold:   {css:'saturate(60%) hue-rotate(160deg) brightness(0.95)',label:'❄ Frio'},
+};
+
+const DICT = {
+  pt: {
+    myStories:'Minhas Histórias', newStory:'Nova História', import:'⬆ Importar',
+    scenes:'Cenas', chars:'Personagens', settings:'Projeto',
+    play:'▶ Jogar', export:'⬇ Exportar', flowmap:'⬡ Fluxo',
+    noStories:'Sem histórias ainda. Crie sua primeira obra!',
+    filterLabel:'Filtro Cinematográfico', bgLabel:'Imagem de Fundo',
+    choicesLabel:'Escolhas / Caminhos', addChoice:'+ Adicionar Escolha',
+    sceneNameLabel:'NOME DA CENA', sceneTypeLabel:'TIPO DE CENA',
+    exit:'✕ Sair', back:'↩ Voltar',
+    bookletTitle:'Jornada Completa', pathTaken:'Caminho percorrido',
+    certTitle:'Certificado de Conclusão', certSub:'Este certificado atesta que você completou',
+    quizFeedback:'Feedback correto', quizWrong:'Feedback errado',
+    teachScore:'Pontuação', teachBanner:'📚 Modo Ensino ativo',
+    openScene:'Abrir cena', startBadge:'★ INÍCIO',
+    flowHint:'Clique para editar • Arraste para mover',
+    noSceneSelected:'Selecione uma cena para editar',
+    aiGreet:'Olá! Sou o assistente de escrita. Posso ajudar você a criar cenas, desenvolver personagens, sugerir caminhos narrativos ou melhorar seus textos. 🎭',
+  },
+  en: {
+    myStories:'My Stories', newStory:'New Story', import:'⬆ Import',
+    scenes:'Scenes', chars:'Characters', settings:'Settings',
+    play:'▶ Play', export:'⬇ Export', flowmap:'⬡ Flow',
+    noStories:'No stories yet. Create your first masterpiece!',
+    filterLabel:'Cinematic Filter', bgLabel:'Background Image',
+    choicesLabel:'Choices / Paths', addChoice:'+ Add Choice',
+    sceneNameLabel:'SCENE NAME', sceneTypeLabel:'SCENE TYPE',
+    exit:'✕ Exit', back:'↩ Back',
+    bookletTitle:'Journey Complete', pathTaken:'Path taken',
+    certTitle:'Certificate of Completion', certSub:'This certificate attests that you completed',
+    quizFeedback:'Correct feedback', quizWrong:'Wrong feedback',
+    teachScore:'Score', teachBanner:'📚 Teaching mode active',
+    openScene:'Open scene', startBadge:'★ START',
+    flowHint:'Click to edit • Drag to move',
+    noSceneSelected:'Select a scene to edit',
+    aiGreet:'Hello! I\'m your writing assistant. I can help you create scenes, develop characters, suggest narrative paths, or improve your texts. 🎭',
+  }
+};
+
+const app = {
+  lang: 'pt',
+  data: {},
+  currentId: null,
+  currentSceneId: null,
+  playState: { current: null, history: [], score: 0, quizTotal: 0, quizCorrect: 0 },
+  saveTimeout: null,
+  aiOpen: false,
+  editingCharId: null,
+  newModalData: { genre: 'adventure', mode: 'story' },
+  charFormData: { emoji: '🧑', color: '#c084fc', pos: 'center' },
+  flowPan: { x: 0, y: 0, dragging: false, startX: 0, startY: 0 },
+  autoAdvTimer: null,
+
+  // ---- INIT ----
+  init() {
+    const saved = localStorage.getItem('dearend_v4');
+    if (saved) { try { this.data = JSON.parse(saved); } catch(e) {} }
+    const lang = localStorage.getItem('dearend_lang');
+    if (lang) { this.lang = lang; document.getElementById('langSelect').value = lang; }
+    this.applyLang();
+    this.renderHome();
+    this.setupEmojiGrid();
+    this.setupFlowDrag();
+    // Handle URL import
+    const urlHash = location.hash.slice(1);
+    if (urlHash.startsWith('import=')) { try { this.importFromHash(urlHash.slice(7)); } catch(e) {} }
+  },
+
+  setLang(l) {
+    this.lang = l;
+    localStorage.setItem('dearend_lang', l);
+    this.applyLang();
+    if (this.currentId) this.renderEditor(); else this.renderHome();
+  },
+
+  applyLang() {
+    const d = DICT[this.lang];
+    const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+    set('t-home-title', this.lang === 'pt' ? 'Suas Histórias' : 'Your Stories');
+    set('t-home-sub', this.lang === 'pt' ? 'Crie mundos. Ensine com narrativa. Publique sua obra.' : 'Create worlds. Teach with narrative. Publish your work.');
+    set('t-import', d.import);
+    set('t-new', this.lang === 'pt' ? '✦ Nova História' : '✦ New Story');
+    set('t-scenes-label', d.scenes.toUpperCase());
+    set('t-tab-scenes', d.scenes);
+    set('t-tab-chars', d.chars);
+    set('t-tab-settings', d.settings);
+    set('t-flow-hint', d.flowHint);
+    set('t-booklet-title', d.bookletTitle);
+  },
+
+  // ---- VIEWS ----
+  showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    if (id === 'view-flowmap') this.renderFlowMap();
+  },
+
+  goHome() {
+    this.currentId = null;
+    this.currentSceneId = null;
+    this.showView('view-home');
+    this.renderHome();
+  },
+
+  // ---- DB ----
+  saveDb() {
+    if (this.currentId) this.data[this.currentId].updated = Date.now();
+    try { localStorage.setItem('dearend_v4', JSON.stringify(this.data)); } catch(e) { this.toast('Armazenamento cheio!','err'); }
+  },
+
+  generateId() { return Math.random().toString(36).substr(2, 9); },
+
+  // ---- HOME ----
+  renderHome() {
+    const grid = document.getElementById('storyGrid');
+    grid.innerHTML = '';
+    const ids = Object.keys(this.data).sort((a,b) => this.data[b].updated - this.data[a].updated);
+    if (!ids.length) {
+      grid.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-title">${DICT[this.lang].noStories}</div><button class="btn btn-accent btn-lg" onclick="app.openNewModal()" style="margin-top:20px">Criar minha primeira história</button></div>`;
+      return;
+    }
+    ids.forEach(id => {
+      const proj = this.data[id];
+      const sceneCount = Object.keys(proj.scenes || {}).length;
+      const thumb = proj.coverBg ? `background-image:url(${proj.coverBg})` : `background:linear-gradient(135deg,#1a1a2e,#2d1b69)`;
+      const genreLabel = GENRES[proj.genre] || '📖 Narrativa';
+      const modeTag = proj.teachMode ? `<div class="badge badge-green">📚 Ensino</div>` : '';
+      const card = document.createElement('div');
+      card.className = 'story-card';
+      card.innerHTML = `
+        <div class="story-card-thumb" style="${thumb}">
+          <div class="story-card-thumb-overlay"></div>
+          <div class="story-card-genre"><span class="tag">${genreLabel}</span></div>
+        </div>
+        <div class="story-card-body">
+          <div class="story-card-title">${proj.title}</div>
+          <div class="story-card-meta">
+            <span>📋 ${sceneCount} cena${sceneCount!==1?'s':''}</span>
+            <span>🕐 ${new Date(proj.updated).toLocaleDateString(this.lang==='pt'?'pt-BR':'en-US')}</span>
+            ${modeTag}
+          </div>
+          <div class="story-card-actions">
+            <button class="btn btn-accent btn-sm" onclick="event.stopPropagation();app.openProject('${id}')">✏ Editar</button>
+            <button class="btn btn-filled btn-sm" onclick="event.stopPropagation();app.quickPlay('${id}')">▶ Jogar</button>
+            <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();app.exportById('${id}')">⬇</button>
+            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();app.deleteProject('${id}')">✕</button>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  },
+
+  // ---- NEW STORY MODAL ----
+  openNewModal() {
+    this.newModalData = { genre: '', mode: 'story' };
+    document.getElementById('newTitle').value = '';
+    document.getElementById('newDesc').value = '';
+    document.querySelectorAll('.genre-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('[data-mode]').forEach(c => c.classList.remove('active'));
+    document.getElementById('modeStory').classList.add('active');
+    this.openModal('modal-new');
+    setTimeout(() => document.getElementById('newTitle').focus(), 200);
+  },
+  selectGenre(el) {
+    document.querySelectorAll('.genre-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    this.newModalData.genre = el.dataset.genre;
+  },
+  selectMode(el) {
+    document.querySelectorAll('[data-mode]').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    this.newModalData.mode = el.dataset.mode;
+  },
+  createProject() {
+    const title = document.getElementById('newTitle').value.trim() || (this.lang==='pt'?'Sem Título':'Untitled');
+    const desc = document.getElementById('newDesc').value.trim();
+    const pid = 'proj_' + this.generateId();
+    const sid = 'scn_' + this.generateId();
+    this.data[pid] = {
+      title, desc, genre: this.newModalData.genre, teachMode: this.newModalData.mode === 'teach',
+      updated: Date.now(), coverBg: '', startScene: sid, scenes: {}, characters: {}
+    };
+    this.data[pid].scenes[sid] = this.newScene(this.lang==='pt'?'Abertura':'Opening');
+    this.saveDb();
+    this.closeModal('modal-new');
+    this.openProject(pid);
+  },
+  newScene(name) {
+    return { name, text:'', bg:'', filter:'none', type:'story', choices:[],
+      speaker:'', autoAdv:false, autoAdvDelay:4, musicUrl:'', musicVol:70,
+      transition:'fade', annotation:'', learningObj:'',
+      quiz:{ question:'', options:[], feedbackCorrect:'Correto!', feedbackWrong:'Tente novamente.' }
+    };
+  },
+
+  // ---- PROJECT ----
+  openProject(id) {
+    this.currentId = id;
+    this.currentSceneId = this.data[id].startScene;
+    this.showView('view-editor');
+    document.getElementById('edProjectName').value = this.data[id].title;
+    const proj = this.data[id];
+    const modeBadge = document.getElementById('edModeBadge');
+    if (proj.teachMode) modeBadge.style.display='inline-flex'; else modeBadge.style.display='none';
+    document.getElementById('edProjectGenre').textContent = GENRES[proj.genre] || 'Não definido';
+    document.getElementById('edProjectDesc').value = proj.desc||'';
+    // Teach toggle
+    this.updateTeachToggleUI();
+    this.renderEditor();
+  },
+  quickPlay(id) {
+    this.currentId = id;
+    this.currentSceneId = this.data[id].startScene;
+    this.playProject();
+  },
+  deleteProject(id) {
+    if (!confirm(this.lang==='pt'?'Deletar esta história permanentemente?':'Delete this story permanently?')) return;
+    delete this.data[id];
+    this.saveDb();
+    this.renderHome();
+  },
+  saveProjectName() {
+    if (!this.currentId) return;
+    this.data[this.currentId].title = document.getElementById('edProjectName').value.trim() || 'Sem Título';
+    this.saveDb();
+  },
+  saveProjectDesc() {
+    if (!this.currentId) return;
+    this.data[this.currentId].desc = document.getElementById('edProjectDesc').value;
+    this.saveDb();
+  },
+  toggleTeachMode() {
+    if (!this.currentId) return;
+    this.data[this.currentId].teachMode = !this.data[this.currentId].teachMode;
+    this.saveDb();
+    this.updateTeachToggleUI();
+    const m = document.getElementById('edModeBadge');
+    m.style.display = this.data[this.currentId].teachMode ? 'inline-flex' : 'none';
+  },
+  updateTeachToggleUI() {
+    const on = this.data[this.currentId]?.teachMode;
+    const knob = document.getElementById('teachToggleKnob');
+    const pill = document.getElementById('teachToggle');
+    const desc = document.getElementById('t-teach-desc');
+    if (knob && pill && desc) {
+      knob.style.left = on ? '18px' : '2px';
+      knob.style.background = on ? 'var(--accent3)' : 'var(--text3)';
+      pill.style.borderColor = on ? 'var(--accent3)' : 'var(--border2)';
+      desc.textContent = on ? (this.lang==='pt'?'Ativado':'Enabled') : (this.lang==='pt'?'Desativado':'Disabled');
+    }
+  },
+  uploadCover(e) {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      this.compressImage(ev.target.result, compressed => {
+        this.data[this.currentId].coverBg = compressed;
+        this.saveDb();
+        this.toast(this.lang==='pt'?'Capa atualizada!':'Cover updated!','ok');
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  },
+  exportProject() { this.exportById(this.currentId); },
+  exportById(id) {
+    if (!id) return;
+    const proj = this.data[id];
+    const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(proj));
+    const a = document.createElement('a');
+    a.href = str; a.download = `${proj.title.replace(/[^a-z0-9]/gi,'_').toLowerCase()}.dearend`; a.click();
+    this.toast(this.lang==='pt'?'Exportado!':'Exported!','ok');
+  },
+  importProject(e) {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const d = JSON.parse(ev.target.result);
+        const pid = 'proj_' + this.generateId();
+        d.updated = Date.now();
+        if (!d.characters) d.characters = {};
+        this.data[pid] = d;
+        this.saveDb();
+        this.openProject(pid);
+        this.toast(this.lang==='pt'?'História importada!':'Story imported!','ok');
+      } catch { this.toast(this.lang==='pt'?'Arquivo inválido':'Invalid file','err'); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  },
+
+  // ---- EDITOR ----
+  renderEditor() {
+    this.renderSceneList();
+    this.renderCharList();
+    this.loadSceneToEditor();
+  },
+
+  renderSceneList() {
+    const list = document.getElementById('sceneList');
+    list.innerHTML = '';
+    const proj = this.data[this.currentId];
+    const d = DICT[this.lang];
+    Object.keys(proj.scenes).forEach(id => {
+      const sc = proj.scenes[id];
+      const isStart = id === proj.startScene;
+      const typeIcon = {story:'📖',quiz:'🧠',note:'📌',end:'🏁'}[sc.type||'story'] || '📖';
+      const div = document.createElement('div');
+      div.className = `scene-item ${id === this.currentSceneId ? 'active' : ''}`;
+      div.innerHTML = `
+        <div class="scene-item-icon">${typeIcon}</div>
+        <div class="scene-item-name">${sc.name}</div>
+        ${isStart ? `<span class="scene-item-badge" style="color:var(--accent3)">★</span>` : `<button class="scene-del" onclick="app.deleteScene('${id}',event)">✕</button>`}
+      `;
+      div.onclick = () => { this.currentSceneId = id; this.renderEditor(); };
+      list.appendChild(div);
+    });
+  },
+
+  addScene() {
+    const proj = this.data[this.currentId];
+    const id = 'scn_' + this.generateId();
+    const num = Object.keys(proj.scenes).length + 1;
+    proj.scenes[id] = this.newScene(`${this.lang==='pt'?'Cena':'Scene'} ${num}`);
+    this.currentSceneId = id;
+    this.saveDb();
+    this.renderEditor();
+  },
+
+  deleteScene(id, e) {
+    e.stopPropagation();
+    const proj = this.data[this.currentId];
+    if (id === proj.startScene) return;
+    if (!confirm(this.lang==='pt'?'Deletar esta cena?':'Delete this scene?')) return;
+    delete proj.scenes[id];
+    Object.values(proj.scenes).forEach(s => s.choices.forEach(c => { if(c.target===id) c.target=''; }));
+    this.currentSceneId = proj.startScene;
+    this.saveDb();
+    this.renderEditor();
+  },
+
+  loadSceneToEditor() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+
+    document.getElementById('sceneNameInput').value = scene.name;
+    document.getElementById('editorText').value = scene.text;
+    document.getElementById('annotationText').value = scene.annotation || '';
+    document.getElementById('rtAnnotation').value = scene.annotation || '';
+    document.getElementById('learningObj').value = scene.learningObj || '';
+    document.getElementById('musicUrl').value = scene.musicUrl || '';
+    document.getElementById('musicVol').value = scene.musicVol ?? 70;
+    document.getElementById('sceneTransition').value = scene.transition || 'fade';
+    document.getElementById('autoAdvCheck').checked = scene.autoAdv || false;
+    document.getElementById('autoAdvDelay').value = scene.autoAdvDelay || 4;
+    this.updateCharCounter();
+
+    // Filter buttons
+    document.querySelectorAll('[data-filter]').forEach(b => {
+      b.classList.toggle('active', b.dataset.filter === (scene.filter||'none'));
+    });
+    // Type buttons
+    document.querySelectorAll('[data-type]').forEach(b => {
+      b.classList.toggle('active', b.dataset.type === (scene.type||'story'));
+    });
+
+    // Apply canvas filter
+    const canvas = document.getElementById('editorCanvas');
+    canvas.style.filter = FILTERS[scene.filter||'none'].css;
+    canvas.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
+    document.getElementById('canvasEmpty').style.display = scene.bg ? 'none' : 'flex';
+
+    // Scene type UI
+    this.updateSceneTypeUI(scene.type || 'story');
+
+    // Speaker dropdown
+    this.updateSpeakerDropdown(scene.speaker);
+
+    // Quiz
+    this.loadQuizToEditor(scene.quiz);
+
+    // Choices
+    this.renderEditorChoices();
+    // Characters on canvas
+    this.renderCanvasChars();
+  },
+
+  updateSceneTypeUI(type) {
+    const textbox = document.getElementById('textboxArea');
+    const quizArea = document.getElementById('quizEditorArea');
+    const noteArea = document.getElementById('annotationArea');
+    textbox.style.display = (type==='story'||type==='end') ? 'block' : 'none';
+    quizArea.style.display = type==='quiz' ? 'block' : 'none';
+    noteArea.style.display = type==='note' ? 'block' : 'none';
+  },
+
+  setSceneType(el, type) {
+    document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    scene.type = type;
+    this.saveDb();
+    this.updateSceneTypeUI(type);
+    this.renderSceneList();
+  },
+
+  setFilter(el, filter) {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    scene.filter = filter;
+    const canvas = document.getElementById('editorCanvas');
+    canvas.style.filter = FILTERS[filter].css;
+    this.saveDb();
+  },
+
+  triggerSave() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    const oldName = scene.name;
+    scene.name = document.getElementById('sceneNameInput').value || 'Sem nome';
+    scene.text = document.getElementById('editorText').value;
+    this.updateCharCounter();
+    if (oldName !== scene.name) this.renderSceneList();
+    clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => this.saveDb(), 400);
+  },
+
+  updateCharCounter() {
+    const t = document.getElementById('editorText').value;
+    document.getElementById('charCounter').textContent = `${t.length} / 600`;
+  },
+
+  saveAnnotation() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    scene.annotation = document.getElementById('annotationText').value;
+    document.getElementById('rtAnnotation').value = scene.annotation;
+    clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => this.saveDb(), 400);
+  },
+  saveAnnotationFromPanel() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    scene.annotation = document.getElementById('rtAnnotation').value;
+    document.getElementById('annotationText').value = scene.annotation;
+    clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => this.saveDb(), 400);
+  },
+  saveLearningObj() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    scene.learningObj = document.getElementById('learningObj').value;
+    clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => this.saveDb(), 400);
+  },
+  saveMedia() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    scene.musicUrl = document.getElementById('musicUrl').value;
+    scene.musicVol = parseInt(document.getElementById('musicVol').value);
+    scene.transition = document.getElementById('sceneTransition').value;
+    clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => this.saveDb(), 400);
+  },
+  toggleAutoAdv() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    scene.autoAdv = document.getElementById('autoAdvCheck').checked;
+    this.saveDb();
+  },
+  saveAutoAdv() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    scene.autoAdvDelay = parseInt(document.getElementById('autoAdvDelay').value) || 4;
+    this.saveDb();
+  },
+
+  // ---- BACKGROUND ----
+  uploadBackground(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      this.compressImage(ev.target.result, compressed => {
+        this.data[this.currentId].scenes[this.currentSceneId].bg = compressed;
+        this.saveDb();
+        document.getElementById('editorCanvas').style.backgroundImage = `url(${compressed})`;
+        document.getElementById('canvasEmpty').style.display = 'none';
+        this.toast(this.lang==='pt'?'Fundo carregado!':'Background loaded!','ok');
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  },
+  clearBackground() {
+    this.data[this.currentId].scenes[this.currentSceneId].bg = '';
+    this.saveDb();
+    document.getElementById('editorCanvas').style.backgroundImage = '';
+    document.getElementById('canvasEmpty').style.display = 'flex';
+  },
+  compressImage(dataUrl, callback) {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX = 1280; let w = img.width, h = img.height;
+      if (w > MAX) { h *= MAX/w; w = MAX; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.72));
+    };
+    img.src = dataUrl;
+  },
+
+  // ---- CHOICES ----
+  addChoice() {
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    if (scene.choices.length >= 4) { this.toast(this.lang==='pt'?'Máximo de 4 escolhas!':'Max 4 choices!','err'); return; }
+    scene.choices.push({ text: this.lang==='pt'?'Nova escolha':'New choice', target:'' });
+    this.saveDb();
+    this.renderEditorChoices();
+  },
+
+  renderEditorChoices() {
+    const proj = this.data[this.currentId];
+    const scene = proj.scenes[this.currentSceneId];
+    const list = document.getElementById('editorChoicesList');
+    list.innerHTML = '';
+    const sceneOptions = Object.keys(proj.scenes).filter(id => id !== this.currentSceneId);
+    scene.choices.forEach((choice, i) => {
+      const row = document.createElement('div');
+      row.className = 'choice-row';
+      const targetOpts = `<option value="">⏹ ${this.lang==='pt'?'Fim':'End'}</option>${sceneOptions.map(sid=>`<option value="${sid}" ${choice.target===sid?'selected':''}>${proj.scenes[sid].name}</option>`).join('')}`;
+      row.innerHTML = `
+        <div class="choice-row-top">
+          <input class="choice-text-input" value="${choice.text.replace(/"/g,'&quot;')}" oninput="app.updateChoice(${i},'text',this.value)">
+          <button class="btn btn-danger btn-icon btn-sm" onclick="app.removeChoice(${i})">✕</button>
+        </div>
+        <div class="choice-row-bottom">
+          <span style="font-size:0.72rem;color:var(--text3)">${this.lang==='pt'?'→ Vai para:':'→ Goes to:'}</span>
+          <select class="choice-target-select" onchange="app.updateChoice(${i},'target',this.value)">${targetOpts}</select>
+        </div>`;
+      list.appendChild(row);
+    });
+  },
+  updateChoice(i, key, val) {
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    scene.choices[i][key] = val;
+    this.saveDb();
+  },
+  removeChoice(i) {
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    scene.choices.splice(i, 1);
+    this.saveDb();
+    this.renderEditorChoices();
+  },
+
+  // ---- CHARACTERS ----
+  setupEmojiGrid() {
+    const grid = document.getElementById('charEmojiGrid');
+    const emojis = ['🧑','👩','🧔','👴','👩‍🦳','🧙','🧝','🧛','🤖','👾','🦸','🦹','🐱','🐺','🦊','👑','🎭','💀','🧚','🧜','🤠','👸','🤴','🧟','🦝','🐉','🌹','⚔'];
+    grid.innerHTML = '';
+    emojis.forEach(em => {
+      const span = document.createElement('span');
+      span.className = 'emoji-opt';
+      span.textContent = em;
+      span.onclick = () => {
+        grid.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
+        span.classList.add('selected');
+        this.charFormData.emoji = em;
+      };
+      grid.appendChild(span);
+    });
+  },
+  selectCharColor(el) {
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    this.charFormData.color = el.dataset.color;
+  },
+  selectCharPos(el) {
+    document.querySelectorAll('[data-pos]').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    this.charFormData.pos = el.dataset.pos;
+  },
+  openCharModal(charId) {
+    this.editingCharId = charId || null;
+    const proj = this.data[this.currentId];
+    if (charId && proj.characters[charId]) {
+      const c = proj.characters[charId];
+      document.getElementById('charName').value = c.name;
+      document.getElementById('charRole').value = c.role || '';
+      this.charFormData = { emoji: c.emoji, color: c.color, pos: c.pos || 'center' };
+      // Mark emoji
+      document.querySelectorAll('.emoji-opt').forEach(e => { e.classList.toggle('selected', e.textContent === c.emoji); });
+      // Mark color
+      document.querySelectorAll('.color-swatch').forEach(s => { s.classList.toggle('selected', s.dataset.color === c.color); });
+      // Mark pos
+      document.querySelectorAll('[data-pos]').forEach(s => { s.classList.toggle('active', s.dataset.pos === (c.pos||'center')); });
+      document.getElementById('charDelBtn').style.display = 'block';
+    } else {
+      document.getElementById('charName').value = '';
+      document.getElementById('charRole').value = '';
+      this.charFormData = { emoji: '🧑', color: '#c084fc', pos: 'center' };
+      document.querySelectorAll('.emoji-opt').forEach((e,i) => e.classList.toggle('selected', i===0));
+      document.querySelectorAll('.color-swatch').forEach((s,i) => s.classList.toggle('selected', i===0));
+      document.querySelectorAll('[data-pos]').forEach(s => s.classList.toggle('active', s.dataset.pos==='center'));
+      document.getElementById('charDelBtn').style.display = 'none';
+    }
+    this.openModal('modal-char');
+  },
+  saveChar() {
+    const name = document.getElementById('charName').value.trim();
+    if (!name) { this.toast(this.lang==='pt'?'Nome obrigatório':'Name required','err'); return; }
+    const proj = this.data[this.currentId];
+    const id = this.editingCharId || 'char_' + this.generateId();
+    proj.characters[id] = {
+      name, role: document.getElementById('charRole').value.trim(),
+      emoji: this.charFormData.emoji, color: this.charFormData.color,
+      pos: this.charFormData.pos
+    };
+    this.saveDb();
+    this.renderCharList();
+    this.updateSpeakerDropdown();
+    this.renderCanvasChars();
+    this.closeModal('modal-char');
+    this.toast(this.lang==='pt'?'Personagem salvo!':'Character saved!','ok');
+  },
+  deleteChar() {
+    if (!this.editingCharId) return;
+    if (!confirm(this.lang==='pt'?'Deletar personagem?':'Delete character?')) return;
+    delete this.data[this.currentId].characters[this.editingCharId];
+    this.saveDb();
+    this.renderCharList();
+    this.closeModal('modal-char');
+  },
+  renderCharList() {
+    const list = document.getElementById('charList');
+    list.innerHTML = '';
+    const chars = this.data[this.currentId]?.characters || {};
+    if (!Object.keys(chars).length) {
+      list.innerHTML = `<div style="color:var(--text3);font-size:0.78rem;text-align:center;padding:16px">${this.lang==='pt'?'Nenhum personagem ainda':'No characters yet'}</div>`;
+      return;
+    }
+    Object.keys(chars).forEach(id => {
+      const c = chars[id];
+      const div = document.createElement('div');
+      div.className = 'char-card';
+      div.innerHTML = `
+        <div class="char-avatar" style="background:${c.color}22;border:2px solid ${c.color}">${c.emoji}</div>
+        <div><div class="char-name">${c.name}</div><div class="char-role">${c.role||''}</div></div>
+        <button class="btn btn-ghost btn-icon btn-sm" onclick="event.stopPropagation();app.openCharModal('${id}')" style="margin-left:auto">✏</button>`;
+      list.appendChild(div);
+    });
+  },
+  updateSpeakerDropdown(currentVal) {
+    const sel = document.getElementById('editorSpeaker');
+    const chars = this.data[this.currentId]?.characters || {};
+    sel.innerHTML = `<option value="">🎙 ${this.lang==='pt'?'Narrador':'Narrator'}</option>`;
+    Object.keys(chars).forEach(id => {
+      const opt = document.createElement('option');
+      opt.value = id; opt.textContent = chars[id].name;
+      if (currentVal === id) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    if (currentVal) sel.value = currentVal;
+  },
+  updateSpeaker() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    scene.speaker = document.getElementById('editorSpeaker').value;
+    this.saveDb();
+    this.renderCanvasChars();
+  },
+  renderCanvasChars() {
+    const display = document.getElementById('charDisplay');
+    display.innerHTML = '';
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    const chars = this.data[this.currentId]?.characters || {};
+    const label = document.getElementById('edSpeakerLabel');
+
+    if (scene.speaker && chars[scene.speaker]) {
+      const c = chars[scene.speaker];
+      label.style.display = 'block';
+      label.style.color = c.color;
+      label.style.background = c.color + '22';
+      label.style.borderColor = c.color + '55';
+      label.textContent = c.name;
+    } else {
+      label.style.display = 'none';
+    }
+
+    // Show active characters
+    const activeChars = Object.keys(chars).slice(0, 3);
+    activeChars.forEach(id => {
+      const c = chars[id];
+      const el = document.createElement('div');
+      el.className = 'char-sprite';
+      el.style.opacity = (scene.speaker === id || !scene.speaker) ? '1' : '0.3';
+      el.innerHTML = `<div class="char-sprite-avatar">${c.emoji}</div><div class="char-sprite-name" style="color:${c.color}">${c.name}</div>`;
+      display.appendChild(el);
+    });
+  },
+
+  // ---- QUIZ ----
+  loadQuizToEditor(quiz) {
+    if (!quiz) return;
+    document.getElementById('quizQuestion').value = quiz.question || '';
+    document.getElementById('quizFeedbackCorrect').value = quiz.feedbackCorrect || '';
+    document.getElementById('quizFeedbackWrong').value = quiz.feedbackWrong || '';
+    this.renderQuizOptions(quiz.options || []);
+  },
+  renderQuizOptions(options) {
+    const list = document.getElementById('quizOptionsList');
+    list.innerHTML = '';
+    options.forEach((opt, i) => {
+      const row = document.createElement('div');
+      row.className = 'quiz-option-row';
+      row.innerHTML = `
+        <button class="quiz-correct-btn ${opt.correct?'correct':''}" onclick="app.toggleQuizCorrect(${i})" title="Correta?"></button>
+        <input type="text" value="${(opt.text||'').replace(/"/g,'&quot;')}" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:6px;font-size:0.82rem" oninput="app.updateQuizOption(${i},this.value)">
+        <button class="btn btn-danger btn-icon btn-sm" onclick="app.removeQuizOption(${i})">✕</button>`;
+      list.appendChild(row);
+    });
+  },
+  addQuizOption() {
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    if (!scene.quiz) scene.quiz = { question:'', options:[], feedbackCorrect:'Correto!', feedbackWrong:'Tente novamente.' };
+    if (scene.quiz.options.length >= 6) return;
+    scene.quiz.options.push({ text:'', correct:false });
+    this.saveDb();
+    this.renderQuizOptions(scene.quiz.options);
+  },
+  updateQuizOption(i, val) {
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    scene.quiz.options[i].text = val;
+    clearTimeout(this.saveTimeout); this.saveTimeout = setTimeout(()=>this.saveDb(),400);
+  },
+  toggleQuizCorrect(i) {
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    scene.quiz.options.forEach((o,j) => o.correct = j===i);
+    this.saveDb();
+    this.renderQuizOptions(scene.quiz.options);
+  },
+  removeQuizOption(i) {
+    const scene = this.data[this.currentId].scenes[this.currentSceneId];
+    scene.quiz.options.splice(i,1);
+    this.saveDb();
+    this.renderQuizOptions(scene.quiz.options);
+  },
+  saveQuiz() {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    if (!scene) return;
+    if (!scene.quiz) scene.quiz = {};
+    scene.quiz.question = document.getElementById('quizQuestion').value;
+    scene.quiz.feedbackCorrect = document.getElementById('quizFeedbackCorrect').value;
+    scene.quiz.feedbackWrong = document.getElementById('quizFeedbackWrong').value;
+    clearTimeout(this.saveTimeout); this.saveTimeout = setTimeout(()=>this.saveDb(),400);
+  },
+
+  // ---- TABS ----
+  switchSTab(el, panelId) {
+    document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.sidebar-panel').forEach(p => p.style.display='none');
+    const panel = document.getElementById(panelId);
+    if (panel) panel.style.display = 'block';
+  },
+  switchRTab(el, panelId) {
+    document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.right-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById(panelId);
+    if (panel) panel.classList.add('active');
+  },
+
+  // ---- PLAYER ----
+  playProject() {
+    if (!this.currentId) return;
+    const proj = this.data[this.currentId];
+    this.playState = { current: proj.startScene, history: [], score: 0, quizTotal: 0, quizCorrect: 0 };
+    document.getElementById('pTitle').textContent = proj.title;
+    const teachBanner = document.getElementById('teachBanner');
+    teachBanner.style.display = proj.teachMode ? 'flex' : 'none';
+    this.showView('view-player');
+    this.renderPlayerScene();
+  },
+
+  exitPlayer() {
+    if (this.autoAdvTimer) { clearTimeout(this.autoAdvTimer); this.autoAdvTimer = null; }
+    this.stopBgAudio();
+    this.showView('view-editor');
+  },
+
+  stopBgAudio() {
+    const audio = document.getElementById('bgAudio');
+    audio.pause(); audio.src = '';
+  },
+
+  renderPlayerScene() {
+    const proj = this.data[this.currentId];
+    const scene = proj.scenes[this.playState.current];
+    if (!scene) return;
+
+    // Background
+    const bg = document.getElementById('pbg');
+    bg.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
+    bg.style.filter = FILTERS[scene.filter||'none'].css;
+    bg.style.transition = 'all 0.6s ease';
+
+    // Progress
+    const total = Object.keys(proj.scenes).length;
+    const visited = this.playState.history.length;
+    document.getElementById('pProgressBar').style.width = `${Math.min(100, (visited/total)*100)}%`;
+
+    // Back button
+    document.getElementById('pBackBtn').style.display = this.playState.history.length > 0 ? 'block' : 'none';
+
+    // Music
+    this.handleBgAudio(scene);
+
+    // Characters
+    this.renderPlayerChars(scene, proj.characters || {});
+
+    // Speaker
+    const speakerEl = document.getElementById('pSpeaker');
+    const chars = proj.characters || {};
+    if (scene.speaker && chars[scene.speaker]) {
+      const c = chars[scene.speaker];
+      speakerEl.style.display = 'block';
+      speakerEl.style.color = c.color;
+      speakerEl.textContent = c.name;
+    } else {
+      speakerEl.style.display = 'none';
+    }
+
+    // Teach score
+    if (proj.teachMode) {
+      document.getElementById('teachScoreDisp').textContent = `${DICT[this.lang].teachScore}: ${this.playState.quizCorrect}/${this.playState.quizTotal}`;
+    }
+
+    // Scene types
+    const pBox = document.getElementById('pBox');
+    const pQuiz = document.getElementById('pQuiz');
+    const pAnnot = document.getElementById('pAnnotation');
+    const pChoices = document.getElementById('pChoices');
+
+    pBox.style.display = 'none'; pQuiz.style.display = 'none';
+    pAnnot.style.display = 'none'; pChoices.innerHTML = '';
+
+    if (scene.type === 'quiz') {
+      this.renderPlayerQuiz(scene);
+    } else {
+      // Text with typewriter
+      pBox.style.display = 'block';
+      this.typewriterText(scene.text || '', document.getElementById('ptext'));
+
+      // Annotation
+      if (scene.annotation) {
+        pAnnot.style.display = 'block';
+        pAnnot.innerHTML = `<div class="annotation-callout"><div class="annotation-callout-label">📌 Aprofundamento</div><div class="annotation-callout-text">${scene.annotation}</div></div>`;
+      }
+
+      // Choices or continue
+      if (scene.choices && scene.choices.length > 0) {
+        scene.choices.forEach(choice => {
+          const btn = document.createElement('button');
+          btn.className = 'pchoice';
+          btn.innerHTML = `<span style="flex:1">${choice.text}</span><span class="pchoice-arrow">→</span>`;
+          btn.onclick = () => {
+            this.playState.history.push({ sceneId: this.playState.current, sceneName: scene.name, text: scene.text, choiceText: choice.text });
+            if (!choice.target) { this.generateBooklet(); return; }
+            this.playState.current = choice.target;
+            this.renderPlayerScene();
+          };
+          pChoices.appendChild(btn);
+        });
+      } else {
+        // Auto-advance or manual
+        if (scene.type === 'end' || !Object.keys(proj.scenes).find(id => id !== this.playState.current && proj.scenes[id])) {
+          this.playState.history.push({ sceneId: this.playState.current, sceneName: scene.name, text: scene.text, choiceText: '🏁 FIM' });
+          const endBtn = document.createElement('button');
+          endBtn.className = 'pchoice';
+          endBtn.style.borderColor = 'var(--accent)';
+          endBtn.innerHTML = `<span>📖 ${this.lang==='pt'?'Ver relatório da jornada':'View journey report'}</span><span class="pchoice-arrow">→</span>`;
+          endBtn.onclick = () => this.generateBooklet();
+          pChoices.appendChild(endBtn);
+        } else if (scene.autoAdv) {
+          const delay = (scene.autoAdvDelay || 4) * 1000;
+          this.autoAdvTimer = setTimeout(() => this.generateBooklet(), delay);
+        }
+      }
+    }
+  },
+
+  handleBgAudio(scene) {
+    const audio = document.getElementById('bgAudio');
+    if (scene.musicUrl) {
+      // Only restart if URL changed
+      if (audio.dataset.src !== scene.musicUrl) {
+        audio.src = scene.musicUrl;
+        audio.volume = (scene.musicVol || 70) / 100;
+        audio.play().catch(() => {});
+        audio.dataset.src = scene.musicUrl;
+      }
+    } else {
+      if (!audio.paused) { audio.pause(); audio.dataset.src = ''; }
+    }
+  },
+
+  renderPlayerChars(scene, chars) {
+    const container = document.getElementById('playerChars');
+    container.innerHTML = '';
+    const charIds = Object.keys(chars).slice(0, 3);
+    charIds.forEach(id => {
+      const c = chars[id];
+      const isActive = scene.speaker === id;
+      const div = document.createElement('div');
+      div.className = `pchar ${isActive ? 'active' : (scene.speaker ? 'inactive' : '')}`;
+      div.innerHTML = `<div class="pchar-avatar">${c.emoji}</div><div class="pchar-name" style="color:${c.color}">${c.name}</div>`;
+      container.appendChild(div);
+    });
+  },
+
+  renderPlayerQuiz(scene) {
+    const pQuiz = document.getElementById('pQuiz');
+    pQuiz.style.display = 'block';
+    const quiz = scene.quiz;
+    if (!quiz || !quiz.question) { pQuiz.innerHTML = '<div style="color:var(--text3)">Quiz sem pergunta definida.</div>'; return; }
+
+    const letters = 'ABCDEF';
+    this.playState.quizTotal++;
+
+    pQuiz.innerHTML = `
+      <div class="quiz-player-card">
+        <div class="quiz-question">${quiz.question}</div>
+        ${(quiz.options||[]).map((opt,i) => `
+          <div class="quiz-opt" data-correct="${opt.correct}" onclick="app.answerQuiz(this, ${i}, '${scene.quiz.feedbackCorrect}', '${scene.quiz.feedbackWrong}')">
+            <div class="quiz-letter">${letters[i]}</div>
+            <div>${opt.text}</div>
+          </div>`).join('')}
+        <div id="quizFeedbackEl" style="display:none"></div>
+        <div id="quizContinueBtn" style="display:none;margin-top:12px"></div>
+      </div>`;
+  },
+
+  answerQuiz(el, idx, feedCorrect, feedWrong) {
+    const opts = document.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const correct = el.dataset.correct === 'true';
+    if (correct) {
+      el.classList.add('correct');
+      this.playState.quizCorrect++;
+      this.playState.score += 10;
+    } else {
+      el.classList.add('wrong');
+      opts.forEach(o => { if(o.dataset.correct==='true') o.classList.add('correct'); });
+    }
+    const fb = document.getElementById('quizFeedbackEl');
+    fb.style.display = 'block';
+    fb.className = `quiz-feedback ${correct?'ok':'fail'}`;
+    fb.textContent = correct ? feedCorrect : feedWrong;
+
+    // Continue button
+    const continueBtn = document.getElementById('quizContinueBtn');
+    continueBtn.style.display = 'block';
+    const scene = this.data[this.currentId].scenes[this.playState.current];
+    const proj = this.data[this.currentId];
+
+    if (scene.choices && scene.choices.length > 0) {
+      scene.choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'pchoice';
+        btn.innerHTML = `<span>${choice.text}</span><span class="pchoice-arrow">→</span>`;
+        btn.onclick = () => {
+          this.playState.history.push({ sceneId: this.playState.current, sceneName: scene.name, text: scene.quiz?.question||'', choiceText: choice.text });
+          if (!choice.target) { this.generateBooklet(); return; }
+          this.playState.current = choice.target;
+          this.renderPlayerScene();
         };
+        continueBtn.appendChild(btn);
+      });
+    } else {
+      const btn = document.createElement('button');
+      btn.className = 'pchoice';
+      btn.style.borderColor = 'var(--accent3)';
+      btn.innerHTML = `<span>${this.lang==='pt'?'Continuar':'Continue'}</span><span class="pchoice-arrow">→</span>`;
+      btn.onclick = () => { this.playState.history.push({ sceneId: this.playState.current, sceneName: scene.name, text: scene.quiz?.question||'', choiceText: correct?'✅':'❌' }); this.generateBooklet(); };
+      continueBtn.appendChild(btn);
+    }
+  },
 
-        const app = {
-            lang: 'en',
-            data: {}, 
-            currentId: null,
-            currentSceneId: null,
-            playState: { current: null, history: [] },
-            saveTimeout: null, // Timer do Debounce para evitar lags
+  playerBack() {
+    if (this.playState.history.length < 1) return;
+    this.playState.history.pop();
+    if (this.playState.history.length > 0) {
+      this.playState.current = this.playState.history[this.playState.history.length-1].sceneId;
+      this.playState.history.pop();
+    } else {
+      this.playState.current = this.data[this.currentId].startScene;
+    }
+    this.renderPlayerScene();
+  },
 
-            init() {
-                const savedData = localStorage.getItem('dearend_v3');
-                if (savedData) this.data = JSON.parse(savedData);
-                
-                const savedLang = localStorage.getItem('dearend_lang');
-                if(savedLang) {
-                    this.lang = savedLang;
-                    document.getElementById('langSelect').value = savedLang;
-                }
-                
-                this.updateLangUI();
-                this.goHome();
-            },
+  typewriterText(text, el) {
+    el.textContent = '';
+    if (!text) return;
+    let i = 0;
+    const speed = Math.max(20, 2000 / text.length);
+    const interval = setInterval(() => {
+      el.textContent += text[i];
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, speed < 40 ? speed : 30);
+  },
 
-            // --- SISTEMA DE SALVAMENTO SEGURO (DEBOUNCE) ---
-            triggerSave() {
-                // Atualiza o estado da cena em memória imediatamente
-                const proj = this.data[this.currentId];
-                const scene = proj.scenes[this.currentSceneId];
-                
-                const oldName = scene.name;
-                scene.name = document.getElementById('sceneNameInput').value || "Unnamed";
-                scene.text = document.getElementById('editorText').value;
-                scene.filter = document.getElementById('editorFilter').value;
-                
-                // Atualiza o Canvas visual
-                const canvas = document.getElementById('editorCanvas');
-                canvas.className = `story-canvas ${scene.filter}`;
-                
-                if(oldName !== scene.name) this.renderSceneList();
+  // ---- BOOKLET ----
+  generateBooklet() {
+    this.stopBgAudio();
+    const proj = this.data[this.currentId];
+    const logs = document.getElementById('bookletLogs');
+    logs.innerHTML = '';
 
-                // Atrasa o save real no banco para não travar o navegador
-                clearTimeout(this.saveTimeout);
-                this.saveTimeout = setTimeout(() => {
-                    this.saveDb();
-                }, 500);
-            },
+    document.getElementById('bookletTitle').textContent = proj.title;
+    document.getElementById('bookletSubtitle').textContent = this.lang==='pt' ?
+      `Sua jornada através de "${proj.title}"` : `Your journey through "${proj.title}"`;
 
-            saveDb() {
-                if(this.currentId) this.data[this.currentId].updated = Date.now();
-                try {
-                    localStorage.setItem('dearend_v3', JSON.stringify(this.data));
-                } catch(e) {
-                    console.error("Storage quota reached");
-                }
-            },
+    this.playState.history.forEach((entry, i) => {
+      const div = document.createElement('div');
+      div.className = 'booklet-entry';
+      const typeIcon = {story:'',quiz:'🧠 ',note:'📌 ',end:'🏁 '};
+      div.innerHTML = `
+        <div class="booklet-scene-name">${entry.sceneName || 'Cena'}</div>
+        <div class="booklet-text">${entry.text || ''}</div>
+        <div class="booklet-choice">↳ ${entry.choiceText}</div>`;
+      logs.appendChild(div);
+    });
 
-            generateId() { return Math.random().toString(36).substr(2, 9); },
+    // Certificate if teach mode
+    const certZone = document.getElementById('certificateZone');
+    certZone.innerHTML = '';
+    if (proj.teachMode && this.playState.quizTotal > 0) {
+      const pct = Math.round((this.playState.quizCorrect / this.playState.quizTotal) * 100);
+      certZone.innerHTML = `
+        <div class="certificate">
+          <div class="cert-seal">🎓</div>
+          <div class="cert-title">${DICT[this.lang].certTitle}</div>
+          <div class="cert-subtitle">${DICT[this.lang].certSub}</div>
+          <div class="cert-story-name">"${proj.title}"</div>
+          <div class="cert-score">${pct}%</div>
+          <div style="color:var(--text3);font-size:0.85rem;margin-top:8px">${this.playState.quizCorrect} / ${this.playState.quizTotal} ${this.lang==='pt'?'questões corretas':'correct answers'}</div>
+          <div style="margin-top:20px;font-size:0.75rem;color:var(--text3)">DearEnd Studio v2.0 — Finaltime Studios</div>
+        </div>`;
+    }
 
-            // --- NAVEGAÇÃO ---
-            showView(id) {
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                
-                const isEditor = id === 'view-editor';
-                document.getElementById('navPlayBtn').style.display = isEditor ? 'block' : 'none';
-                document.getElementById('navExportBtn').style.display = isEditor ? 'block' : 'none';
-            },
+    this.showView('view-booklet');
+  },
 
-            goHome() {
-                this.currentId = null;
-                this.currentSceneId = null;
-                this.showView('view-home');
-                this.renderHome();
-            },
+  downloadBooklet() {
+    const area = document.getElementById('bookletContent');
+    html2canvas(area, { backgroundColor: '#111117', scale: 2 }).then(canvas => {
+      const a = document.createElement('a');
+      a.download = `${this.data[this.currentId].title.replace(/[^a-z0-9]/gi,'_')}_journey.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      this.toast(this.lang==='pt'?'Imagem baixada!':'Image downloaded!','ok');
+    });
+  },
 
-            renderHome() {
-                const grid = document.getElementById('projectGrid');
-                grid.innerHTML = '';
-                const ids = Object.keys(this.data);
-                
-                if(ids.length === 0) {
-                    grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1; text-align: center; margin-top: 50px; font-size: 1.2rem;">No stories found. Create your first masterpiece.</p>`;
-                    return;
-                }
+  // ---- FLOW MAP ----
+  renderFlowMap() {
+    if (!this.currentId) return;
+    const proj = this.data[this.currentId];
+    const container = document.getElementById('flowmap-canvas');
+    const svg = document.getElementById('flowSvg');
 
-                ids.sort((a,b) => this.data[b].updated - this.data[a].updated).forEach(id => {
-                    const proj = this.data[id];
-                    const card = document.createElement('div');
-                    card.className = 'project-card';
-                    card.innerHTML = `
-                        <div class="card-title">${proj.title}</div>
-                        <div class="card-meta">Scenes: ${Object.keys(proj.scenes).length} | Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
-                        <div class="card-actions">
-                            <button class="btn-primary" onclick="app.openProject('${id}')">EDIT</button>
-                            <button class="btn-danger" onclick="app.deleteProject('${id}')">DELETE</button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            },
+    // Remove old nodes
+    container.querySelectorAll('.flow-node').forEach(n => n.remove());
+    svg.innerHTML = '';
 
-            // --- PROJETOS ---
-            createNewProject() {
-                const projId = 'proj_' + this.generateId();
-                const startScnId = 'scn_' + this.generateId();
-                
-                this.data[projId] = {
-                    title: "Untitled Story",
-                    updated: Date.now(),
-                    startScene: startScnId,
-                    scenes: {}
-                };
-                
-                this.data[projId].scenes[startScnId] = {
-                    name: "Opening Scene",
-                    text: "", bg: "", filter: "filter-none", choices: []
-                };
-                
-                this.saveDb();
-                this.openProject(projId);
-            },
+    const scenes = proj.scenes;
+    const ids = Object.keys(scenes);
+    const cols = 4;
+    const nodeW = 180, nodeH = 90, gapX = 240, gapY = 140;
+    const positions = {};
 
-            openProject(id) {
-                this.currentId = id;
-                this.currentSceneId = this.data[id].startScene;
-                document.getElementById('projectName').value = this.data[id].title;
-                this.showView('view-editor');
-                this.renderEditor();
-            },
+    ids.forEach((id, i) => {
+      const col = i % cols, row = Math.floor(i / cols);
+      const x = 60 + col * gapX, y = 60 + row * gapY;
+      positions[id] = { x, y };
 
-            deleteProject(id) {
-                if(confirm(dict[this.lang].confirmDel)) {
-                    delete this.data[id];
-                    this.saveDb();
-                    this.renderHome();
-                }
-            },
+      const node = document.createElement('div');
+      node.className = `flow-node ${id === proj.startScene ? 'start' : ''}`;
+      node.style.cssText = `left:${x}px;top:${y}px;width:${nodeW}px`;
+      const typeIcon = {story:'📖',quiz:'🧠',note:'📌',end:'🏁'}[scenes[id].type||'story']||'📖';
+      node.innerHTML = `
+        <div class="flow-node-title">${typeIcon} ${scenes[id].name}</div>
+        <div class="flow-node-preview">${scenes[id].text||scenes[id].quiz?.question||''}</div>
+        <div class="flow-node-choices-count">${scenes[id].choices.length} caminho${scenes[id].choices.length!==1?'s':''}</div>`;
+      node.onclick = () => { this.currentSceneId = id; this.showView('view-editor'); this.renderEditor(); };
+      this.makeNodeDraggable(node, id, positions, svg, scenes);
+      container.appendChild(node);
+    });
 
-            updateProjectTitle() {
-                if(!this.currentId) return;
-                this.data[this.currentId].title = document.getElementById('projectName').value || "Untitled";
-                this.saveDb();
-            },
+    // Draw arrows
+    this.drawFlowArrows(svg, positions, scenes);
 
-            exportProject() {
-                if(!this.currentId) return;
-                const projData = this.data[this.currentId];
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projData));
-                const a = document.createElement('a');
-                a.href = dataStr;
-                const safeName = projData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                a.download = `${safeName}.dearend`;
-                a.click();
-            },
+    // Size canvas
+    const maxX = Math.max(...Object.values(positions).map(p => p.x)) + nodeW + 60;
+    const maxY = Math.max(...Object.values(positions).map(p => p.y)) + nodeH + 60;
+    container.style.width = maxX + 'px';
+    container.style.height = maxY + 'px';
+    svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY}`);
+    svg.style.width = maxX + 'px';
+    svg.style.height = maxY + 'px';
+  },
 
-            importProject(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        const newProjId = 'proj_' + this.generateId();
-                        importedData.updated = Date.now(); 
-                        this.data[newProjId] = importedData;
-                        this.saveDb();
-                        this.openProject(newProjId);
-                    } catch (err) { alert("Invalid .dearend file format."); }
-                };
-                reader.readAsText(file);
-                event.target.value = '';
-            },
+  drawFlowArrows(svg, positions, scenes) {
+    svg.innerHTML = '';
+    const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+    defs.innerHTML = `<marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#5a5a7a"/></marker>`;
+    svg.appendChild(defs);
 
-            // --- EDITOR ---
-            renderEditor() {
-                this.renderSceneList();
-                this.loadSceneToEditor();
-            },
+    const nodeW = 180, nodeH = 90;
+    Object.keys(scenes).forEach(fromId => {
+      scenes[fromId].choices.forEach(choice => {
+        if (!choice.target || !positions[choice.target] || !positions[fromId]) return;
+        const from = positions[fromId], to = positions[choice.target];
+        const x1 = from.x + nodeW/2, y1 = from.y + nodeH;
+        const x2 = to.x + nodeW/2, y2 = to.y;
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        const cy = (y1 + y2) / 2;
+        path.setAttribute('d', `M${x1},${y1} C${x1},${cy} ${x2},${cy} ${x2},${y2}`);
+        path.setAttribute('stroke', '#3a3a50');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('fill', 'none');
+        path.setAttribute('marker-end', 'url(#arrow)');
+        svg.appendChild(path);
+      });
+    });
+  },
 
-            renderSceneList() {
-                const list = document.getElementById('sceneList');
-                list.innerHTML = '';
-                const proj = this.data[this.currentId];
-                
-                Object.keys(proj.scenes).forEach(id => {
-                    const scene = proj.scenes[id];
-                    const div = document.createElement('div');
-                    div.className = `scene-item ${id === this.currentSceneId ? 'active' : ''}`;
-                    div.innerHTML = `
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 200px;">${scene.name}</span>
-                        ${id !== proj.startScene ? `<button class="del-scene" onclick="app.deleteScene('${id}', event)">✖</button>` : '<span style="color:var(--brand); font-size:12px;">★ START</span>'}
-                    `;
-                    div.onclick = () => { this.currentSceneId = id; this.renderEditor(); };
-                    list.appendChild(div);
-                });
-                
-                this.renderEditorChoices();
-            },
+  makeNodeDraggable(node, id, positions, svg, scenes) {
+    let startX, startY, startLeft, startTop, dragging = false;
+    node.addEventListener('mousedown', e => {
+      if (e.button !== 0) return;
+      dragging = true;
+      startX = e.clientX; startY = e.clientY;
+      startLeft = positions[id].x; startTop = positions[id].y;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      positions[id].x = startLeft + dx;
+      positions[id].y = startTop + dy;
+      node.style.left = positions[id].x + 'px';
+      node.style.top = positions[id].y + 'px';
+      this.drawFlowArrows(svg, positions, scenes);
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+  },
 
-            loadSceneToEditor() {
-                const scene = this.data[this.currentId].scenes[this.currentSceneId];
-                if(!scene) return;
+  setupFlowDrag() {
+    const body = document.querySelector('.flowmap-body');
+    if (!body) return;
+    let dragging = false, startX, startY, scrollLeft, scrollTop;
+    body.addEventListener('mousedown', e => {
+      if (e.target.classList.contains('flow-node') || e.target.closest('.flow-node')) return;
+      dragging = true; startX = e.pageX; startY = e.pageY;
+      scrollLeft = body.scrollLeft; scrollTop = body.scrollTop;
+      body.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      body.scrollLeft = scrollLeft - (e.pageX - startX);
+      body.scrollTop = scrollTop - (e.pageY - startY);
+    });
+    document.addEventListener('mouseup', () => { dragging = false; body.style.cursor = ''; });
+  },
 
-                document.getElementById('sceneNameInput').value = scene.name;
-                document.getElementById('editorText').value = scene.text;
-                document.getElementById('editorFilter').value = scene.filter;
-                
-                const canvas = document.getElementById('editorCanvas');
-                canvas.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
-                canvas.className = `story-canvas ${scene.filter}`;
+  // ---- AI ASSISTANT ----
+  toggleAI() {
+    this.aiOpen = !this.aiOpen;
+    document.getElementById('aiPanel').classList.toggle('open', this.aiOpen);
+  },
+  aiPreset(type) {
+    const scene = this.data[this.currentId]?.scenes[this.currentSceneId];
+    const text = scene?.text || '';
+    const presets = {
+      continuar: `Continuar esta cena narrativa: "${text.slice(0,100)}..."`,
+      melhorar: `Melhorar e reescrever este texto de forma mais dramática e envolvente: "${text.slice(0,150)}"`,
+      alternativa: `Sugerir 3 versões alternativas para esta cena, com tons diferentes (sombrio, esperançoso, misterioso): "${text.slice(0,100)}"`,
+      personagem: `Criar um personagem interessante e detalhado para esta história: "${this.data[this.currentId]?.title}" (gênero: ${GENRES[this.data[this.currentId]?.genre]||''})`,
+      quiz: `Criar um quiz educativo com 4 alternativas sobre o seguinte conteúdo: "${text.slice(0,200)}"`,
+    };
+    document.getElementById('aiInput').value = presets[type] || '';
+    document.getElementById('aiInput').focus();
+  },
+  async sendAI() {
+    const input = document.getElementById('aiInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
 
-                this.renderEditorChoices();
-            },
+    const msgs = document.getElementById('aiMessages');
+    const userDiv = document.createElement('div');
+    userDiv.className = 'ai-msg user';
+    userDiv.textContent = msg;
+    msgs.appendChild(userDiv);
 
-            addScene() {
-                const proj = this.data[this.currentId];
-                const id = 'scn_' + this.generateId();
-                const num = Object.keys(proj.scenes).length + 1;
-                proj.scenes[id] = {
-                    name: `${dict[this.lang].newScene} ${num}`, text: "", bg: "", filter: "filter-none", choices: []
-                };
-                this.currentSceneId = id;
-                this.saveDb();
-                this.renderEditor();
-            },
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'ai-msg ai typing';
+    typingDiv.textContent = this.lang==='pt'?'Escrevendo...':'Writing...';
+    msgs.appendChild(typingDiv);
+    msgs.scrollTop = msgs.scrollHeight;
 
-            deleteScene(id, event) {
-                event.stopPropagation();
-                const proj = this.data[this.currentId];
-                if(id === proj.startScene) return; 
-                
-                delete proj.scenes[id];
-                Object.values(proj.scenes).forEach(s => {
-                    s.choices.forEach(c => { if(c.target === id) c.target = ""; });
-                });
+    const proj = this.data[this.currentId];
+    const scene = proj?.scenes[this.currentSceneId];
+    const systemPrompt = `Você é um assistente criativo de escrita narrativa para o DearEnd Studio, uma ferramenta de criação de histórias interativas e ensino. 
+A história atual se chama "${proj?.title||''}", gênero: ${GENRES[proj?.genre]||''}.
+Cena atual: "${scene?.name||''}" — Texto: "${scene?.text||''}".
+Seja criativo, conciso e direto. Responda em ${this.lang==='pt'?'português':'English'}. Máximo 300 palavras.`;
 
-                this.currentSceneId = proj.startScene;
-                this.saveDb();
-                this.renderEditor();
-            },
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: msg }]
+        })
+      });
+      const data = await resp.json();
+      const reply = data.content?.map(b => b.text||'').join('') || 'Erro na resposta.';
 
-            uploadBackground(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    this.compressImage(event.target.result, (compressed) => {
-                        this.data[this.currentId].scenes[this.currentSceneId].bg = compressed;
-                        this.saveDb();
-                        this.loadSceneToEditor();
-                    });
-                };
-                reader.readAsDataURL(file);
-                e.target.value = '';
-            },
+      typingDiv.classList.remove('typing');
+      typingDiv.textContent = reply;
 
-            compressImage(dataUrl, callback) {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX = 1280; 
-                    let w = img.width; let h = img.height;
-                    if (w > MAX) { h *= MAX / w; w = MAX; }
-                    canvas.width = w; canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    callback(canvas.toDataURL('image/jpeg', 0.7)); 
-                };
-                img.src = dataUrl;
-            },
+      // Add "use in scene" button
+      const useBtn = document.createElement('button');
+      useBtn.className = 'ai-preset-btn';
+      useBtn.style.marginTop = '6px';
+      useBtn.textContent = this.lang==='pt'?'📋 Usar na cena atual':'📋 Use in current scene';
+      useBtn.onclick = () => {
+        document.getElementById('editorText').value = reply;
+        if (scene) { scene.text = reply; this.saveDb(); }
+        this.toast(this.lang==='pt'?'Texto aplicado!':'Text applied!','ok');
+      };
+      typingDiv.appendChild(document.createElement('br'));
+      typingDiv.appendChild(useBtn);
+    } catch(e) {
+      typingDiv.textContent = this.lang==='pt'?'Erro ao conectar com IA.':'Error connecting to AI.';
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+  },
 
-            // --- ESCOLHAS (CHOICES) ---
-            addChoice() {
-                const scene = this.data[this.currentId].scenes[this.currentSceneId];
-                if(scene.choices.length >= 4) return;
-                scene.choices.push({ text: "New Action", target: "" });
-                this.saveDb();
-                this.renderEditorChoices();
-            },
+  // ---- MODALS ----
+  openModal(id) { document.getElementById(id).classList.add('open'); },
+  closeModal(id) { document.getElementById(id).classList.remove('open'); },
 
-            renderEditorChoices() {
-                const proj = this.data[this.currentId];
-                const scene = proj.scenes[this.currentSceneId];
-                const list = document.getElementById('editorChoicesList');
-                list.innerHTML = '';
+  // ---- TOAST ----
+  toast(msg, type) {
+    const z = document.getElementById('toastZone');
+    const t = document.createElement('div');
+    t.className = `toast ${type||''}`;
+    t.textContent = msg;
+    z.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(12px)'; t.style.transition='all 0.3s'; setTimeout(()=>t.remove(),300); }, 2500);
+  },
+};
 
-                scene.choices.forEach((choice, index) => {
-                    const row = document.createElement('div');
-                    row.className = 'choice-editor-row';
-                    
-                    const input = document.createElement('input');
-                    input.className = 'choice-input'; input.value = choice.text;
-                    input.oninput = (e) => { choice.text = e.target.value; this.triggerSave(); };
-                    
-                    const select = document.createElement('select');
-                    select.className = 'choice-target';
-                    this.populateTargetSelect(select, choice.target, proj.scenes);
-                    select.onchange = (e) => { choice.target = e.target.value; this.saveDb(); };
+window.addEventListener('click', e => {
+  const overlays = document.querySelectorAll('.modal-overlay.open');
+  overlays.forEach(o => { if(e.target === o) app.closeModal(o.id); });
+});
 
-                    const delBtn = document.createElement('button');
-                    delBtn.innerText = "✖"; delBtn.style.padding = "4px 8px"; delBtn.className = "btn-danger";
-                    delBtn.onclick = () => { scene.choices.splice(index, 1); this.saveDb(); this.renderEditorChoices(); };
-
-                    row.appendChild(input); row.appendChild(select); row.appendChild(delBtn);
-                    list.appendChild(row);
-                });
-            },
-
-            populateTargetSelect(selectEl, currentVal, allScenes) {
-                selectEl.innerHTML = `<option value="">[ THE END ]</option>`;
-                Object.keys(allScenes).forEach(id => {
-                    const opt = document.createElement('option');
-                    opt.value = id; opt.innerText = allScenes[id].name;
-                    if(id === currentVal) opt.selected = true;
-                    selectEl.appendChild(opt);
-                });
-            },
-
-            // --- PLAYER ---
-            playProject() {
-                if(!this.currentId) return;
-                const proj = this.data[this.currentId];
-                this.playState.history = [];
-                this.playState.current = proj.startScene;
-                this.showView('view-player');
-                this.renderPlayerScene();
-            },
-
-            exitPlayer() {
-                this.showView('view-editor');
-            },
-
-            renderPlayerScene() {
-                const scene = this.data[this.currentId].scenes[this.playState.current];
-                if(!scene) return;
-
-                const bg = document.getElementById('player-bg');
-                bg.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
-                bg.className = scene.filter;
-
-                document.getElementById('player-text').innerText = scene.text;
-                const choicesDiv = document.getElementById('player-choices');
-                choicesDiv.innerHTML = '';
-
-                // A CORREÇÃO ABSOLUTA DA LÓGICA DE FIM
-                if (scene.choices.length === 0) {
-                    // A cena não tem botões criados = A história para aqui.
-                    const btn = document.createElement('button');
-                    btn.className = 'player-choice-btn';
-                    btn.style.borderColor = "var(--brand)";
-                    btn.innerText = dict[this.lang].viewBooklet;
-                    btn.onclick = () => this.generateBooklet();
-                    choicesDiv.appendChild(btn);
-                } else {
-                    // A cena tem opções. Vamos renderizar todas.
-                    scene.choices.forEach(choice => {
-                        const btn = document.createElement('button');
-                        btn.className = 'player-choice-btn';
-                        btn.innerText = choice.text;
-                        btn.onclick = () => {
-                            this.playState.history.push({ text: scene.text, choice: choice.text });
-                            
-                            // Se ESSA escolha específica for "Fim", chame o livrinho
-                            if (choice.target === "") {
-                                this.generateBooklet();
-                            } else {
-                                this.playState.current = choice.target;
-                                this.renderPlayerScene();
-                            }
-                        };
-                        choicesDiv.appendChild(btn);
-                    });
-                }
-            },
-
-            // --- BOOKLET ---
-            generateBooklet() {
-                const finalScene = this.data[this.currentId].scenes[this.playState.current];
-                if(finalScene && finalScene.choices.length === 0) {
-                    // Só marca o "end reached" forçado se não havia opções
-                    this.playState.history.push({ text: finalScene.text, choice: dict[this.lang].endReached });
-                }
-
-                const logs = document.getElementById('bookletLogs');
-                logs.innerHTML = '';
-                
-                this.playState.history.forEach(entry => {
-                    const div = document.createElement('div');
-                    div.className = 'log-entry';
-                    div.innerHTML = `
-                        <div class="log-text">"${entry.text}"</div>
-                        <div class="log-choice">${entry.choice}</div>
-                    `;
-                    logs.appendChild(div);
-                });
-
-                this.showView('view-booklet');
-            },
-
-            downloadBooklet() {
-                const area = document.getElementById('bookletContent');
-                const btn = document.getElementById('t-downloadBooklet');
-                const originalText = btn.innerText;
-                btn.innerText = "GENERATING...";
-
-                html2canvas(area, { backgroundColor: '#18181b', scale: 2 }).then(canvas => {
-                    const link = document.createElement('a');
-                    const safeName = this.data[this.currentId].title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                    link.download = `${safeName}_path.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    btn.innerText = originalText;
-                });
-            },
-
-            // --- LANGUAGE ---
-            changeLanguage(l) {
-                this.lang = l;
-                localStorage.setItem('dearend_lang', l);
-                const d = dict[l];
-                
-                document.getElementById('t-myStories').innerText = d.myStories;
-                document.getElementById('t-create').innerText = d.create;
-                document.getElementById('t-import').innerText = d.import;
-                document.getElementById('t-scenes').innerText = d.scenes;
-                document.getElementById('t-bgImage').innerText = d.bgImage;
-                document.getElementById('t-filter').innerText = d.filter;
-                document.getElementById('t-choices').innerText = d.choices;
-                document.getElementById('t-exit').innerText = d.exit;
-                document.getElementById('editorText').placeholder = d.placeholder;
-                document.getElementById('t-sceneName').innerText = d.sceneName;
-                document.getElementById('t-downloadBooklet').innerText = d.downloadBooklet;
-                
-                if(this.currentId == null) this.renderHome();
-                else this.renderEditor();
-            }
-        };
-
-        window.onload = () => app.init();
-    </script>
+window.onload = () => {
+  app.init();
+  // Remove loading screen after animation
+  setTimeout(() => { const l = document.getElementById('loading-screen'); if(l) l.remove(); }, 1800);
+};
+</script>
 </body>
 </html>
