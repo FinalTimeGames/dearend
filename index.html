@@ -1,721 +1,411 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DearEnd Studio | Finaltime Studios</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Montserrat:wght@900&family=VT323&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DearEnd Studio | Interactive Narrative Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #080810;
+  --bg1:      #10101a;
+  --bg2:      #16162a;
+  --bg3:      #1e1e35;
+  --border:   rgba(255,255,255,0.07);
+  --borderhi: rgba(255,255,255,0.16);
+  --text:     #f0f0f8;
+  --text2:    #9898b8;
+  --text3:    #5a5a7a;
+  --brand:    #c0392b;
+  --brandlt:  #e74c3c;
+  --brandglo: rgba(192,57,43,0.3);
+  --gold:     #d4a853;
+  --green:    #2ecc71;
+  --blue:     #3498db;
+  --r:        8px;
+  --rlg:      14px;
+  --fui:      'DM Sans', sans-serif;
+  --fdis:     'Playfair Display', serif;
+  --fmono:    'DM Mono', monospace;
+  --fbrand:   'Montserrat', sans-serif;
+  --navh:     64px;
+  --ease:     cubic-bezier(0.4,0,0.2,1);
+}
 
-        :root {
-            --bg-base: #09090b;
-            --bg-panel: #18181b;
-            --bg-elevated: #27272a;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --accent: #e4e4e7;
-            --accent-hover: #ffffff;
-            --border: #3f3f46;
-            --brand: #991b1b; 
-            
-            --font-ui: 'Inter', sans-serif;
-            --font-display: 'Montserrat', sans-serif;
-            --font-story: 'Courier New', Courier, monospace;
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--fui);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
-        body {
-            font-family: var(--font-ui); background-color: var(--bg-base); color: var(--text-main);
-            min-height: 100vh; overflow: hidden; display: flex; flex-direction: column;
-        }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 99px; }
 
-        /* --- NAVBAR & LOGO --- */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 32px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.5); position: relative;
-        }
-        
-        .brand-container { display: flex; align-items: center; gap: 14px; cursor: pointer; transition: opacity 0.2s; }
-        .brand-container:hover { opacity: 0.8; }
-        
-        /* Aqui o logo vai aparecer. Se ele não existir ainda, fica escondido suavemente */
-        .nav-logo { height: 38px; width: auto; object-fit: contain; border-radius: 4px; }
-        
-        .brand { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #fff; text-transform: uppercase; margin-top: 2px;}
-        .brand span { color: var(--brand); font-weight: 400; }
-        .nav-controls { display: flex; gap: 12px; align-items: center; }
+/* ── TYPOGRAPHY & LINKS ── */
+a { color: var(--text); text-decoration: none; transition: color 0.2s var(--ease); }
+a:hover { color: var(--brandlt); }
+h1, h2, h3 { font-family: var(--fdis); font-weight: 700; color: #fff; line-height: 1.2; }
+h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 16px; }
+h2 { font-size: 2.2rem; margin-bottom: 24px; }
+h3 { font-size: 1.4rem; margin-bottom: 12px; font-family: var(--fui); }
+p { color: var(--text2); margin-bottom: 16px; font-size: 1.05rem; }
+code { font-family: var(--fmono); background: var(--bg2); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; color: var(--brandlt); border: 1px solid var(--border); }
 
-        button, select, input[type="text"] {
-            background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);
-            padding: 8px 16px; border-radius: 4px; font-family: var(--font-ui); font-size: 0.85rem;
-            font-weight: 600; transition: all 0.2s; outline: none;
-        }
-        button { cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
-        button:hover { background: #3f3f46; border-color: var(--text-muted); }
-        .btn-primary { background: var(--text-main); color: var(--bg-base); border-color: var(--text-main); }
-        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-brand { background: rgba(153, 27, 27, 0.1); border-color: var(--brand); color: var(--brand); }
-        .btn-brand:hover { background: var(--brand); color: white; }
-        .btn-danger { background: transparent; color: #ef4444; border-color: #ef4444; }
-        .btn-danger:hover { background: #ef4444; color: white; }
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--r); border: 1px solid var(--border);
+  background: var(--bg2); color: var(--text); font-family: var(--fui);
+  font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; cursor: pointer;
+  transition: all 0.2s var(--ease); text-transform: uppercase;
+}
+.btn:hover { border-color: var(--borderhi); background: var(--bg3); transform: translateY(-2px); }
+.btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn-primary:hover { background: #fff; box-shadow: 0 4px 20px rgba(255,255,255,0.15); }
+.btn-brand { background: var(--brand); color: #fff; border-color: var(--brand); }
+.btn-brand:hover { background: var(--brandlt); box-shadow: 0 4px 20px var(--brandglo); }
+.btn-outline { background: transparent; border-color: var(--borderhi); }
+.btn-outline:hover { background: rgba(255,255,255,0.05); }
 
-        .watermark { position: absolute; bottom: 12px; right: 16px; font-family: var(--font-display); font-size: 0.8rem; color: rgba(255, 255, 255, 0.15); letter-spacing: 2px; font-weight: 900; z-index: 50; pointer-events: none; text-transform: uppercase; }
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--navh);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; background: rgba(8,8,16,0.85); border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px); z-index: 1000;
+}
+.brand-box { display: flex; align-items: center; gap: 12px; }
+.brand-logo { height: 32px; width: auto; border-radius: 4px; }
+.brand-name { font-family: var(--fbrand); font-size: 1.1rem; font-weight: 900; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; }
+.nav-links { display: flex; gap: 24px; align-items: center; }
+.nav-link { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); }
+.nav-link:hover { color: #fff; }
 
-        /* Views Setup */
-        .view { display: none; height: calc(100vh - 65px); width: 100%; position: relative; }
-        .view.active { display: flex; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* ── HERO SECTION ── */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 40px 80px; position: relative;
+  background: linear-gradient(160deg, rgba(8,8,16,0.88), rgba(16,16,26,0.98)), url('home-bg.jpg') center/cover no-repeat fixed;
+}
+.hero-content { max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 10; }
+.hero h1 em { color: var(--brand); font-style: italic; }
+.hero-sub { font-size: 1.25rem; color: var(--text2); max-width: 600px; margin: 0 auto 40px; line-height: 1.7; }
+.hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 
-        /* --- HOME (DASHBOARD) --- */
-        /* Imagem de Fundo Permanente na Home + Filtro Escuro */
-        #view-home { 
-            flex-direction: column; padding: 40px; overflow-y: auto; 
-            background: linear-gradient(to bottom, rgba(9,9,11,0.85) 0%, rgba(24,24,27,0.95) 100%), url('home-bg.jpg') center/cover no-repeat; 
-        }
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; max-width: 1200px; margin-inline: auto; width: 100%; }
-        .home-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; text-transform: uppercase; text-shadow: 0 4px 12px rgba(0,0,0,0.8); }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; max-width: 1200px; margin-inline: auto; width: 100%; }
-        
-        .project-card { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 6px; padding: 24px; transition: all 0.2s; position: relative; overflow: hidden; }
-        .project-card:hover { border-color: var(--brand); box-shadow: 0 10px 30px rgba(153, 27, 27, 0.2); transform: translateY(-3px); background: rgba(24, 24, 27, 0.95);}
-        .card-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; color: #fff; }
-        .card-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
-        .card-actions { display: flex; gap: 8px; }
+/* ── FEATURES GRID ── */
+.section { padding: 100px 40px; max-width: 1260px; margin: 0 auto; width: 100%; }
+.section-header { text-align: center; margin-bottom: 60px; }
+.grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.feature-card {
+  background: var(--bg1); border: 1px solid var(--border); border-radius: var(--rlg);
+  padding: 32px; transition: all 0.2s var(--ease); position: relative; overflow: hidden;
+}
+.feature-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--brand), transparent); opacity: 0; transition: opacity 0.2s;
+}
+.feature-card:hover { transform: translateY(-4px); border-color: var(--borderhi); background: var(--bg2); }
+.feature-card:hover::before { opacity: 1; }
+.feature-icon {
+  width: 48px; height: 48px; border-radius: 12px; background: rgba(192,57,43,0.1);
+  color: var(--brand); display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 20px; border: 1px solid var(--brandglo);
+}
 
-        /* --- EDITOR VIEW --- */
-        .sidebar { width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
-        .project-name-input { width: 100%; background: var(--bg-base); font-size: 1.1rem; font-weight: 800; border-color: transparent; padding: 8px; color: var(--brand); border-bottom: 1px solid var(--border); border-radius: 0; }
-        .project-name-input:focus { border-color: var(--brand); }
-        
-        .scene-list { flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-        .scene-item { padding: 12px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
-        .scene-item:hover { border-color: var(--text-muted); }
-        .scene-item.active { border-color: var(--brand); background: rgba(153, 27, 27, 0.1); border-left: 4px solid var(--brand); }
-        .del-scene { background: transparent; border: none; color: var(--text-muted); padding: 4px; font-size: 0.7rem; }
-        .del-scene:hover { color: #ef4444; }
+/* ── DOCUMENTATION SPLIT VIEW ── */
+.docs-container {
+  display: flex; border: 1px solid var(--border); border-radius: var(--rlg);
+  background: var(--bg1); overflow: hidden; min-height: 700px; margin-top: 40px;
+}
+.docs-sidebar {
+  width: 280px; background: var(--bg2); border-right: 1px solid var(--border);
+  padding: 24px 0; flex-shrink: 0; overflow-y: auto;
+}
+.docs-nav-group { margin-bottom: 24px; }
+.docs-nav-title {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; color: var(--text3);
+  text-transform: uppercase; padding: 0 24px; margin-bottom: 8px;
+}
+.docs-nav-item {
+  display: block; padding: 8px 24px; font-size: 0.9rem; color: var(--text2);
+  cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent;
+}
+.docs-nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+.docs-nav-item.active { border-left-color: var(--brand); color: #fff; background: rgba(192,57,43,0.08); font-weight: 500; }
 
-        .editor-main { flex-grow: 1; display: flex; flex-direction: column; position: relative; background: #000; }
-        
-        .story-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 60px; background-size: cover; background-position: center; transition: filter 0.3s; }
-        
-        /* Filters */
-        .filter-none { filter: none; }
-        .filter-grime { filter: grayscale(80%) sepia(30%) contrast(150%) brightness(0.8); }
-        .filter-noir { filter: grayscale(100%) contrast(200%) brightness(0.7); }
-        .filter-sepia { filter: sepia(80%) contrast(120%); }
+.docs-content { flex: 1; padding: 48px; overflow-y: auto; position: relative; }
+.doc-section { display: none; animation: fadeIn 0.3s var(--ease); }
+.doc-section.active { display: block; }
 
-        /* Story Textbox */
-        .textbox-container { width: 90%; max-width: 1000px; background: rgba(0, 0, 0, 0.75); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 30px; z-index: 10; backdrop-filter: blur(8px); }
-        .story-text-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-family: var(--font-story); font-size: 1.3rem; resize: none; outline: none; line-height: 1.6; text-align: center; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-        /* Tools Panel */
-        .editor-tools { position: absolute; top: 20px; right: 20px; background: rgba(24, 24, 27, 0.95); border: 1px solid var(--border); padding: 20px; border-radius: 6px; z-index: 20; display: flex; flex-direction: column; gap: 16px; width: 320px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .tool-group { display: flex; flex-direction: column; gap: 6px; }
-        .tool-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
-        
-        .choice-editor-row { display: flex; gap: 8px; align-items: center; background: #000; padding: 8px; border: 1px solid #333; border-radius: 4px;}
-        .choice-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 4px; }
-        .choice-target { width: 100px; background: #222; border: 1px solid #444; color: #fff; font-size: 0.75rem; padding: 6px; cursor: pointer; }
+.doc-box {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 20px; margin: 24px 0; border-left: 3px solid var(--blue);
+}
+.doc-box.warning { border-left-color: var(--gold); background: rgba(212,168,83,0.05); }
 
-        input[type="file"] { display: none; }
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border); padding: 40px; text-align: center;
+  background: var(--bg1); margin-top: 60px;
+}
+.footer-watermark {
+  font-family: var(--fbrand); font-size: 0.8rem; color: rgba(255,255,255,0.15);
+  letter-spacing: 3px; font-weight: 900; text-transform: uppercase;
+}
 
-        /* --- PLAYER VIEW --- */
-        #view-player { background: #000; justify-content: center; align-items: flex-end; padding-bottom: 60px; }
-        #player-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; transition: background 0.5s ease; }
-        .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 2; pointer-events: none; }
-        
-        #player-content { width: 90%; max-width: 1000px; z-index: 10; display: flex; flex-direction: column; gap: 30px; }
-        .player-text-box { background: rgba(0, 0, 0, 0.6); border-top: 1px solid #444; border-bottom: 1px solid #444; padding: 40px; text-align: center; backdrop-filter: blur(4px); }
-        #player-text { font-family: var(--font-story); font-size: 1.5rem; line-height: 1.6; color: #fff; text-shadow: 1px 1px 2px #000;}
-        
-        #player-choices { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .player-choice-btn { width: 100%; max-width: 600px; background: rgba(0,0,0,0.8); border: 1px solid #555; color: #e4e4e7; padding: 16px; font-family: var(--font-ui); font-size: 1.1rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; }
-        .player-choice-btn:hover { background: var(--text-main); color: #000; border-color: var(--text-main); transform: scale(1.02); }
-        
-        /* Botões Flutuantes Globais para evitar bugs de ficar preso */
-        .player-controls { position: absolute; top: 20px; right: 20px; z-index: 999; }
-
-        /* --- BOOKLET VIEW --- */
-        #view-booklet { flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; background: #111; }
-        #bookletContent { width: 100%; max-width: 800px; background: #18181b; border: 1px solid #333; padding: 60px; position: relative; margin-top: 40px; }
-        .booklet-title { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 40px; text-align: center; text-transform: uppercase; color: #fff; border-bottom: 2px solid var(--brand); padding-bottom: 16px; }
-        .log-entry { margin-bottom: 30px; padding-left: 20px; border-left: 3px solid #444; position: relative; }
-        .log-entry::before { content: ''; position: absolute; left: -7px; top: 0; width: 11px; height: 11px; background: var(--brand); border-radius: 50%; }
-        .log-text { font-family: var(--font-story); font-size: 1.1rem; color: #ccc; line-height: 1.6; margin-bottom: 12px; }
-        .log-choice { font-family: var(--font-ui); font-size: 0.9rem; color: var(--brand); font-weight: bold; text-transform: uppercase; background: rgba(153,27,27,0.1); display: inline-block; padding: 4px 8px; border-radius: 4px;}
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: var(--border); }
-    </style>
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2.5rem; }
+  .docs-container { flex-direction: column; }
+  .docs-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .docs-content { padding: 24px; }
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+}
+</style>
 </head>
 <body>
 
-    <nav>
-        <div class="brand-container" onclick="app.goHome()">
-            <img src="logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
-            <div class="brand">DEAREND <span>STUDIO</span></div>
-        </div>
-        <div class="nav-controls">
-            <select id="langSelect" onchange="app.changeLanguage(this.value)">
-                <option value="en">English</option>
-                <option value="pt">Português</option>
-            </select>
-            <button id="navPlayBtn" class="btn-primary" style="display:none;" onclick="app.playProject()">▶ PLAY</button>
-            <button id="navExportBtn" style="display:none;" onclick="app.exportProject()">⬇ EXPORT .DEAREND</button>
-        </div>
-    </nav>
+<nav>
+  <div class="brand-box">
+    <img src="logo.png" alt="" class="brand-logo" onerror="this.style.display='none'">
+    <span class="brand-name">DearEnd <span style="color:#fff;font-weight:400;">Studio</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#docs" class="nav-link">Documentation</a>
+    <a href="https://finaltime-studios.itch.io/dearend" target="_blank" class="btn btn-brand btn-sm">Download on Itch.io</a>
+  </div>
+</nav>
 
-    <main id="view-home" class="view active">
-        <div class="dashboard-header">
-            <h2 class="home-title" id="t-myStories">My Stories</h2>
-            <div style="display: flex; gap: 12px;">
-                <button class="btn-primary" onclick="app.createNewProject()" id="t-create">+ NEW STORY</button>
-                <label for="importFile" class="btn-brand" style="margin:0; padding:8px 16px; border-radius:4px; font-weight:600; cursor:pointer; font-size:0.85rem; border: 1px solid var(--brand); display:flex; align-items:center;" id="t-import">IMPORT</label>
-                <input type="file" id="importFile" accept=".dearend,.json" onchange="app.importProject(event)">
-            </div>
-        </div>
-        <div class="project-grid" id="projectGrid"></div>
-        <div class="watermark">FINALTIME STUDIOS</div>
-    </main>
+<section class="hero">
+  <div class="hero-content">
+    <h1>Your stories,<br><em>brought to life.</em></h1>
+    <p class="hero-sub">The ultimate node-based engine for visual novels, interactive courses, and text RPGs. Build, test, and export your narrative without writing a single line of code.</p>
+    <div class="hero-btns">
+      <a href="https://finaltime-studios.itch.io/dearend" target="_blank" class="btn btn-brand">Download for Windows</a>
+      <a href="#docs" class="btn btn-outline">Read Documentation</a>
+    </div>
+  </div>
+</section>
 
-    <main id="view-editor" class="view">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <input type="text" id="projectName" class="project-name-input" value="Untitled Story" onblur="app.updateProjectTitle()">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                    <span style="font-weight: 800; font-size: 0.8rem; color: var(--text-muted);" id="t-scenes">TIMELINE</span>
-                    <button onclick="app.addScene()" style="padding: 4px 12px; font-size: 1.2rem;">+</button>
-                </div>
-            </div>
-            <div class="scene-list" id="sceneList"></div>
-        </aside>
+<section id="features" class="section">
+  <div class="section-header">
+    <h2>Built for Creators</h2>
+    <p>Everything you need to craft immersive branching narratives.</p>
+  </div>
+  <div class="grid-features">
+    <div class="feature-card">
+      <div class="feature-icon">⛙</div>
+      <h3>Node-Based Flow Map</h3>
+      <p>Visualize your entire narrative structure. Drag and drop scenes, see branching paths instantly, and maintain control over complex storylines.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Logic & Variables</h3>
+      <p>Create dynamic RPG mechanics. Track player scores, inventory items, and relationships. Branch scenes automatically based on conditional logic.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💾</div>
+      <h3>Local Asset Store</h3>
+      <p>A highly optimized IndexedDB engine compresses and stores your images securely. Build massive 100+ scene projects without browser lag.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎓</div>
+      <h3>Interactive Quizzes</h3>
+      <p>Transform stories into learning tools. Embed multiple-choice questions natively within scenes, providing instant feedback for educational courses.</p>
+    </div>
+  </div>
+</section>
+
+<section id="docs" class="section">
+  <div class="section-header">
+    <h2>Documentation</h2>
+    <p>Master the DearEnd Engine. From basic scenes to advanced RPG logic.</p>
+  </div>
+  
+  <div class="docs-container">
+    <aside class="docs-sidebar">
+      <div class="docs-nav-group">
+        <div class="docs-nav-title">Getting Started</div>
+        <a class="docs-nav-item active" onclick="switchDoc('intro', this)">Introduction</a>
+        <a class="docs-nav-item" onclick="switchDoc('projects', this)">Projects & Exporting</a>
+      </div>
+      <div class="docs-nav-group">
+        <div class="docs-nav-title">Building Stories</div>
+        <a class="docs-nav-item" onclick="switchDoc('scenes', this)">Scenes & Choices</a>
+        <a class="docs-nav-item" onclick="switchDoc('map', this)">Using the Flow Map</a>
+        <a class="docs-nav-item" onclick="switchDoc('media', this)">Images & Filters</a>
+      </div>
+      <div class="docs-nav-group">
+        <div class="docs-nav-title">Advanced Logic</div>
+        <a class="docs-nav-item" onclick="switchDoc('vars', this)">Variables & State</a>
+        <a class="docs-nav-item" onclick="switchDoc('cond', this)">Conditions & Effects</a>
+        <a class="docs-nav-item" onclick="switchDoc('quiz', this)">Quizzes & Assessments</a>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      
+      <div id="doc-intro" class="doc-section active">
+        <h2>Welcome to DearEnd Studio</h2>
+        <p>DearEnd Studio is a powerful, browser-based narrative engine designed by <strong>Finaltime Studios</strong>. It allows writers, game designers, and educators to create complex branching stories without programming.</p>
         
-        <section class="editor-main">
-            <div class="story-canvas" id="editorCanvas">
-                <div class="textbox-container">
-                    <textarea class="story-text-input" id="editorText" rows="5" placeholder="Scene text goes here..." oninput="app.triggerSave()"></textarea>
-                </div>
-            </div>
-
-            <div class="editor-tools">
-                <div class="tool-group">
-                    <label id="t-sceneName">Scene Name</label>
-                    <input type="text" id="sceneNameInput" style="width: 100%; background: #000;" oninput="app.triggerSave()">
-                </div>
-                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
-                <div class="tool-group">
-                    <label id="t-bgImage">Background Image</label>
-                    <label for="bgUpload" style="background:#222; padding:8px; text-align:center; cursor:pointer; border-radius:4px; font-weight: 600; color: #fff;">UPLOAD JPG/PNG</label>
-                    <input type="file" id="bgUpload" accept="image/*" onchange="app.uploadBackground(event)">
-                </div>
-                <div class="tool-group" style="margin-top: 8px;">
-                    <label id="t-filter">Cinematic Filter</label>
-                    <select id="editorFilter" onchange="app.triggerSave()" style="width: 100%;">
-                        <option value="filter-none">None</option>
-                        <option value="filter-grime">Grime / Retro</option>
-                        <option value="filter-noir">Noir / Dark</option>
-                        <option value="filter-sepia">Corroded Sepia</option>
-                    </select>
-                </div>
-                <hr style="border:none; border-top:1px solid #333; margin: 4px 0;">
-                <div class="tool-group">
-                    <label id="t-choices">Branching Choices</label>
-                    <div id="editorChoicesList" style="display: flex; flex-direction: column; gap: 6px;"></div>
-                    <button onclick="app.addChoice()" style="margin-top: 8px;">+ ADD CHOICE</button>
-                </div>
-            </div>
-            <div class="watermark">FINALTIME STUDIOS</div>
-        </section>
-    </main>
-
-    <main id="view-player" class="view">
-        <div class="player-controls">
-            <button onclick="app.exitPlayer()" id="t-exit" class="btn-danger" style="background: rgba(0,0,0,0.8); border: 1px solid #ef4444;">EXIT READ MODE</button>
+        <div class="doc-box">
+          <strong>Key Philosophy:</strong> Your data stays with you. The engine runs entirely locally. Assets are compressed and stored directly in your browser's IndexedDB, ensuring lightning-fast performance and absolute privacy.
         </div>
-        <div id="player-bg" class="filter-none"></div>
-        <div class="player-overlay"></div>
         
-        <div id="player-content">
-            <div class="player-text-box">
-                <div id="player-text"></div>
-            </div>
-            <div id="player-choices"></div>
+        <h3>What can you build?</h3>
+        <ul>
+          <li style="margin-bottom:8px; color:var(--text2);"><strong>Visual Novels:</strong> Rich dialogue, custom backgrounds, and multiple endings.</li>
+          <li style="margin-bottom:8px; color:var(--text2);"><strong>Text RPGs:</strong> Stat tracking, hidden routes, and inventory management.</li>
+          <li style="margin-bottom:8px; color:var(--text2);"><strong>Interactive Courses:</strong> Lessons mixed with embedded quizzes and progress tracking.</li>
+        </ul>
+      </div>
+
+      <div id="doc-projects" class="doc-section">
+        <h2>Managing Projects</h2>
+        <p>The dashboard is your command center. From here, you can create new projects, edit metadata, and manage your library.</p>
+        
+        <h3>The .dearend Format</h3>
+        <p>When you click <strong>Export</strong>, the engine compiles your entire story—including all compressed background images, characters, and variables—into a single <code>.dearend</code> file.</p>
+        
+        <div class="doc-box warning">
+          <strong>Backup your work!</strong> Because DearEnd runs locally, clearing your browser data will delete your projects. Always export <code>.dearend</code> files to your computer to back them up securely.
         </div>
-        <div class="watermark">FINALTIME STUDIOS</div>
+
+        <h3>Sharing your Game</h3>
+        <p>You can share your <code>.dearend</code> file with anyone. All they have to do is open the DearEnd Engine and click <strong>Import</strong>. The engine will instantly unpack your story, including all images and logic, ready to be played or edited.</p>
+      </div>
+
+      <div id="doc-scenes" class="doc-section">
+        <h2>Scenes & Choices</h2>
+        <p>A Scene is the core building block of your story. Every project starts with an "Opening Scene".</p>
+        
+        <h3>Writing Dialogue</h3>
+        <p>Use the central textbox to write the narrative. To assign a speaker, type their name in the <strong>Speaker</strong> input on the right sidebar. You can also predefined characters in the <strong>Chars</strong> tab on the left to easily click and assign them.</p>
+
+        <h3>Adding Choices</h3>
+        <p>In the right-hand Tools panel, click <code>+ Add Choice</code>.</p>
+        <ol style="margin-left: 20px; color:var(--text2);">
+          <li style="margin-bottom:8px;">Write the text the player will click.</li>
+          <li style="margin-bottom:8px;">Select a <strong>Target Scene</strong> from the dropdown.</li>
+          <li style="margin-bottom:8px;">If you select <code>[ END ]</code>, the story concludes and generates a Path Report for the player.</li>
+        </ol>
+      </div>
+
+      <div id="doc-map" class="doc-section">
+        <h2>The Flow Map</h2>
+        <p>As your story grows, lists become hard to manage. The Flow Map provides a bird's-eye view of your entire narrative architecture.</p>
+        
+        <h3>Using the Map</h3>
+        <p>Click <strong>Flow Map</strong> in the top navigation bar. Here you can:</p>
+        <ul>
+          <li style="margin-bottom:8px; color:var(--text2);">Click and drag to pan around your workspace.</li>
+          <li style="margin-bottom:8px; color:var(--text2);">Drag individual scene nodes to organize your logic visually.</li>
+          <li style="margin-bottom:8px; color:var(--text2);">Follow the red arrows to trace player progression and locate "dead ends".</li>
+          <li style="margin-bottom:8px; color:var(--text2);">Double-click a node to immediately jump into editing that scene.</li>
+        </ul>
+      </div>
+
+      <div id="doc-media" class="doc-section">
+        <h2>Images & Cinematic Filters</h2>
+        <p>Visual presentation is vital. DearEnd allows you to customize the atmosphere of every single scene.</p>
+        
+        <h3>Background Images</h3>
+        <p>In the tools panel, click <strong>Upload Image</strong>. The engine automatically resizes and compresses your image (max width 1280px) to ensure your project file remains lightweight. The original image is discarded, and the optimized version is saved directly into the local database.</p>
+
+        <h3>Cinematic Filters</h3>
+        <p>Don't have time to color-grade images in Photoshop? Use our real-time CSS filters to alter the mood:</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+          <div style="background:var(--bg2); padding: 10px; border-radius:4px;"><code>Noir</code> High contrast black and white.</div>
+          <div style="background:var(--bg2); padding: 10px; border-radius:4px;"><code>Grime</code> Desaturated, retro PS1 horror aesthetic.</div>
+          <div style="background:var(--bg2); padding: 10px; border-radius:4px;"><code>Dream</code> High saturation and slight hue shift.</div>
+          <div style="background:var(--bg2); padding: 10px; border-radius:4px;"><code>Sepia</code> Corroded, old-world paper look.</div>
+        </div>
+      </div>
+
+      <div id="doc-vars" class="doc-section">
+        <h2>Variables & State</h2>
+        <p>Variables allow your story to remember player actions. Open the <strong>Vars</strong> tab on the left sidebar to create them.</p>
+
+        <h3>Types of Variables</h3>
+        <ul>
+          <li style="margin-bottom:8px; color:var(--text2);"><strong>Number:</strong> Great for stats like <code>courage</code>, <code>gold</code>, or <code>health</code>.</li>
+          <li style="margin-bottom:8px; color:var(--text2);"><strong>Boolean:</strong> True or False. Perfect for flags like <code>has_key</code> or <code>met_king</code>.</li>
+        </ul>
+
+        <div class="doc-box">
+          Variables are global. Once the player alters a variable in Scene 2, that value persists and can be checked in Scene 50.
+        </div>
+      </div>
+
+      <div id="doc-cond" class="doc-section">
+        <h2>Conditions & Effects</h2>
+        <p>This is where DearEnd transforms from a simple book into a dynamic game.</p>
+
+        <h3>Effects (Changing Variables)</h3>
+        <p>When a player enters a scene, you can trigger an Effect. For example, if they enter the "Find Treasure" scene, you can add an effect: <code>gold += 100</code>.</p>
+        <p>Effects can also be attached directly to Choices, allowing the player to choose their stats.</p>
+
+        <h3>Conditions (Checking Variables)</h3>
+        <p>Conditions act as gatekeepers. If you set a condition on a Scene (e.g., <code>has_key == true</code>), the engine evaluates it when the player attempts to enter. If the condition fails, the engine instantly skips that scene and pushes the player to the next available route automatically.</p>
+      </div>
+
+      <div id="doc-quiz" class="doc-section">
+        <h2>Quizzes & Assessments</h2>
+        <p>Building an interactive course? DearEnd supports native quizzing.</p>
+        
+        <p>In the right-hand Tools panel, check <strong>Enable Quiz</strong>. This replaces standard narrative choices with a multiple-choice interface.</p>
+        <ol style="margin-left: 20px; color:var(--text2);">
+          <li style="margin-bottom:8px;">Type your question.</li>
+          <li style="margin-bottom:8px;">Add options, and select the radio button for the correct answer.</li>
+          <li style="margin-bottom:8px;">Provide custom feedback for correct and incorrect attempts.</li>
+        </ol>
+        <p>When the player selects the right answer, the UI flashes green, displays your success feedback, and automatically progresses the story.</p>
+      </div>
+
     </main>
+  </div>
+</section>
 
-    <main id="view-booklet" class="view">
-        <div class="player-controls" style="display: flex; gap: 12px;">
-            <button onclick="app.exitPlayer()" style="background: rgba(0,0,0,0.8);">BACK TO EDITOR</button>
-            <button class="btn-brand" onclick="app.downloadBooklet()" id="t-downloadBooklet" style="background: rgba(153, 27, 27, 0.8); color: white;">DOWNLOAD IMAGE</button>
-        </div>
-        <div class="booklet-container" id="bookletContent">
-            <h1 class="booklet-title">THE PATH TAKEN</h1>
-            <div id="bookletLogs"></div>
-            <div class="watermark" style="bottom: 20px; right: 20px;">FINALTIME STUDIOS</div>
-        </div>
-    </main>
+<footer>
+  <div style="margin-bottom: 16px;">
+    <img src="logo.png" alt="Logo" style="height: 24px; opacity: 0.5;" onerror="this.style.display='none'">
+  </div>
+  <div class="footer-watermark">FINALTIME STUDIOS © 2026</div>
+  <p style="font-size: 0.8rem; margin-top: 8px;">Built for interactive storytellers.</p>
+</footer>
 
-    <script>
-        const dict = {
-            en: {
-                myStories: "My Stories", create: "NEW STORY", import: "IMPORT", scenes: "TIMELINE",
-                bgImage: "Background Image", filter: "Cinematic Filter", choices: "Branching Choices",
-                exit: "EXIT READ MODE", placeholder: "Scene text goes here...", newScene: "Scene",
-                endReached: "END OF STORY REACHED.", viewBooklet: "VIEW CONSEQUENCES REPORT",
-                sceneName: "Scene Name", downloadBooklet: "DOWNLOAD IMAGE", confirmDel: "Delete this story permanently?"
-            },
-            pt: {
-                myStories: "Minhas Histórias", create: "NOVA HISTÓRIA", import: "IMPORTAR", scenes: "LINHA DO TEMPO",
-                bgImage: "Imagem de Fundo", filter: "Filtro Cinematográfico", choices: "Escolhas e Caminhos",
-                exit: "SAIR DA LEITURA", placeholder: "O texto da cena vai aqui...", newScene: "Cena",
-                endReached: "FIM DA HISTÓRIA ALCANÇADO.", viewBooklet: "VER RELATÓRIO DE CONSEQUÊNCIAS",
-                sceneName: "Nome da Cena", downloadBooklet: "BAIXAR IMAGEM", confirmDel: "Deletar esta história para sempre?"
-            }
-        };
+<script>
+  function switchDoc(id, element) {
+    // Update active nav state
+    document.querySelectorAll('.docs-nav-item').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
 
-        const app = {
-            lang: 'en',
-            data: {}, 
-            currentId: null,
-            currentSceneId: null,
-            playState: { current: null, history: [] },
-            saveTimeout: null, // Timer do Debounce para evitar lags
+    // Update active content
+    document.querySelectorAll('.doc-section').forEach(el => el.classList.remove('active'));
+    document.getElementById('doc-' + id).classList.add('active');
+  }
 
-            init() {
-                const savedData = localStorage.getItem('dearend_v3');
-                if (savedData) this.data = JSON.parse(savedData);
-                
-                const savedLang = localStorage.getItem('dearend_lang');
-                if(savedLang) {
-                    this.lang = savedLang;
-                    document.getElementById('langSelect').value = savedLang;
-                }
-                
-                this.updateLangUI();
-                this.goHome();
-            },
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+</script>
 
-            // --- SISTEMA DE SALVAMENTO SEGURO (DEBOUNCE) ---
-            triggerSave() {
-                // Atualiza o estado da cena em memória imediatamente
-                const proj = this.data[this.currentId];
-                const scene = proj.scenes[this.currentSceneId];
-                
-                const oldName = scene.name;
-                scene.name = document.getElementById('sceneNameInput').value || "Unnamed";
-                scene.text = document.getElementById('editorText').value;
-                scene.filter = document.getElementById('editorFilter').value;
-                
-                // Atualiza o Canvas visual
-                const canvas = document.getElementById('editorCanvas');
-                canvas.className = `story-canvas ${scene.filter}`;
-                
-                if(oldName !== scene.name) this.renderSceneList();
-
-                // Atrasa o save real no banco para não travar o navegador
-                clearTimeout(this.saveTimeout);
-                this.saveTimeout = setTimeout(() => {
-                    this.saveDb();
-                }, 500);
-            },
-
-            saveDb() {
-                if(this.currentId) this.data[this.currentId].updated = Date.now();
-                try {
-                    localStorage.setItem('dearend_v3', JSON.stringify(this.data));
-                } catch(e) {
-                    console.error("Storage quota reached");
-                }
-            },
-
-            generateId() { return Math.random().toString(36).substr(2, 9); },
-
-            // --- NAVEGAÇÃO ---
-            showView(id) {
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                
-                const isEditor = id === 'view-editor';
-                document.getElementById('navPlayBtn').style.display = isEditor ? 'block' : 'none';
-                document.getElementById('navExportBtn').style.display = isEditor ? 'block' : 'none';
-            },
-
-            goHome() {
-                this.currentId = null;
-                this.currentSceneId = null;
-                this.showView('view-home');
-                this.renderHome();
-            },
-
-            renderHome() {
-                const grid = document.getElementById('projectGrid');
-                grid.innerHTML = '';
-                const ids = Object.keys(this.data);
-                
-                if(ids.length === 0) {
-                    grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1; text-align: center; margin-top: 50px; font-size: 1.2rem;">No stories found. Create your first masterpiece.</p>`;
-                    return;
-                }
-
-                ids.sort((a,b) => this.data[b].updated - this.data[a].updated).forEach(id => {
-                    const proj = this.data[id];
-                    const card = document.createElement('div');
-                    card.className = 'project-card';
-                    card.innerHTML = `
-                        <div class="card-title">${proj.title}</div>
-                        <div class="card-meta">Scenes: ${Object.keys(proj.scenes).length} | Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
-                        <div class="card-actions">
-                            <button class="btn-primary" onclick="app.openProject('${id}')">EDIT</button>
-                            <button class="btn-danger" onclick="app.deleteProject('${id}')">DELETE</button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            },
-
-            // --- PROJETOS ---
-            createNewProject() {
-                const projId = 'proj_' + this.generateId();
-                const startScnId = 'scn_' + this.generateId();
-                
-                this.data[projId] = {
-                    title: "Untitled Story",
-                    updated: Date.now(),
-                    startScene: startScnId,
-                    scenes: {}
-                };
-                
-                this.data[projId].scenes[startScnId] = {
-                    name: "Opening Scene",
-                    text: "", bg: "", filter: "filter-none", choices: []
-                };
-                
-                this.saveDb();
-                this.openProject(projId);
-            },
-
-            openProject(id) {
-                this.currentId = id;
-                this.currentSceneId = this.data[id].startScene;
-                document.getElementById('projectName').value = this.data[id].title;
-                this.showView('view-editor');
-                this.renderEditor();
-            },
-
-            deleteProject(id) {
-                if(confirm(dict[this.lang].confirmDel)) {
-                    delete this.data[id];
-                    this.saveDb();
-                    this.renderHome();
-                }
-            },
-
-            updateProjectTitle() {
-                if(!this.currentId) return;
-                this.data[this.currentId].title = document.getElementById('projectName').value || "Untitled";
-                this.saveDb();
-            },
-
-            exportProject() {
-                if(!this.currentId) return;
-                const projData = this.data[this.currentId];
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projData));
-                const a = document.createElement('a');
-                a.href = dataStr;
-                const safeName = projData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                a.download = `${safeName}.dearend`;
-                a.click();
-            },
-
-            importProject(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        const newProjId = 'proj_' + this.generateId();
-                        importedData.updated = Date.now(); 
-                        this.data[newProjId] = importedData;
-                        this.saveDb();
-                        this.openProject(newProjId);
-                    } catch (err) { alert("Invalid .dearend file format."); }
-                };
-                reader.readAsText(file);
-                event.target.value = '';
-            },
-
-            // --- EDITOR ---
-            renderEditor() {
-                this.renderSceneList();
-                this.loadSceneToEditor();
-            },
-
-            renderSceneList() {
-                const list = document.getElementById('sceneList');
-                list.innerHTML = '';
-                const proj = this.data[this.currentId];
-                
-                Object.keys(proj.scenes).forEach(id => {
-                    const scene = proj.scenes[id];
-                    const div = document.createElement('div');
-                    div.className = `scene-item ${id === this.currentSceneId ? 'active' : ''}`;
-                    div.innerHTML = `
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 200px;">${scene.name}</span>
-                        ${id !== proj.startScene ? `<button class="del-scene" onclick="app.deleteScene('${id}', event)">✖</button>` : '<span style="color:var(--brand); font-size:12px;">★ START</span>'}
-                    `;
-                    div.onclick = () => { this.currentSceneId = id; this.renderEditor(); };
-                    list.appendChild(div);
-                });
-                
-                this.renderEditorChoices();
-            },
-
-            loadSceneToEditor() {
-                const scene = this.data[this.currentId].scenes[this.currentSceneId];
-                if(!scene) return;
-
-                document.getElementById('sceneNameInput').value = scene.name;
-                document.getElementById('editorText').value = scene.text;
-                document.getElementById('editorFilter').value = scene.filter;
-                
-                const canvas = document.getElementById('editorCanvas');
-                canvas.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
-                canvas.className = `story-canvas ${scene.filter}`;
-
-                this.renderEditorChoices();
-            },
-
-            addScene() {
-                const proj = this.data[this.currentId];
-                const id = 'scn_' + this.generateId();
-                const num = Object.keys(proj.scenes).length + 1;
-                proj.scenes[id] = {
-                    name: `${dict[this.lang].newScene} ${num}`, text: "", bg: "", filter: "filter-none", choices: []
-                };
-                this.currentSceneId = id;
-                this.saveDb();
-                this.renderEditor();
-            },
-
-            deleteScene(id, event) {
-                event.stopPropagation();
-                const proj = this.data[this.currentId];
-                if(id === proj.startScene) return; 
-                
-                delete proj.scenes[id];
-                Object.values(proj.scenes).forEach(s => {
-                    s.choices.forEach(c => { if(c.target === id) c.target = ""; });
-                });
-
-                this.currentSceneId = proj.startScene;
-                this.saveDb();
-                this.renderEditor();
-            },
-
-            uploadBackground(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    this.compressImage(event.target.result, (compressed) => {
-                        this.data[this.currentId].scenes[this.currentSceneId].bg = compressed;
-                        this.saveDb();
-                        this.loadSceneToEditor();
-                    });
-                };
-                reader.readAsDataURL(file);
-                e.target.value = '';
-            },
-
-            compressImage(dataUrl, callback) {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX = 1280; 
-                    let w = img.width; let h = img.height;
-                    if (w > MAX) { h *= MAX / w; w = MAX; }
-                    canvas.width = w; canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    callback(canvas.toDataURL('image/jpeg', 0.7)); 
-                };
-                img.src = dataUrl;
-            },
-
-            // --- ESCOLHAS (CHOICES) ---
-            addChoice() {
-                const scene = this.data[this.currentId].scenes[this.currentSceneId];
-                if(scene.choices.length >= 4) return;
-                scene.choices.push({ text: "New Action", target: "" });
-                this.saveDb();
-                this.renderEditorChoices();
-            },
-
-            renderEditorChoices() {
-                const proj = this.data[this.currentId];
-                const scene = proj.scenes[this.currentSceneId];
-                const list = document.getElementById('editorChoicesList');
-                list.innerHTML = '';
-
-                scene.choices.forEach((choice, index) => {
-                    const row = document.createElement('div');
-                    row.className = 'choice-editor-row';
-                    
-                    const input = document.createElement('input');
-                    input.className = 'choice-input'; input.value = choice.text;
-                    input.oninput = (e) => { choice.text = e.target.value; this.triggerSave(); };
-                    
-                    const select = document.createElement('select');
-                    select.className = 'choice-target';
-                    this.populateTargetSelect(select, choice.target, proj.scenes);
-                    select.onchange = (e) => { choice.target = e.target.value; this.saveDb(); };
-
-                    const delBtn = document.createElement('button');
-                    delBtn.innerText = "✖"; delBtn.style.padding = "4px 8px"; delBtn.className = "btn-danger";
-                    delBtn.onclick = () => { scene.choices.splice(index, 1); this.saveDb(); this.renderEditorChoices(); };
-
-                    row.appendChild(input); row.appendChild(select); row.appendChild(delBtn);
-                    list.appendChild(row);
-                });
-            },
-
-            populateTargetSelect(selectEl, currentVal, allScenes) {
-                selectEl.innerHTML = `<option value="">[ THE END ]</option>`;
-                Object.keys(allScenes).forEach(id => {
-                    const opt = document.createElement('option');
-                    opt.value = id; opt.innerText = allScenes[id].name;
-                    if(id === currentVal) opt.selected = true;
-                    selectEl.appendChild(opt);
-                });
-            },
-
-            // --- PLAYER ---
-            playProject() {
-                if(!this.currentId) return;
-                const proj = this.data[this.currentId];
-                this.playState.history = [];
-                this.playState.current = proj.startScene;
-                this.showView('view-player');
-                this.renderPlayerScene();
-            },
-
-            exitPlayer() {
-                this.showView('view-editor');
-            },
-
-            renderPlayerScene() {
-                const scene = this.data[this.currentId].scenes[this.playState.current];
-                if(!scene) return;
-
-                const bg = document.getElementById('player-bg');
-                bg.style.backgroundImage = scene.bg ? `url(${scene.bg})` : '';
-                bg.className = scene.filter;
-
-                document.getElementById('player-text').innerText = scene.text;
-                const choicesDiv = document.getElementById('player-choices');
-                choicesDiv.innerHTML = '';
-
-                // A CORREÇÃO ABSOLUTA DA LÓGICA DE FIM
-                if (scene.choices.length === 0) {
-                    // A cena não tem botões criados = A história para aqui.
-                    const btn = document.createElement('button');
-                    btn.className = 'player-choice-btn';
-                    btn.style.borderColor = "var(--brand)";
-                    btn.innerText = dict[this.lang].viewBooklet;
-                    btn.onclick = () => this.generateBooklet();
-                    choicesDiv.appendChild(btn);
-                } else {
-                    // A cena tem opções. Vamos renderizar todas.
-                    scene.choices.forEach(choice => {
-                        const btn = document.createElement('button');
-                        btn.className = 'player-choice-btn';
-                        btn.innerText = choice.text;
-                        btn.onclick = () => {
-                            this.playState.history.push({ text: scene.text, choice: choice.text });
-                            
-                            // Se ESSA escolha específica for "Fim", chame o livrinho
-                            if (choice.target === "") {
-                                this.generateBooklet();
-                            } else {
-                                this.playState.current = choice.target;
-                                this.renderPlayerScene();
-                            }
-                        };
-                        choicesDiv.appendChild(btn);
-                    });
-                }
-            },
-
-            // --- BOOKLET ---
-            generateBooklet() {
-                const finalScene = this.data[this.currentId].scenes[this.playState.current];
-                if(finalScene && finalScene.choices.length === 0) {
-                    // Só marca o "end reached" forçado se não havia opções
-                    this.playState.history.push({ text: finalScene.text, choice: dict[this.lang].endReached });
-                }
-
-                const logs = document.getElementById('bookletLogs');
-                logs.innerHTML = '';
-                
-                this.playState.history.forEach(entry => {
-                    const div = document.createElement('div');
-                    div.className = 'log-entry';
-                    div.innerHTML = `
-                        <div class="log-text">"${entry.text}"</div>
-                        <div class="log-choice">${entry.choice}</div>
-                    `;
-                    logs.appendChild(div);
-                });
-
-                this.showView('view-booklet');
-            },
-
-            downloadBooklet() {
-                const area = document.getElementById('bookletContent');
-                const btn = document.getElementById('t-downloadBooklet');
-                const originalText = btn.innerText;
-                btn.innerText = "GENERATING...";
-
-                html2canvas(area, { backgroundColor: '#18181b', scale: 2 }).then(canvas => {
-                    const link = document.createElement('a');
-                    const safeName = this.data[this.currentId].title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                    link.download = `${safeName}_path.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    btn.innerText = originalText;
-                });
-            },
-
-            // --- LANGUAGE ---
-            changeLanguage(l) {
-                this.lang = l;
-                localStorage.setItem('dearend_lang', l);
-                const d = dict[l];
-                
-                document.getElementById('t-myStories').innerText = d.myStories;
-                document.getElementById('t-create').innerText = d.create;
-                document.getElementById('t-import').innerText = d.import;
-                document.getElementById('t-scenes').innerText = d.scenes;
-                document.getElementById('t-bgImage').innerText = d.bgImage;
-                document.getElementById('t-filter').innerText = d.filter;
-                document.getElementById('t-choices').innerText = d.choices;
-                document.getElementById('t-exit').innerText = d.exit;
-                document.getElementById('editorText').placeholder = d.placeholder;
-                document.getElementById('t-sceneName').innerText = d.sceneName;
-                document.getElementById('t-downloadBooklet').innerText = d.downloadBooklet;
-                
-                if(this.currentId == null) this.renderHome();
-                else this.renderEditor();
-            }
-        };
-
-        window.onload = () => app.init();
-    </script>
 </body>
 </html>
