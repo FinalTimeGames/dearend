@@ -182,7 +182,7 @@ footer {
   <div class="nav-links">
     <a href="#features" class="nav-link">Features</a>
     <a href="#docs" class="nav-link">Documentation</a>
-    <a href="https://finaltime-studios.itch.io/dearend" target="_blank" class="btn btn-brand btn-sm">Download on Itch.io</a>
+    <a href="https://finaltime-game-studio.itch.io/dearend" id="itch-btn-nav" class="btn btn-brand btn-sm">Download on Itch.io</a>
   </div>
 </nav>
 
@@ -191,7 +191,7 @@ footer {
     <h1>Your stories,<br><em>brought to life.</em></h1>
     <p class="hero-sub">The ultimate node-based engine for visual novels, interactive courses, and text RPGs. Build, test, and export your narrative without writing a single line of code.</p>
     <div class="hero-btns">
-      <a href="https://finaltime-game-studio.itch.io/dearend" target="_blank" class="btn btn-brand">Download for Windows</a>
+      <a href="https://finaltime-game-studio.itch.io/dearend" id="itch-btn-hero" class="btn btn-brand">Download for Windows</a>
       <a href="#docs" class="btn btn-outline">Read Documentation</a>
     </div>
   </div>
@@ -215,8 +215,8 @@ footer {
     </div>
     <div class="feature-card">
       <div class="feature-icon">💾</div>
-      <h3>Local Asset Store</h3>
-      <p>A highly optimized IndexedDB engine compresses and stores your images securely. Build massive 100+ scene projects without browser lag.</p>
+      <h3>Local Workspace Store</h3>
+      <p>A highly optimized local database engine compresses and stores your images securely. Build massive 100+ scene projects without performance drops.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🎓</div>
@@ -257,10 +257,10 @@ footer {
       
       <div id="doc-intro" class="doc-section active">
         <h2>Welcome to DearEnd Studio</h2>
-        <p>DearEnd Studio is a powerful, browser-based narrative engine designed by <strong>Finaltime Studios</strong>. It allows writers, game designers, and educators to create complex branching stories without programming.</p>
+        <p>DearEnd Studio is a powerful, standalone narrative engine designed by <strong>Finaltime Studios</strong>. It allows writers, game designers, and educators to create complex branching stories without programming.</p>
         
         <div class="doc-box">
-          <strong>Key Philosophy:</strong> Your data stays with you. The engine runs entirely locally. Assets are compressed and stored directly in your browser's IndexedDB, ensuring lightning-fast performance and absolute privacy.
+          <strong>Key Philosophy:</strong> Your data stays with you. The engine runs entirely locally. Assets are compressed and stored securely in your workspace's database, ensuring lightning-fast performance and absolute privacy.
         </div>
         
         <h3>What can you build?</h3>
@@ -276,10 +276,10 @@ footer {
         <p>The dashboard is your command center. From here, you can create new projects, edit metadata, and manage your library.</p>
         
         <h3>The .dearend Format</h3>
-        <p>When you click <strong>Export</strong>, the engine compiles your entire story—including all compressed background images, characters, and variables—into a single <code>.dearend</code> file.</p>
+        <p>When you click <strong>Export</strong>, the engine compiles your entire story—including all compressed background images, characters, and variables—into a single portable <code>.dearend</code> file.</p>
         
         <div class="doc-box warning">
-          <strong>Backup your work!</strong> Because DearEnd runs locally, clearing your browser data will delete your projects. Always export <code>.dearend</code> files to your computer to back them up securely.
+          <strong>Backup your work!</strong> Because DearEnd runs locally, completely resetting the application cache may affect your files. Always export <code>.dearend</code> files to your computer folders to back them up securely.
         </div>
 
         <h3>Sharing your Game</h3>
@@ -385,7 +385,13 @@ footer {
   <p style="font-size: 0.8rem; margin-top: 8px;">Built for interactive storytellers.</p>
 </footer>
 
+<script src="https://static.itch.io/api.js"></script>
+
 <script>
+  // Inicializa o botão de compra/download do Itch.io como um Popup Modal
+  Itch.attachBuyButton(document.getElementById("itch-btn-nav"));
+  Itch.attachBuyButton(document.getElementById("itch-btn-hero"));
+
   function switchDoc(id, element) {
     // Update active nav state
     document.querySelectorAll('.docs-nav-item').forEach(el => el.classList.remove('active'));
